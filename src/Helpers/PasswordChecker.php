@@ -25,11 +25,6 @@ class PasswordChecker implements \Livewire\Wireable
 
         // Criteria voor wachtwoordsterkte
         $lengthRequirement = 8;
-        $uppercaseRequirement = true;
-        $lowercaseRequirement = true;
-        $numberRequirement = true;
-        $specialCharRequirement = true;
-        $uncompromisedRequirement = true;
 
         $instance = new self();
         $instance->password = $password;
@@ -41,31 +36,31 @@ class PasswordChecker implements \Livewire\Wireable
         }
 
         // Controleren op hoofdlettervereiste
-        if ($uppercaseRequirement && preg_match('/[A-Z]/', $password)) {
+        if ( preg_match('/[A-Z]/', $password) ) {
             $fulfilledCriteria++;
             $instance->hasCapitalLetter = true;
         }
 
         // Controleren op kleine lettervereiste
-        if ($lowercaseRequirement && preg_match('/[a-z]/', $password)) {
+        if ( preg_match('/[a-z]/', $password) ) {
             $fulfilledCriteria++;
             $instance->hasSmallLetter = true;
         }
 
         // Controleren op cijfervereiste
-        if ($numberRequirement && preg_match('/[0-9]/', $password)) {
+        if ( preg_match('/[0-9]/', $password) ) {
             $fulfilledCriteria++;
             $instance->hasNumbers = true;
         }
 
         // Controleren op speciaal tekenvereiste
-        if ($specialCharRequirement && preg_match('/[\W_]/', $password)) {
+        if ( preg_match('/[\W_]/', $password) ) {
             $fulfilledCriteria++;
             $instance->hasSpecial = true;
         }
 
         // Controleren op compromisvereiste (uncompromised)
-        if ($uncompromisedRequirement && !self::isPasswordCompromised($password)) {
+        if ( !empty($password) &&!self::isPasswordCompromised($password)) {
             $fulfilledCriteria++;
             $instance->isUncompromised = true;
         }
