@@ -1,0 +1,31 @@
+{
+  "name": "squareconcepts/square-ui",
+  "description": "Collection of blade and livewire components",
+  "type": "library",
+  "require": {
+    "livewire/livewire": "^2.12",
+    "wireui/wireui": "^1.17",
+    "laravel/framework": ">9.0.0",
+    "guzzlehttp/guzzle": ">7.5@dev"
+  },
+  "license": "MIT",
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Squareconcepts\\SquareUi\\Providers\\SquareUiServiceProvider"
+      ]
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Squareconcepts\\SquareUi\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "SQUARE Concepts",
+      "email": "info@squareconcepts.nl"
+    }
+  ],
+  "minimum-stability": "stable"
+}
