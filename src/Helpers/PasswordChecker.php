@@ -82,9 +82,9 @@ class PasswordChecker implements \Livewire\Wireable
         $percentage = self::calculatePasswordStrengthPercentage($password);
         $lookupArray = [
             0 => 'weak',
-            config('square-ui.password_strength_checker.good') => 'good',
-            config('square-ui.password_strength_checker.strong') => 'strong',
-            config('square-ui.password_strength_checker.very_strong') =>'very strong'
+            config('square-ui.password_strength_checker.good', 70) => 'good',
+            config('square-ui.password_strength_checker.strong', 80) => 'strong',
+            config('square-ui.password_strength_checker.very_strong', 90) =>'very strong'
         ];
 
         // Sorteer de array oplopend op de score
@@ -154,7 +154,7 @@ class PasswordChecker implements \Livewire\Wireable
         }
 
         // Controleren op compromisvereiste (uncompromised)
-        if ($uncompromisedRequirement && !self::isPasswordCompromised($password)) {
+        if ($uncompromisedRequirement && !empty($password) && !self::isPasswordCompromised($password)) {
             $fulfilledCriteria++;
         }
 
