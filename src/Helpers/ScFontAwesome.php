@@ -3,6 +3,7 @@
 namespace Squareconcepts\SquareUi\Helpers;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class ScFontAwesome implements \Livewire\Wireable
@@ -14,12 +15,12 @@ class ScFontAwesome implements \Livewire\Wireable
 
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function __construct()
     {
-        if (empty(config('square-ui.api_token'))) {
-            throw new Exception('Please provide font awesome api token');
+        if (empty(config('square-ui.fontawesome_api_token'))) {
+            throw new \Exception('Please provide font awesome api token');
         }
     }
 

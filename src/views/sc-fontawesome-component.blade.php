@@ -1,6 +1,6 @@
 <div class="flex items-center justify-center" wire:init="init">
     @if($apiTokeIsEmpty)
-        <x-input type="text"  wire:model="api_token" placeholder="Font Awesome API Key" label="Font Awesome API Key" >
+        <x-input type="text"  wire:model="api_token" placeholder="Font Awesome API Key" label="Font Awesome API Key"  class="w-full">
             <x-slot name="append">
                 <div class="absolute inset-y-0 right-0 flex items-center p-0.5">
                     <x-button

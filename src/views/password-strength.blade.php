@@ -1,6 +1,6 @@
 <div>
     <div style="max-width: 200px;">
-        @if($passwordStrength < config('square-ui.password_strength_checker.good'))
+        @if($passwordChecker->passwordStrength < config('square-ui.password_strength_checker.good'))
             <div class="w-full grid grid-cols-12 gap-2 h-1 mt-3">
                 <div class="col-span-3 h-full rounded bg-danger"></div>
                 <div class="col-span-3 h-full rounded bg-slate-300"></div>
@@ -8,7 +8,7 @@
                 <div class="col-span-3 h-full rounded bg-slate-300"></div>
             </div>
             <div class="text-danger mt-2">{{__('Very weak password')}}</div>
-        @elseif(config('square-ui.password_strength_checker.strong'))
+        @elseif($passwordChecker->passwordStrength < config('square-ui.password_strength_checker.strong'))
             <div class="w-full grid grid-cols-12 gap-2 h-1 mt-3">
                 <div class="col-span-3 h-full rounded bg-orange-400"></div>
                 <div class="col-span-3 h-full rounded bg-orange-400"></div>
@@ -16,7 +16,7 @@
                 <div class="col-span-3 h-full rounded bg-slate-300"></div>
             </div>
             <div class="text-orange-400 mt-2">{{__('weak password')}}</div>
-        @elseif(config('square-ui.password_strength_checker.very_strong'))
+        @elseif($passwordChecker->passwordStrength < config('square-ui.password_strength_checker.very_strong'))
             <div class="w-full grid grid-cols-12 gap-2 h-1 mt-3">
                 <div class="col-span-3 h-full rounded bg-warning"></div>
                 <div class="col-span-3 h-full rounded bg-warning"></div>
