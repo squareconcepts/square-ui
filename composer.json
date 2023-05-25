@@ -23,10 +23,10 @@
   },
   "scripts": {
     "post-install-cmd": [
-      "@php artisan vendor:publish --tag=squareconcepts/square-ui --force"
+      "@php artisan vendor:publish --tag=config --force"
     ],
     "post-update-cmd": [
-      "@php artisan vendor:publish --tag=squareconcepts/square-ui --force"
+      "@php artisan vendor:publish --tag=config --force"
     ]
   },
   "authors": [
