@@ -21,6 +21,14 @@
       "Squareconcepts\\SquareUi\\": "src/"
     }
   },
+  "scripts": {
+    "post-install-cmd": [
+      "@php artisan vendor:publish --tag=squareconcepts/square-ui --force"
+    ],
+    "post-update-cmd": [
+      "@php artisan vendor:publish --tag=squareconcepts/square-ui --force"
+    ]
+  },
   "authors": [
     {
       "name": "SQUARE Concepts",

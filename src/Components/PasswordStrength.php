@@ -12,7 +12,7 @@ class PasswordStrength  extends Component
     public string $password;
     public PasswordChecker $passwordChecker;
     public string $passwordChangedEvent;
-    
+
 
     protected function getListeners()
     {
