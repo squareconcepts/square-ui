@@ -26,20 +26,20 @@
             <div class="text-warning mt-2">{{__('Good password')}}</div>
         @else
             <div class="w-full grid grid-cols-12 gap-2 h-1 mt-3">
-                <div class="col-span-3 h-full rounded bg-success"></div>
-                <div class="col-span-3 h-full rounded bg-success"></div>
-                <div class="col-span-3 h-full rounded bg-success"></div>
-                <div class="col-span-3 h-full rounded bg-success"></div>
+                <div class="col-span-3 h-full rounded bg-positive-500"></div>
+                <div class="col-span-3 h-full rounded bg-positive-500"></div>
+                <div class="col-span-3 h-full rounded bg-positive-500"></div>
+                <div class="col-span-3 h-full rounded bg-positive-500"></div>
             </div>
-            <div class="text-success mt-2">{{__('Strong password')}}</div>
+            <div class="text-positive-500 mt-2">{{__('Strong password')}}</div>
         @endif
     </div>
-    <ul class="mt-1 ml-1">
-        <li @class(['text-success' => $passwordChecker->length, 'text-slate-400 opacity-70' => !$passwordChecker->length])> <i class="fa-solid fa-check mr-1"></i> @lang('Password is 8 characters long.')</li>
-        <li @class(['text-success' => $passwordChecker->hasCapitalLetter, 'text-slate-400 opacity-70' => !$passwordChecker->hasCapitalLetter])> <i class="fa-solid fa-check mr-1"></i> @lang('Password has uppercase letters.')</li>
-        <li @class(['text-success' => $passwordChecker->hasSmallLetter, 'text-slate-400 opacity-70' => !$passwordChecker->hasSmallLetter])> <i class="fa-solid fa-check mr-1"></i> @lang('Password has lowercase letters.')</li>
-        <li @class(['text-success' => $passwordChecker->hasNumbers, 'text-slate-400 opacity-70' => !$passwordChecker->hasNumbers])> <i class="fa-solid fa-check mr-1"></i> @lang('Password has a number.')</li>
-        <li @class(['text-success' => $passwordChecker->hasSpecial, 'text-slate-400 opacity-70' => !$passwordChecker->hasSpecial])> <i class="fa-solid fa-check mr-1"></i> @lang('Password has special characters'): @$!%*#?&</li>
-        <li @class(['text-success' => $passwordChecker->isUncompromised, 'text-slate-400 opacity-70' => !$passwordChecker->isUncompromised])> <i class="fa-solid fa-check mr-1"></i>@lang('Password isn\'t found in commonly used passwords')</li>
+    <ul class="mt-2 ml-1 text-xs">
+        <li @class(['text-positive-500' => $passwordChecker->length, 'text-slate-400 opacity-70' => !$passwordChecker->length])> <i class="fa-solid fa-check mr-1"></i> @lang('Password is 8 characters long.')</li>
+        <li @class(['text-positive-500' => $passwordChecker->hasCapitalLetter, 'text-slate-400 opacity-70' => !$passwordChecker->hasCapitalLetter])> <i class="fa-solid fa-check mr-1"></i> @lang('Password has uppercase letters.')</li>
+        <li @class(['text-positive-500' => $passwordChecker->hasSmallLetter, 'text-slate-400 opacity-70' => !$passwordChecker->hasSmallLetter])> <i class="fa-solid fa-check mr-1"></i> @lang('Password has lowercase letters.')</li>
+        <li @class(['text-positive-500' => $passwordChecker->hasNumbers, 'text-slate-400 opacity-70' => !$passwordChecker->hasNumbers])> <i class="fa-solid fa-check mr-1"></i> @lang('Password has a number.')</li>
+        <li @class(['text-positive-500' => $passwordChecker->hasSpecial, 'text-slate-400 opacity-70' => !$passwordChecker->hasSpecial])> <i class="fa-solid fa-check mr-1"></i> @lang('Password has special characters'): @$!%*#?&</li>
+        <li @class(['text-positive-500' => $passwordChecker->isUncompromised, 'text-slate-400 opacity-70' => !$passwordChecker->isUncompromised])> <i class="fa-solid fa-check mr-1"></i>@lang('Password is not compromised')</li>
     </ul>
 </div>

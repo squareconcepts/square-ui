@@ -8,5 +8,5 @@
   "Password has lowercase letters.": "Wachtwoord bevat een kleine letter.",
   "Password has a number.": "Wachtwoord bevat een nummer.",
   "Password has special characters": "Wachtwoord bevat een speciaal teken",
-  "Password isn\\'t found in commonly used passwords": "Wachtwoord staat niet in een database met veel gebruikte wachtwoorden."
+  "Password is not compromised": "Wachtwoord is niet openbaar."
 }
