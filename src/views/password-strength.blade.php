@@ -35,11 +35,11 @@
         @endif
     </div>
     <ul class="mt-1 ml-1">
-        <li @class(['text-success' => $passwordChecker->length, 'text-slate-400 opacity-70' => !$passwordChecker->length])> <i class="fa-solid fa-check mr-1"></i>@lang('Password is 8 characters long.')</li>
-        <li @class(['text-success' => $passwordChecker->hasCapitalLetter, 'text-slate-400 opacity-70' => !$passwordChecker->hasCapitalLetter])> <i class="fa-solid fa-check mr-1"></i>@lang('Password has uppercase letters.')</li>
-        <li @class(['text-success' => $passwordChecker->hasSmallLetter, 'text-slate-400 opacity-70' => !$passwordChecker->hasSmallLetter])> <i class="fa-solid fa-check mr-1"></i>@lang('Password has lowercase letters.')</li>
-        <li @class(['text-success' => $passwordChecker->hasNumbers, 'text-slate-400 opacity-70' => !$passwordChecker->hasNumbers])> <i class="fa-solid fa-check mr-1"></i@lang('Password has a number.')</li>
-        <li @class(['text-success' => $passwordChecker->hasSpecial, 'text-slate-400 opacity-70' => !$passwordChecker->hasSpecial])> <i class="fa-solid fa-check mr-1"></i>@lang('Password has special characters'): @$!%*#?&</li>
+        <li @class(['text-success' => $passwordChecker->length, 'text-slate-400 opacity-70' => !$passwordChecker->length])> <i class="fa-solid fa-check mr-1"></i> @lang('Password is 8 characters long.')</li>
+        <li @class(['text-success' => $passwordChecker->hasCapitalLetter, 'text-slate-400 opacity-70' => !$passwordChecker->hasCapitalLetter])> <i class="fa-solid fa-check mr-1"></i> @lang('Password has uppercase letters.')</li>
+        <li @class(['text-success' => $passwordChecker->hasSmallLetter, 'text-slate-400 opacity-70' => !$passwordChecker->hasSmallLetter])> <i class="fa-solid fa-check mr-1"></i> @lang('Password has lowercase letters.')</li>
+        <li @class(['text-success' => $passwordChecker->hasNumbers, 'text-slate-400 opacity-70' => !$passwordChecker->hasNumbers])> <i class="fa-solid fa-check mr-1"></i> @lang('Password has a number.')</li>
+        <li @class(['text-success' => $passwordChecker->hasSpecial, 'text-slate-400 opacity-70' => !$passwordChecker->hasSpecial])> <i class="fa-solid fa-check mr-1"></i> @lang('Password has special characters'): @$!%*#?&</li>
         <li @class(['text-success' => $passwordChecker->isUncompromised, 'text-slate-400 opacity-70' => !$passwordChecker->isUncompromised])> <i class="fa-solid fa-check mr-1"></i>@lang('Password isn\'t found in commonly used passwords')</li>
     </ul>
 </div>

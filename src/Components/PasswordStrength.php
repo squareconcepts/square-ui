@@ -11,8 +11,13 @@ class PasswordStrength  extends Component
 
     public string $password;
     public PasswordChecker $passwordChecker;
+    public string $passwordChangedEvent;
+    
 
-    public $listeners = ['passwordChanged'];
+    protected function getListeners()
+    {
+        return [$this->passwordChangedEvent => 'passwordChanged'];
+    }
 
     public function mount(string $password) {
         $this->password = $password;
