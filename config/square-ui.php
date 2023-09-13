@@ -6,5 +6,6 @@
             'good' => 70, //and above is
             'strong' => 80,//and above is
             'very_strong' => 90,//and above is
-        ]
+        ],
+        'livewire_version' => 3
     ];

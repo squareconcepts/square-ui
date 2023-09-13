@@ -45,7 +45,11 @@ class FontAwesomeComponent extends Component
 
     public function emitValue(): void
     {
-        $this->emit($this->event, $this->field, $this->value, $this->identifier);
+        if(config('square-ui.livewire_version') < 3){
+            $this->emit($this->event, $this->field, $this->value, $this->identifier);
+        } else {
+            $this->dispatch($this->event, field: $this->field, value:  $this->value, identifier: $this->identifier);
+        }
     }
 
     public function updatedStyle(): void
