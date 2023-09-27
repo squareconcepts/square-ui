@@ -17,25 +17,18 @@ class SquareUiServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../../config/square-ui.php' => config_path('square-ui.php'),
-        ], 'config');
+        ], 'square-ui-config');
 
         $this->publishes([
             __DIR__ . '/../views' => resource_path('views/vendor/square-ui'),
-        ], 'views');
+        ], 'square-ui-views');
 
         $this->publishes([
-            __DIR__ . '/../lang' => resource_path('views/vendor/square-ui'),
-        ], 'views');
+            __DIR__ . '/../lang' => lang_path('vendor/square-ui'),
+        ], 'square-ui-lang');
 
 
         Livewire::component('square-ui::icon', FontAwesomeComponent::class);
         Livewire::component('square-ui::password-strength', PasswordStrength::class);
-    }
-
-    public function register()
-    {
-        $this->mergeConfigFrom(
-            __DIR__.'/../../config/square-ui.php', 'square-ui'
-        );
     }
 }
