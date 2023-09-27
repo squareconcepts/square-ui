@@ -31,4 +31,11 @@ class SquareUiServiceProvider extends ServiceProvider
         Livewire::component('square-ui::icon', FontAwesomeComponent::class);
         Livewire::component('square-ui::password-strength', PasswordStrength::class);
     }
+
+    public function register()
+    {
+        $this->mergeConfigFrom(
+            __DIR__.'/../../config/square-ui.php', 'square-ui'
+        );
+    }
 }

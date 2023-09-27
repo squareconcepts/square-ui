@@ -20,8 +20,7 @@ class FontAwesomeComponent extends Component
     public $event;
 
     public $api_token = '';
-    public bool $apiTokeIsEmpty = false;
-
+    public bool $apiTokenIsEmpty = false;
 
     public string $identifier = '';
 
@@ -99,12 +98,12 @@ class FontAwesomeComponent extends Component
     public function init(): void
     {
         $api_token = config('square-ui.fontawesome_api_token');
+
         if($api_token == null) {
-            $this->apiTokeIsEmpty = true;
+            $this->apiTokenIsEmpty = true;
         } else {
             $this->instantiateService();
         }
-
     }
 
     public function storeApiKey(): void
@@ -114,5 +113,4 @@ class FontAwesomeComponent extends Component
 
         $this->init();
     }
-
 }
