@@ -32,11 +32,6 @@ class FontAwesomeComponent extends Component
         'api_token' => 'nullable'
     ];
 
-    public function mount()
-    {
-
-    }
-
     public function render()
     {
         return view('square-ui::sc-fontawesome-component', ['styles' => ScFontAwesome::getStyles()]);

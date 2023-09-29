@@ -18,7 +18,7 @@
                 option-label="name"
                 option-value="value"
                 :options="$styles"
-                wire:model="style"
+                wire:model.live="style"
                 class="w-80"
                 placeholder="{{trans('square-ui::square-ui.select_family')}}"
         />
