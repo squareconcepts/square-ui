@@ -5,7 +5,7 @@
             {{ $header_slot }}
         </div>
     @endif
-    <div @class(['p-5', '!p-2' => $small, 'border rounded-b' => $bordered, $slotClasses ])>
+    <div @class(['p-5 bg-white', '!p-2' => $small, 'border rounded-b' => $bordered, $slotClasses ])>
         {{ $slot }}
     </div>
 </div>

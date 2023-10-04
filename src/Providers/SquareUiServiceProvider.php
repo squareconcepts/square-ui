@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Squareconcepts\SquareUi\BladeComponents\Card;
 use Squareconcepts\SquareUi\BladeComponents\ColorPicker;
+use Squareconcepts\SquareUi\BladeComponents\SelectDropdown;
 use Squareconcepts\SquareUi\LivewireComponents\FontAwesomeComponent;
 use Squareconcepts\SquareUi\LivewireComponents\PasswordStrength;
 
@@ -32,7 +33,9 @@ class SquareUiServiceProvider extends ServiceProvider
 
         Livewire::component('square-ui::icon', FontAwesomeComponent::class);
         Livewire::component('square-ui::password-strength', PasswordStrength::class);
+
         Blade::component(Card::class, 'square-ui::card');
         Blade::component(ColorPicker::class, 'square-ui::color-picker');
+        Blade::component(SelectDropdown::class, 'square-ui::select-dropdown');
     }
 }
