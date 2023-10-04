@@ -1,6 +1,6 @@
 <?php
 
-namespace Squareconcepts\SquareUi\Components;
+namespace Squareconcepts\SquareUi\BladeComponents;
 
 use Illuminate\View\Component;
 

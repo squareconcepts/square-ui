@@ -1,6 +1,6 @@
 <?php
 
-namespace Squareconcepts\SquareUi\Components;
+namespace Squareconcepts\SquareUi\LivewireComponents;
 
 use Livewire\Component;
 use Squareconcepts\SquareUi\Helpers\ScFontAwesome;

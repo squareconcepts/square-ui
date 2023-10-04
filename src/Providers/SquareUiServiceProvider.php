@@ -4,10 +4,9 @@ namespace Squareconcepts\SquareUi\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-
-use Squareconcepts\SquareUi\Components\FontAwesomeComponent;
-use Squareconcepts\SquareUi\Components\PasswordStrength;
-use Squareconcepts\SquareUi\Components\ScCard;
+use Squareconcepts\SquareUi\BladeComponents\ScCard;
+use Squareconcepts\SquareUi\LivewireComponents\FontAwesomeComponent;
+use Squareconcepts\SquareUi\LivewireComponents\PasswordStrength;
 
 class SquareUiServiceProvider extends ServiceProvider
 {
