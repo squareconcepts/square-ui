@@ -4,7 +4,7 @@ namespace Squareconcepts\SquareUi\BladeComponents;
 
 use Illuminate\View\Component;
 
-class ScCard extends Component
+class Card extends Component
 {
 
     public function __construct(
@@ -22,6 +22,6 @@ class ScCard extends Component
 
     public function render()
     {
-        return view('square-ui::blade-components.sc-card');
+        return view('square-ui::blade-components.card');
     }
 }

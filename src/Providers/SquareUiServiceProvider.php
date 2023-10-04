@@ -7,6 +7,12 @@ use Livewire\Livewire;
 use Squareconcepts\SquareUi\BladeComponents\ScCard;
 use Squareconcepts\SquareUi\BladeComponents\ScColorPicker;
 use Squareconcepts\SquareUi\BladeComponents\Tabs;
+use Squareconcepts\SquareUi\BladeComponents\Button;
+use Squareconcepts\SquareUi\BladeComponents\Card;
+use Squareconcepts\SquareUi\BladeComponents\ColorPicker;
+use Squareconcepts\SquareUi\BladeComponents\SelectDropdown;
+use Squareconcepts\SquareUi\BladeComponents\SignaturePad;
+use Squareconcepts\SquareUi\BladeComponents\Tooltip;
 use Squareconcepts\SquareUi\LivewireComponents\FontAwesomeComponent;
 use Squareconcepts\SquareUi\LivewireComponents\PasswordStrength;
 
@@ -33,8 +39,14 @@ class SquareUiServiceProvider extends ServiceProvider
 
         Livewire::component('square-ui::icon', FontAwesomeComponent::class);
         Livewire::component('square-ui::password-strength', PasswordStrength::class);
-        Blade::component(ScCard::class, 'sc-card');
-        Blade::component(ScColorPicker::class, 'sc-color-picker');
+
         Blade::component(Tabs::class, 'sc-tabs');
+
+        Blade::component(Card::class, 'square-ui::card');
+        Blade::component(ColorPicker::class, 'square-ui::color-picker');
+        Blade::component(SelectDropdown::class, 'square-ui::select-dropdown');
+        Blade::component(Tooltip::class, 'square-ui::tooltip');
+        Blade::component(SignaturePad::class, 'square-ui::signature-pad');
+        Blade::component(Button::class, 'square-ui::button');
     }
 }
