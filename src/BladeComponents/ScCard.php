@@ -22,6 +22,6 @@ class ScCard extends Component
 
     public function render()
     {
-        return view('square-ui::sc-card');
+        return view('square-ui::blade-components.sc-card');
     }
 }

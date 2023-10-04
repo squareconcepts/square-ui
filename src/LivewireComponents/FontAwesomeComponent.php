@@ -34,7 +34,7 @@ class FontAwesomeComponent extends Component
 
     public function render()
     {
-        return view('square-ui::sc-fontawesome-component', ['styles' => ScFontAwesome::getStyles()]);
+        return view('square-ui::livewire-components.sc-fontawesome-component', ['styles' => ScFontAwesome::getStyles()]);
     }
 
     public function emitValue(): void

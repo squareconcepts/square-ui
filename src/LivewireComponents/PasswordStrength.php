@@ -26,7 +26,7 @@ class PasswordStrength  extends Component
     }
     public function render()
     {
-        return view('square-ui::password-strength');
+        return view('square-ui::livewire-components.password-strength');
     }
 
     public function passwordChanged($password): void
