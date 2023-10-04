@@ -4,9 +4,11 @@ namespace Squareconcepts\SquareUi\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use Squareconcepts\SquareUi\BladeComponents\Button;
 use Squareconcepts\SquareUi\BladeComponents\Card;
 use Squareconcepts\SquareUi\BladeComponents\ColorPicker;
 use Squareconcepts\SquareUi\BladeComponents\SelectDropdown;
+use Squareconcepts\SquareUi\BladeComponents\SignaturePad;
 use Squareconcepts\SquareUi\BladeComponents\Tooltip;
 use Squareconcepts\SquareUi\LivewireComponents\FontAwesomeComponent;
 use Squareconcepts\SquareUi\LivewireComponents\PasswordStrength;
@@ -39,5 +41,7 @@ class SquareUiServiceProvider extends ServiceProvider
         Blade::component(ColorPicker::class, 'square-ui::color-picker');
         Blade::component(SelectDropdown::class, 'square-ui::select-dropdown');
         Blade::component(Tooltip::class, 'square-ui::tooltip');
+        Blade::component(SignaturePad::class, 'square-ui::signature-pad');
+        Blade::component(Button::class, 'square-ui::button');
     }
 }
