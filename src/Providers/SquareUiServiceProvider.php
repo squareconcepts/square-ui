@@ -1,11 +1,13 @@
 <?php
 namespace Squareconcepts\SquareUi\Providers;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
 use Squareconcepts\SquareUi\Components\FontAwesomeComponent;
 use Squareconcepts\SquareUi\Components\PasswordStrength;
+use Squareconcepts\SquareUi\Components\ScCard;
 
 class SquareUiServiceProvider extends ServiceProvider
 {
@@ -30,5 +32,6 @@ class SquareUiServiceProvider extends ServiceProvider
 
         Livewire::component('square-ui::icon', FontAwesomeComponent::class);
         Livewire::component('square-ui::password-strength', PasswordStrength::class);
+        Blade::component(ScCard::class, 'sc-card');
     }
 }
