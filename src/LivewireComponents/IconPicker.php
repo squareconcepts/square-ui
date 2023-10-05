@@ -66,7 +66,6 @@ class IconPicker extends Component
                 $this->icons = $data['data'];
             }
         } else {
-            info('empty');
             $this->icons = [];
         }
 
