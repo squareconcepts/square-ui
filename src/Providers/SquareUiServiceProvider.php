@@ -2,9 +2,11 @@
 namespace Squareconcepts\SquareUi\Providers;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Squareconcepts\SquareUi\BladeComponents\Datepicker;
+use Squareconcepts\SquareUi\BladeComponents\SecondsToTime;
 use Squareconcepts\SquareUi\BladeComponents\Tabs;
 use Squareconcepts\SquareUi\BladeComponents\Button;
 use Squareconcepts\SquareUi\BladeComponents\Card;
@@ -68,14 +70,19 @@ class SquareUiServiceProvider extends ServiceProvider
 
     public function loadBladeComponents(): void
     {
-        Blade::component(Tabs::class, 'square-ui::tabs');
-        Blade::component(Card::class, 'square-ui::card');
-        Blade::component(ColorPicker::class, 'square-ui::color-picker');
-        Blade::component(SelectDropdown::class, 'square-ui::select-dropdown');
-        Blade::component(Tooltip::class, 'square-ui::tooltip');
-        Blade::component(SignaturePad::class, 'square-ui::signature-pad');
-        Blade::component(Button::class, 'square-ui::button');
-        Blade::component(Datepicker::class, 'square-ui::datepicker');
+//        Blade::component(Tabs::class, 'square-ui::tabs');
+//        Blade::component(Card::class, 'square-ui::card');
+//        Blade::component(ColorPicker::class, 'square-ui::color-picker');
+//        Blade::component(SelectDropdown::class, 'square-ui::select-dropdown');
+//        Blade::component(Tooltip::class, 'square-ui::tooltip');
+//        Blade::component(SignaturePad::class, 'square-ui::signature-pad');
+//        Blade::component(Button::class, 'square-ui::button');
+//        Blade::component(Datepicker::class, 'square-ui::datepicker');
+//        Blade::component(SecondsToTime::class, 'square-ui::seconds-to-time');
+//        View::addNamespace('square-ui::svg', __DIR__.'../views/blade-components/svg');
+        Blade::componentNamespace('Squareconcepts\\SquareUi\\BladeComponents', 'square-ui');
+        Blade::anonymousComponentPath(__DIR__. '/../views/blade-components/svg', 'square-ui.svg');
+
     }
 
     public function loadLivewireComponents(): void
