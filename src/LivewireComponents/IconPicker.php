@@ -105,6 +105,11 @@ class IconPicker extends Component
         }
     }
 
+    public function setOption($value): void
+    {
+        $this->name = $value;
+    }
+
     public function storeApiKey(): void
     {
         $this->validate(['api_token' => 'required']);

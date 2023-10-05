@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Squareconcepts\SquareUi\BladeComponents\Datepicker;
+use Squareconcepts\SquareUi\BladeComponents\Dropdown;
 use Squareconcepts\SquareUi\BladeComponents\Tabs;
 use Squareconcepts\SquareUi\BladeComponents\Button;
 use Squareconcepts\SquareUi\BladeComponents\Card;
@@ -69,14 +70,15 @@ class SquareUiServiceProvider extends ServiceProvider
 
     public function loadBladeComponents(): void
     {
-        Blade::component(Tabs::class, 'square-ui::tabs');
+        Blade::component(Button::class, 'square-ui::button');
         Blade::component(Card::class, 'square-ui::card');
         Blade::component(ColorPicker::class, 'square-ui::color-picker');
-        Blade::component(SelectDropdown::class, 'square-ui::select-dropdown');
-        Blade::component(Tooltip::class, 'square-ui::tooltip');
-        Blade::component(SignaturePad::class, 'square-ui::signature-pad');
-        Blade::component(Button::class, 'square-ui::button');
         Blade::component(Datepicker::class, 'square-ui::datepicker');
+        Blade::component(Dropdown::class, 'square-ui::dropdown');
+        Blade::component(SelectDropdown::class, 'square-ui::select-dropdown');
+        Blade::component(SignaturePad::class, 'square-ui::signature-pad');
+        Blade::component(Tabs::class, 'square-ui::tabs');
+        Blade::component(Tooltip::class, 'square-ui::tooltip');
     }
 
     public function loadLivewireComponents(): void
