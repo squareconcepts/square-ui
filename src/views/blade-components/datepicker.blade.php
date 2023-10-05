@@ -1,5 +1,5 @@
 <div wire:ignore>
-    <x-input id="date-picker-{{$id}}" {{$attributes}} right-icon="calendar"/>
+    <x-input class="input-style" id="date-picker-{{$id}}" {{$attributes}} right-icon="calendar"/>
 </div>
 <script type="module">
     if(!window.flatpickr ) {

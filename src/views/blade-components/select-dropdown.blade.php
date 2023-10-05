@@ -21,7 +21,7 @@
                 if(this.results.length > 0 && this.search.length > 0){
                     this.results =  this.results.filter((element) => {
                         let item = element[this.optionLabel];
-                        return item != null && item.toLowerCase().indexOf(this.search.toLowerCase()) !== -1;
+                        return item != null && item.toString().toLowerCase().indexOf(this.search.toLowerCase()) !== -1;
                     });
                 }
                 return this.results;
@@ -114,7 +114,7 @@
     <label class="block text-sm font-medium text-gray-700 dark:text-gray-400">
         {{$attributes['label']}}
     </label>
-    <div class="placeholder-secondary-400 dark:bg-secondary-800 dark:text-secondary-400 dark:placeholder-secondary-500 border border-secondary-300 focus:ring-primary-500 focus:border-primary-500 dark:border-secondary-600 form-input block w-full sm:text-sm rounded-md transition ease-in-out duration-100 focus:outline-none shadow-sm cursor-pointer !flex items-center" x-on:click="open = !open">
+    <div class="input-style placeholder-secondary-400 dark:bg-secondary-800 dark:text-secondary-400 dark:placeholder-secondary-500 border border-secondary-300 focus:ring-primary-500 focus:border-primary-500 dark:border-secondary-600 form-input block w-full sm:text-sm rounded-md transition ease-in-out duration-100 focus:outline-none shadow-sm cursor-pointer !flex items-center" x-on:click="open = !open">
         <div x-show="!multiple">
             <p x-text="selectedKey"
                x-show="(selectedValue != null && selectedValue == initialValue) || (selectedValue != '' && selectedValue != null) "
@@ -139,7 +139,7 @@
     <div class="absolute left-0 right-0 mt-1 bg-white shadow rounded py-2 z-50" x-show="open" x-cloak
          @click.outside="open = false">
         <div class="bg-white p-2">
-            <input right-icon="search" x-model="search" class="placeholder-secondary-400 dark:bg-secondary-800 dark:text-secondary-400 dark:placeholder-secondary-500 border border-secondary-300 focus:ring-primary-500 focus:border-primary-500 dark:border-secondary-600 form-input block w-full sm:text-sm rounded-md transition ease-in-out duration-100 focus:outline-none shadow-sm" placeholder="Zoeken..."/>
+            <input right-icon="search" x-model="search" class="input-style placeholder-secondary-400 dark:bg-secondary-800 dark:text-secondary-400 dark:placeholder-secondary-500 border border-secondary-300 focus:ring-primary-500 focus:border-primary-500 dark:border-secondary-600 form-input block w-full sm:text-sm rounded-md transition ease-in-out duration-100 focus:outline-none shadow-sm" placeholder="Zoeken..."/>
         </div>
         <div class="max-h-48 overflow-auto" x-show="results.length > 0" x-cloak>
             <template x-for="(result, index, collection) in results" :key="index">

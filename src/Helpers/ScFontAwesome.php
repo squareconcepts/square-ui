@@ -63,7 +63,7 @@ class ScFontAwesome implements \Livewire\Wireable
         }
 
         $response = Http::withToken($this->accessToken)
-            ->post('https://api.fontawesome.com', ['query' => "{ search (version: \"6.0.0\", query: \"$search\", first: 5) { id }}"]);
+            ->post('https://api.fontawesome.com', ['query' => "{ search (version: \"6.0.0\", query: \"$search\", first: 10) { id }}"]);
 
         $json = $response->json();
 

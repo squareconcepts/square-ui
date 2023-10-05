@@ -42,7 +42,7 @@
         </label>
     </div>
     <canvas x-ref="canvas"
-            @class(['w-full h-full border-2 border-dashed rounded-md bg-white border-gray-300']) style="height: 200px;"></canvas>
+            @class(['w-full h-full border-2 border-dashed rounded-md bg-white border-gray-300 max-w-[400px]']) style="height: 200px;"></canvas>
     <div class="flex mt-2 space-x-2">
         <x-square-ui::button :label="$clearText" x-on:click="clear()" />
         <x-square-ui::button :label="$saveButtonText" type="positive" x-on:click="save()" />

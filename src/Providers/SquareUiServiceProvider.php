@@ -12,7 +12,7 @@ use Squareconcepts\SquareUi\BladeComponents\ColorPicker;
 use Squareconcepts\SquareUi\BladeComponents\SelectDropdown;
 use Squareconcepts\SquareUi\BladeComponents\SignaturePad;
 use Squareconcepts\SquareUi\BladeComponents\Tooltip;
-use Squareconcepts\SquareUi\LivewireComponents\FontAwesomeComponent;
+use Squareconcepts\SquareUi\LivewireComponents\IconPicker;
 use Squareconcepts\SquareUi\LivewireComponents\PasswordStrength;
 
 class SquareUiServiceProvider extends ServiceProvider
@@ -42,29 +42,30 @@ class SquareUiServiceProvider extends ServiceProvider
             __DIR__.'/../../public/css/custom.css' => public_path('vendor/square-ui/square-ui.css'),
         ], 'square-ui-assets');
 
-
         $this->loadLivewireComponents();
         $this->loadBladeComponents();
         $this->addDirectives();
-
-
     }
 
     public function addDirectives(  )
     {
         Blade::directive('squareUiScripts', function () {
+            $path = public_path('vendor/square-ui/square-ui.js');
             return <<<HTML
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://kit.fontawesome.com/267cc97312.js" crossorigin="anonymous"></script>
+        <script src="$path"></script>
     HTML;
         });
 
         Blade::directive('squareUiStyles', function () {
+            $path = public_path('vendor/square-ui/square-ui.css');
             return <<<HTML
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <link rel="stylesheet" href="/vendor/square-ui/square-ui.css">
     HTML;
         });
     }
-
 
     public function loadBladeComponents(): void
     {
@@ -80,7 +81,7 @@ class SquareUiServiceProvider extends ServiceProvider
 
     public function loadLivewireComponents(): void
     {
-        Livewire::component('square-ui::icon', FontAwesomeComponent::class);
+        Livewire::component('square-ui::icon-picker', IconPicker::class);
         Livewire::component('square-ui::password-strength', PasswordStrength::class);
     }
 }
