@@ -7,12 +7,12 @@ use Squareconcepts\SquareUi\Helpers\ScFontAwesome;
 use Squareconcepts\SquareUi\SquareUi;
 use WireUi\Traits\Actions;
 
-class FontAwesomeComponent extends Component
+class IconPicker extends Component
 {
     use Actions;
 
     public ScFontAwesome $service;
-    public $style;
+    public $style = 'fa-solid';
     public $name;
     public $icons = [];
     public $field;
@@ -34,7 +34,7 @@ class FontAwesomeComponent extends Component
 
     public function render()
     {
-        return view('square-ui::livewire-components.sc-fontawesome-component', ['styles' => ScFontAwesome::getStyles()]);
+        return view('square-ui::livewire-components.icon-picker', ['styles' => ScFontAwesome::getStyles()]);
     }
 
     public function emitValue(): void
@@ -59,10 +59,14 @@ class FontAwesomeComponent extends Component
 
     public function searchName(): void
     {
-        $data = $this->service->searchIcon($this->name);
+        if(!empty($this->name)) {
+            $data = $this->service->searchIcon($this->name);
 
-        if (!empty($data) && $data['success'] === true) {
-            $this->icons = $data['data'];
+            if (!empty($data) && $data['success'] === true) {
+                $this->icons = $data['data'];
+            }
+        } else {
+            $this->icons = [];
         }
 
         $this->updatedStyle();
@@ -99,6 +103,11 @@ class FontAwesomeComponent extends Component
         } else {
             $this->instantiateService();
         }
+    }
+
+    public function setOption($value): void
+    {
+        $this->name = $value;
     }
 
     public function storeApiKey(): void
