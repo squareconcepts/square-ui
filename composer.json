@@ -22,11 +22,19 @@
     }
   },
   "scripts": {
+      "post-autoload-dump": [
+          "npm i",
+          "@php artisan vendor:publish --tag=square-ui-assets --force"
+      ],
     "post-install-cmd": [
-      "@php artisan vendor:publish --tag=config --force"
+        "npm i",
+        "@php artisan vendor:publish --tag=config --force",
+        "@php artisan vendor:publish --tag=square-ui-assets --force"
     ],
     "post-update-cmd": [
-      "@php artisan vendor:publish --tag=config --force"
+        "npm i",
+        "@php artisan vendor:publish --tag=config --force",
+        "@php artisan vendor:publish --tag=square-ui-assets --force"
     ]
   },
   "authors": [

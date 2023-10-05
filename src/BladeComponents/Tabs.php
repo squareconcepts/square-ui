@@ -16,6 +16,6 @@
 
         public function render(): View
         {
-            return view('components.tabs');
+            return view('square-ui::blade-components.tabs');
         }
     }
