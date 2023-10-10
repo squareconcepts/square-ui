@@ -8,5 +8,11 @@ return [
         'strong' => 80,//and above is
         'very_strong' => 90,//and above is
     ],
-    'livewire_version' => 3
+    'livewire_version' => 3,
+    'languages' => [
+        'nl' => 'nl',
+        'en' => 'gb',
+        'fr' => 'fr',
+        'de' => 'de'
+    ]
 ];

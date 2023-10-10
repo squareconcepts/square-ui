@@ -1,47 +1,48 @@
 {
-  "name": "squareconcepts/square-ui",
-  "description": "Collection of blade and livewire components",
-  "type": "library",
-  "require": {
-    "livewire/livewire": ">=v2.0.0",
-    "wireui/wireui": ">=v1.17.0",
-    "laravel/framework": ">9.0.0",
-    "guzzlehttp/guzzle": ">7.5@dev"
-  },
-  "license": "MIT",
-  "extra": {
-    "laravel": {
-      "providers": [
-        "Squareconcepts\\SquareUi\\Providers\\SquareUiServiceProvider"
-      ]
-    }
-  },
-  "autoload": {
-    "psr-4": {
-      "Squareconcepts\\SquareUi\\": "src/"
-    }
-  },
-  "scripts": {
-      "post-autoload-dump": [
-          "npm i",
-          "@php artisan vendor:publish --tag=square-ui-assets --force"
-      ],
-    "post-install-cmd": [
-        "npm i",
-        "@php artisan vendor:publish --tag=config --force",
-        "@php artisan vendor:publish --tag=square-ui-assets --force"
+    "name": "squareconcepts/square-ui",
+    "description": "Collection of blade and livewire components",
+    "type": "library",
+    "require": {
+        "livewire/livewire": ">=v2.0.0",
+        "wireui/wireui": ">=v1.17.0",
+        "laravel/framework": ">9.0.0",
+        "guzzlehttp/guzzle": ">7.5@dev",
+        "outhebox/blade-flags": "^1.2.0"
+    },
+    "license": "MIT",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Squareconcepts\\SquareUi\\Providers\\SquareUiServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Squareconcepts\\SquareUi\\": "src/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "npm i",
+            "@php artisan vendor:publish --tag=square-ui-assets --force"
+        ],
+        "post-install-cmd": [
+            "npm i",
+            "@php artisan vendor:publish --tag=config --force",
+            "@php artisan vendor:publish --tag=square-ui-assets --force"
+        ],
+        "post-update-cmd": [
+            "npm i",
+            "@php artisan vendor:publish --tag=config --force",
+            "@php artisan vendor:publish --tag=square-ui-assets --force"
+        ]
+    },
+    "authors": [
+        {
+            "name": "SQUARE Concepts",
+            "email": "info@squareconcepts.nl"
+        }
     ],
-    "post-update-cmd": [
-        "npm i",
-        "@php artisan vendor:publish --tag=config --force",
-        "@php artisan vendor:publish --tag=square-ui-assets --force"
-    ]
-  },
-  "authors": [
-    {
-      "name": "SQUARE Concepts",
-      "email": "info@squareconcepts.nl"
-    }
-  ],
-  "minimum-stability": "stable"
+    "minimum-stability": "stable"
 }
