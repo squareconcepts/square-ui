@@ -49,6 +49,8 @@ class SquareUiServiceProvider extends ServiceProvider
         $this->loadLivewireComponents();
         $this->loadBladeComponents();
         $this->addDirectives();
+        $this->addDisks();
+        $this->addRoutes();
     }
 
     public function addDirectives(  )
@@ -86,5 +88,27 @@ class SquareUiServiceProvider extends ServiceProvider
         Livewire::component('square-ui::icon-picker', IconPicker::class);
         Livewire::component('square-ui::localized-string', LocalizedStringComponent::class);
         Livewire::component('square-ui::password-strength', PasswordStrength::class);
+    }
+
+    public function addDisks(): void
+    {
+        $this->app['config']['filesystems.disks.square-ui'] = [
+            'driver' => 'local',
+            'root' => storage_path('app/public/square-ui-uploads'),
+            'url' => config('app.url').'/storage/square-ui-uploads',
+            'visibility' => 'public',
+            'throw' => false,
+        ];
+    }
+
+    public function addRoutes(): void
+    {
+        Route::group([
+            'prefix' => 'square-ui',
+            'as' => 'square-ui.'
+        ], function () {
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        });
+
     }
 }
