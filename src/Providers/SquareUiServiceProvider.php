@@ -2,6 +2,7 @@
 namespace Squareconcepts\SquareUi\Providers;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Squareconcepts\SquareUi\LivewireComponents\DataTable;
@@ -12,6 +13,13 @@ use Squareconcepts\SquareUi\LivewireComponents\PasswordStrength;
 
 class SquareUiServiceProvider extends ServiceProvider
 {
+    public function register()
+    {
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/square-ui.php', 'square-ui'
+        );
+    }
+
     public function boot()
     {
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'square-ui');
