@@ -9,7 +9,8 @@ use Ramsey\Collection\Collection;
 class Button extends Component
 {
     public function __construct(
-        public string $label,
+        public ?string $label = null,
+        public ?string $icon = null,
         public string $type = 'flat'
     ) {
     }
