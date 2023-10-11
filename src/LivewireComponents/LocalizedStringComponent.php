@@ -1,22 +1,14 @@
 <?php
 namespace Squareconcepts\SquareUi\LivewireComponents;
 
+use Livewire\Attributes\Modelable;
+use Livewire\Attributes\Rule;
 use Livewire\Component;
 
 class LocalizedStringComponent extends Component
 {
-    public string $field;
+    #[Modelable] #[Rule('nullable')]
     public array $value;
-    public string $event;
-    public string $identifier = '';
-    public string $rerenderValueEvent = 'unknown';
-
-    protected function getListeners()
-    {
-        return [
-            $this->rerenderValueEvent => 'rerenderValue'
-        ];
-    }
 
     protected $rules = [
         'value.*' => 'nullable|array'
@@ -25,15 +17,5 @@ class LocalizedStringComponent extends Component
     public function render()
     {
         return view('square-ui::livewire-components.localized-string-component');
-    }
-
-    public function emitValue(): void
-    {
-        $this->dispatch($this->event, $this->field, $this->value, $this->identifier);
-    }
-
-    public function rerenderValue($data): void
-    {
-        $this->value = $data;
     }
 }
