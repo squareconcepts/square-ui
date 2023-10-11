@@ -4,6 +4,7 @@ namespace Squareconcepts\SquareUi\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use Squareconcepts\SquareUi\LivewireComponents\Editor;
 use Squareconcepts\SquareUi\LivewireComponents\IconPicker;
 use Squareconcepts\SquareUi\LivewireComponents\LocalizedStringComponent;
 use Squareconcepts\SquareUi\LivewireComponents\PasswordStrength;
@@ -30,6 +31,7 @@ class SquareUiServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../../public/js/main.js' => public_path('vendor/square-ui/square-ui.js'),
+            __DIR__.'/../../public/js/ckeditor/ckeditor.js' => public_path('vendor/square-ui/ckeditor.js'),
         ], 'square-ui-assets');
         $this->publishes([
             __DIR__.'/../../public/css/custom.css' => public_path('vendor/square-ui/square-ui.css'),
@@ -43,19 +45,21 @@ class SquareUiServiceProvider extends ServiceProvider
     public function addDirectives(  )
     {
         Blade::directive('squareUiScripts', function () {
-            $path = public_path('vendor/square-ui/square-ui.js');
+            $path = '/vendor/square-ui/square-ui.js';
             return <<<HTML
                 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
                 <script src="https://kit.fontawesome.com/267cc97312.js" crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/marked@2.1.3/marked.min.js"></script>
                 <script src="$path"></script>
+                <script src="/vendor/square-ui/ckeditor.js"></script>
             HTML;
         });
 
         Blade::directive('squareUiStyles', function () {
-            $path = public_path('vendor/square-ui/square-ui.css');
+            $path = '/vendor/square-ui/square-ui.css';
             return <<<HTML
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-                <link rel="stylesheet" href="/vendor/square-ui/square-ui.css">
+                <link rel="stylesheet" href="$path">
             HTML;
         });
     }
@@ -68,8 +72,9 @@ class SquareUiServiceProvider extends ServiceProvider
 
     public function loadLivewireComponents(): void
     {
+        Livewire::component('square-ui::editor', Editor::class);
         Livewire::component('square-ui::icon-picker', IconPicker::class);
-        Livewire::component('square-ui::password-strength', PasswordStrength::class);
         Livewire::component('square-ui::localized-string', LocalizedStringComponent::class);
+        Livewire::component('square-ui::password-strength', PasswordStrength::class);
     }
 }
