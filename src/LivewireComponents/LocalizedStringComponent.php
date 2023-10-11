@@ -8,11 +8,18 @@ use Livewire\Component;
 class LocalizedStringComponent extends Component
 {
     #[Modelable] #[Rule('nullable')]
-    public array $value;
+    public ?array $value = [];
 
     protected $rules = [
         'value.*' => 'nullable|array'
     ];
+
+    public function mount()
+    {
+        if($this->value === null) {
+            $this->value = [];
+        }
+    }
 
     public function render()
     {
