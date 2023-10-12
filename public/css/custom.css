@@ -51,3 +51,6 @@
 .html_content .todo-list__label span {margin-left: 1rem;}
 .html_content hr {width: 100% !important;}
 
+.file_upload{cursor: pointer;}
+.file_upload input::file-selector-button {float:right;margin-top: -5px;background: #e1e1e1;border: 1px solid #ccc; padding: .25rem .5rem; cursor: pointer; transition: all .25s ease-in-out;}
+.file_upload input:hover::file-selector-button {background: #ccc;}
