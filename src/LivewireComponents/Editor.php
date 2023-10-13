@@ -10,7 +10,7 @@ use Livewire\Component;
 class Editor extends Component
 {
     #[Modelable] #[Rule('nullable')]
-    public string $content = '';
+    public ?string $content = '';
     public string $label = '';
     public string $uploadUrl;
     public string $identifier;
