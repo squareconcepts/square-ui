@@ -81,6 +81,7 @@ class SquareUiServiceProvider extends ServiceProvider
     {
         Blade::componentNamespace('Squareconcepts\\SquareUi\\BladeComponents', 'square-ui');
         Blade::anonymousComponentPath(__DIR__. '/../views/blade-components/svg', 'square-ui.svg');
+        Blade::componentNamespace('Squareconcepts\\SquareUi\\BladeComponents\\Inputs', 'square-ui.inputs');
     }
 
     public function loadLivewireComponents(): void
