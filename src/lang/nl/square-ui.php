@@ -23,6 +23,14 @@
             'all_columns_selected' => 'Alle velden geselecteerd',
             'active_columns' => 'Actieve velden',
             'actions' => 'Acties',
+        ],
+        'modals' => [
+            'success' => 'Gelukt!!',
+            'confirm' => 'Weet je het zeker?',
+            'error' => 'Er is iets fout gegaan!!',
+            'info' => 'Info',
+            'warning' => 'Pas op!',
+            'question' => 'Vraag?',
         ]
 ];
 

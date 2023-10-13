@@ -22,5 +22,13 @@ return [
         'all_columns_selected' => 'All columns selected',
         'active_columns' => 'Active columns',
         'actions' => 'Actions',
+    ],
+    'modals' => [
+        'success' => 'Success!!',
+        'confirm' => 'Are you sure?',
+        'error' => 'Something went wrong!!',
+        'info' => 'Information',
+        'warning' => 'Warning!',
+        'question' => 'Question?',
     ]
 ];

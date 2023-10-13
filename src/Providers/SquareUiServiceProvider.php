@@ -61,6 +61,7 @@ class SquareUiServiceProvider extends ServiceProvider
                 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
                 <script src="https://kit.fontawesome.com/267cc97312.js" crossorigin="anonymous"></script>
                 <script src="https://cdn.jsdelivr.net/npm/marked@2.1.3/marked.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
                 <script src="$path"></script>
                 <script src="/vendor/square-ui/ckeditor.js"></script>
             HTML;
@@ -70,6 +71,7 @@ class SquareUiServiceProvider extends ServiceProvider
             $path = '/vendor/square-ui/square-ui.css';
             return <<<HTML
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
                 <link rel="stylesheet" href="$path">
             HTML;
         });
