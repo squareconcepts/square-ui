@@ -1,5 +1,5 @@
 <div wire:ignore>
-    <x-input class="input-style" id="date-picker-{{$id}}" {{$attributes}} right-icon="calendar"/>
+    <x-square-ui.inputs::text id="date-picker-{{$id}}" {{$attributes}} right-icon="calendar" label="Datum kiezen"/>
 </div>
 <script type="module">
     if(!window.flatpickr ) {
@@ -36,7 +36,6 @@
                 }]
             }
             if(!window.jQuery){
-                const flatpickr = require("flatpickr");
                 flatpickr("#date-picker-" + id, options);
             } else {
                 jQuery("#date-picker-" + id).flatpickr(options);

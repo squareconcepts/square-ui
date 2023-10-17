@@ -11,7 +11,7 @@
         @endif
     </label>
     <div class="relative rounded-md">
-        @if ($prefix || $icon)
+        @if ($prefix || $icon )
             <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none
                 {{ $hasError ? 'text-red-500' : 'text-secondary-400' }}">
                 @if ($icon)
@@ -21,10 +21,11 @@
                         {{ $prefix }}
                     </span>
                 @endif
+
             </div>
         @endif
         <input {{ $attributes->merge(['class' => $getClasses($errors->has($name)) ]) }}  type="{{$type}}" name="{{ $name }}" {{ $attributes }} placeholder="{{$placeholder ?? $label}}"  @if(!$show1Password) data-1p-ignore @endif />
-        @if($hasError || $rightIcon != null || $hasButtons)
+        @if($hasError || $rightIcon != null  )
             <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center justify-center
                     {{ $hasError ? 'text-red-500' : 'text-secondary-400' }}">
 
@@ -33,13 +34,8 @@
                 @elseif ($hasError)
                     <i class="fa fa-exclamation-circle mx-1"></i>
                 @endif
-                @if($hasButtons && !$attributes->has('disabled'))
-                    <div class="flex divide-x" >
-                        <button type="button" class="h-full px-2 py-1 text-sm text-gray-500 bg-white hover:bg-gray-100 mr-1" x-on:click="value++"> <i class="fa fa-plus"></i></button>
-                        <button type="button" class="h-full px-2 py-1 text-sm text-gray-500 bg-white hover:bg-gray-100 rounded-r-md" x-on:click="value--"> <i class="fa fa-minus"></i> </button>
-                    </div>
-                @endif
             </div>
+
         @endif
     </div>
 

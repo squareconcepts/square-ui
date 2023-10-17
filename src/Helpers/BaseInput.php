@@ -13,7 +13,9 @@
             public ?string $placeholder = null,
             public string $type = 'text',
             public ?string $icon = null,
-            public ?string $rightIcon = null
+            public ?string $rightIcon = null,
+            public bool $show1Password = false,
+            public ?string $prefix = null,
         )
         {
 
@@ -29,12 +31,18 @@
             $baseClass = 'input-style';
             $errorClass = 'border-red-500 !border-2 text-red-500 !pr-10';
             $rightIconClass = '!pr-10';
+            $iconClass = '!pl-10';
 
+            $class = $baseClass;
             if ($hasError) {
-                return $baseClass . ' ' . $errorClass;
-            } else if ($this->rightIcon != null) {
-                return $baseClass. ' ' . $rightIconClass;
+               $class .= ' ' . $errorClass;
             }
-            return $baseClass;
+            if ($this->rightIcon != null) {
+                $class .=  ' ' . $rightIconClass;
+            }
+            if ($this->icon != null) {
+                $class .=  ' ' . $iconClass;
+            }
+            return $class;
         }
     }

@@ -31,6 +31,7 @@
             'info' => 'Info',
             'warning' => 'Pas op!',
             'question' => 'Vraag?',
-        ]
+        ],
+        'generate' => 'Genereren',
 ];
 

@@ -30,5 +30,6 @@ return [
         'info' => 'Information',
         'warning' => 'Warning!',
         'question' => 'Question?',
-    ]
+    ],
+    'generate' => 'Generate',
 ];

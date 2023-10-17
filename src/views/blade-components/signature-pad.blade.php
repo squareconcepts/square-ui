@@ -35,7 +35,7 @@
         this.$refs.canvas.height = this.$refs.canvas.offsetHeight * this.ratio;
         this.$refs.canvas.getContext('2d').scale(this.ratio, this.ratio);
     }
-}" @resize.window="resizeCanvas">
+}" @resize.window="resizeCanvas" x-init="init" x-intersect="init">
     <div class="flex justify-between items-end mb-1">
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-400">
             {{ $label }}
