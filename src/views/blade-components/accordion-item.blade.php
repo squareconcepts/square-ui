@@ -1,4 +1,4 @@
-<li class="relative border-b border-gray-200" >
+<li class="relative border-b border-gray-200"  {{$attributes}}>
     <div class="w-full px-8 text-left bg-slate-100 hover:bg-slate-200" >
         <div class="flex items-center gap-2 cursor-pointer">
            @isset($buttons)
