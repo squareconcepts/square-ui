@@ -1,6 +1,12 @@
 <div>
     @teleport('body')
-        <div x-data="slideOverPanel('{{ $identifier }}')" x-on:open-{{$identifier}}.window="open" id="slideover-{{ $identifier }}-container" class="w-full h-full fixed inset-0 invisible z-[101]">
+        <div
+            x-data="slideOverPanel('{{ $identifier }}')"
+            x-on:open-{{$identifier}}.window="open"
+            x-on:close-{{$identifier}}.window="close"
+            @keyup.escape="close"
+            id="slideover-{{ $identifier }}-container"
+            class="w-full h-full fixed inset-0 invisible z-[101]">
             <div id="slideover-{{ $identifier }}-bg" class="w-full h-full duration-500 ease-out transition-all inset-0 absolute bg-gray-900 opacity-0"></div>
             <div x-on:click.outside="clickOutside(showing)" id="slideover-{{ $identifier }}"
                  @class(['bg-white h-full absolute right-0 duration-300 ease-out transition-all translate-x-full rounded-l-lg'])

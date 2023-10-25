@@ -1,4 +1,4 @@
-<div class="" x-data="{selected: null}" x-init="() => selected = $refs.initialSelected.value">
+<div class="" x-data="{selected: null}" x-init="() => selected = $refs.initialSelected.value" {{$attributes}} >
     <input type="hidden" name="initialSelected" x-ref="initialSelected" value="{{ $selected }}" />
     <ul class="shadow-box flex flex-col gap-2">
         {{ $slot }}
