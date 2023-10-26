@@ -23,7 +23,7 @@ return [
         'active_columns' => 'Active columns',
         'actions' => 'Actions',
     ],
-    'modals' => [
+    'modal' => [
         'success' => 'Success!!',
         'confirm' => 'Are you sure?',
         'error' => 'Something went wrong!!',

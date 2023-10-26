@@ -16,7 +16,7 @@
         </div>
     </div>
     <div class="relative overflow-hidden transition-all duration-700 max-h-0" style="" x-ref="container{{ $index }}"
-         x-bind:style="selected == {{ $index }} ? 'max-height: ' + ($refs.container{{ $index }}.scrollHeight == 0 ? '1000px' : $refs.container{{ $index }}.scrollHeight + 'px') : ''"
+         x-bind:style="selected == {{ $index }} ? 'max-height: 1000px': ''"
     >
         <div class="p-6">
             {{ $slot }}
