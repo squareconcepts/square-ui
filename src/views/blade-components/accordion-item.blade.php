@@ -7,9 +7,14 @@
                 </div>
             @endif
             <div class="flex-1 flex items-center gap-2 cursor-pointer  py-6" @click="selected !== {{ $index }} ? selected = {{ $index }} : selected = null">
-                <span >
+                <span class="flex-1" >
                     {{ $title }}
                 </span>
+                @isset($rightButtons)
+                    <div class="flex items-center gap-1">
+                        {!! $rightButtons !!}
+                    </div>
+                @endif
                 <i class="ml-auto fa" :class="selected == {{ $index }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
             </div>
 
