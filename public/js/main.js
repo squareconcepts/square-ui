@@ -36,6 +36,7 @@ document.addEventListener('alpine:init', () => {
                     mediaEmbed: {
                         previewsInData: true
                     },
+                    removePlugins: ["MediaEmbedToolbar"],
                     simpleUpload: {
                         // The URL that the images are uploaded to.
                         uploadUrl: this.uploadUrl,
