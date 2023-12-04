@@ -1,19 +1,16 @@
 
 document.addEventListener('alpine:init', () => {
-    Alpine.data('editor', (start = null) => ({
-        content: '',
+    Alpine.data('editor', (content = '', identifier = '', uploadUrl = '') => ({
+        content: content,
         editor: '',
-        uploadUrl: '',
-        identifier: '',
+        uploadUrl: uploadUrl,
+        identifier: identifier,
         csrf_token: '',
         updateLivewire: function () {
             const event = new CustomEvent('updated-editor-' + this.identifier, { detail: this.content });
             document.dispatchEvent(event);
         },
-        init: function (content = '', identifier = '', uploadUrl = '') {
-            this.content = content;
-            this.identifier = identifier;
-            this.uploadUrl = uploadUrl;
+        init: function () {
 
             if (document.querySelector('meta[name="csrf-token"]') != null) {
                 this.csrf_token = document.querySelector('meta[name="csrf-token"]').content;

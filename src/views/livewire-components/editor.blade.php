@@ -6,7 +6,7 @@
             </label>
         </div>
     @endif
-    <div class="html_content" x-data="editor" x-init="init('{{ $content }}', '{{ $identifier }}', '{{ $uploadUrl }}'); document.addEventListener('updated-editor-' + '{{ $identifier }}', function (e) { $wire.set('content', e.detail);});" x-cloak wire:ignore>
+    <div class="html_content" x-data="editor('{{ $content }}', '{{ $identifier }}', '{{ $uploadUrl }}')" document.addEventListener('updated-editor-' + '{{ $identifier }}', function (e) { $wire.set('content', e.detail);});" x-cloak wire:ignore>
         <textarea id="editor-{{ $identifier }}">{{ $content }}</textarea>
     </div>
 </div>
