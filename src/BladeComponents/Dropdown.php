@@ -10,7 +10,9 @@ class Dropdown extends Component
 {
     public function __construct(
         public $triggerSlot = null,
-        public $slot = null
+        public $slot = null,
+        public $right = false,
+        public string $slotClasses = '',
     )
     {
     }
