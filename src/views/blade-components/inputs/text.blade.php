@@ -1,10 +1,10 @@
-<div class="flex flex-col mb-4 {{$attributes->has('disabled') ? 'opacity-60' : ''}}" x-data="{value: $wire.entangle('{{ $attributes['wire:model'] }}').live}">
+<div class="flex flex-col {{$attributes->has('disabled') ? 'opacity-60' : ''}}" x-data="{value: $wire.entangle('{{ $attributes['wire:model'] }}').live}">
     <?php
         $name = $attributes->get('name') ?? $attributes->get('wire:model');
         $hasError = $errors->has($name);
     ?>
 
-    <label for="{{ $name }}" class="text-sm font-medium text-gray-700 flex items-center gap-1 {{$errors->has($name) ? 'text-red-500 !font-bold' : ''}}">
+    <label for="{{ $name }}" class="text-sm font-medium text-gray-700 flex items-center mb-1 gap-1 {{$errors->has($name) ? 'text-red-500 !font-bold' : ''}}">
         {{ $label }}
         @if ($attributes->get('required'))
             <span class="text-red-500 font-bold">*</span>
