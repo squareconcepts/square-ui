@@ -1,48 +1,35 @@
 <div wire:ignore>
-    <x-square-ui.inputs::text id="date-picker-{{$id}}" {{$attributes}} right-icon="calendar" label="Datum kiezen"/>
+    <div
+        x-data="{
+            value: $wire.get('{{$model}}'),
+            enableTime: {{ $enableTime ? 1 : 0}} == 1 ? true : false,
+            timeOnly: {{$timeOnly ? 1 : 0}} == 1 ? true : false,
+            timeFormat24: {{$timeFormat24 ? 1 : 0}} == 1 ? true : false,
+            init() {
+                let picker = flatpickr(document.getElementById('date-picker-{{$id}}'), {
+                    dateFormat: this.enableTime ? (this.timeOnly ? 'H:i' : 'd-m-Y H:i') : 'd-m-Y',
+                    enableTime: this.enableTime,
+                    time_24hr: this.timeFormat24,
+                    minDate: {{empty($minDate) ? 'null' : $minDate}},
+                    maxDate: {{empty($maxDate) ? 'null' : $maxDate}},
+                    minTime: {{empty($minTime) ? 'null' : $minTime}},
+                    maxTime: {{empty($maxTime) ? 'null' : $maxTime}},
+                    weekNumbers: true,
+                    noCalendar: this.timeOnly,
+                    locale: {
+                        firstDayOfWeek: 1
+                    },
+                    defaultDate: this.value,
+                    onChange: (date, dateString) => {
+                        if (!dateString) {
+                            $wire.set('{{$model}}', null)
+                        } else {
+                            $wire.set('{{$model}}', dateString)
+                        }
+                    }
+                });
+            }
+        }" class="max-w-sm w-full">
+        <x-square-ui.inputs::text class="w-full rounded-md border border-gray-200 px-3 py-2.5 cursor-pointer" id="date-picker-{{$id}}" :label="$label" :placeholder="$placeholder" {{$attributes}} x-ref="picker" right-icon="{{$timeOnly ? 'clock' : 'calendar'}}" readonly="readonly"/>
+    </div>
 </div>
-<script type="module">
-    if(!window.flatpickr ) {
-        throw new Error('Flatpickr is nodig voor het gebruik van dit component. Laad Flatpickr in in je pagina')
-    } else {
-        document.addEventListener('livewire:init', function () {
-            let options = @js($options);
-            let disabledWeekends = @js($disableWeekends);
-            let id = @js($id);
-
-            if (disabledWeekends) {
-                options.disable = [function (date) {
-                    // Zaterdag (6) en zondag (0) zijn weekenddagen
-                    return (date.getDay() === 0 || date.getDay() === 6);
-                }]
-            }
-
-            if(!window.jQuery){
-                flatpickr("#date-picker-" + id, options);
-            } else {
-                jQuery("#date-picker-" + id).flatpickr(options);
-            }
-
-        });
-        document.addEventListener('livewire:navigated', function () {
-            let options = @js($options);
-            let disabledWeekends = @js($disableWeekends);
-            let id = @js($id);
-
-            if (disabledWeekends) {
-                options.disable = [function (date) {
-                    // Zaterdag (6) en zondag (0) zijn weekenddagen
-                    return (date.getDay() === 0 || date.getDay() === 6);
-                }]
-            }
-            if(!window.jQuery){
-                flatpickr("#date-picker-" + id, options);
-            } else {
-                jQuery("#date-picker-" + id).flatpickr(options);
-            }
-
-        });
-
-    }
-
-</script>
