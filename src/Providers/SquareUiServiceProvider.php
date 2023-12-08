@@ -39,6 +39,7 @@ class SquareUiServiceProvider extends ServiceProvider
         ], 'square-ui-lang');
 
         $this->publishes([
+            __DIR__.'/../../public/js/datepicker-nl.js' => public_path('vendor/square-ui/datepicker-nl.js'),
             __DIR__.'/../../public/js/main.js' => public_path('vendor/square-ui/square-ui.js'),
             __DIR__.'/../../public/js/ckeditor/ckeditor.js' => public_path('vendor/square-ui/ckeditor.js'),
         ], 'square-ui-assets');
@@ -64,6 +65,10 @@ class SquareUiServiceProvider extends ServiceProvider
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
                 <script src="$path"></script>
                 <script src="/vendor/square-ui/ckeditor.js"></script>
+                <script src="/vendor/square-ui/datepicker-nl.js"></script>
+                <script>
+                    flatpickr.localize(flatpickr.l10ns.nl);
+                </script>
             HTML;
         });
 

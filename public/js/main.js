@@ -1,4 +1,3 @@
-
 document.addEventListener('alpine:init', () => {
     Alpine.data('editor', (content = '', identifier = '', uploadUrl = '') => ({
         content: content,
@@ -87,5 +86,3 @@ document.addEventListener('alpine:init', () => {
         }
     }));
 })
-
-
