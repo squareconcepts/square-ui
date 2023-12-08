@@ -55,6 +55,10 @@
                                         editor.setData(value)
                                     }
                                 })
+
+                                document.addEventListener('update-'+ this.identifier +'-value', (event) => {
+                                    editor.setData(event.detail)
+                                })
                             })
                             .catch(error => {
                                 console.error('Error initializing CKEditor:', error);
