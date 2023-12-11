@@ -10,7 +10,7 @@
             </label>
         </div>
     @endif
-    <div x-data="ckEditor('{{ $identifier }}', '{{ $value }}', '{{ $model }}')" x-init="initEditor" >
+    <div x-data="ckEditor('{{ $identifier }}', '{{ addslashes($value) }}', '{{ $model }}')" x-init="initEditor" >
         <textarea x-ref="ckeditor_{{ $identifier }}" {{ $attributes }}></textarea>
     </div>
     <script>
