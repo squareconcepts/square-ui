@@ -15,7 +15,14 @@
     </div>
     <script>
         document.addEventListener('alpine:init', () => {
-            Alpine.data('ckEditor', (identifier, value, model) => ({
+            initAlpineEditor()
+        });
+        document.addEventListener('livewire:navigated', () => {
+            initAlpineEditor()
+        });
+
+        function initAlpineEditor() {
+            window.Alpine.data('ckEditor', (identifier, value, model) => ({
                 identifier: identifier,
                 value: value,
                 model: model,
@@ -68,6 +75,6 @@
                     }
                 }
             }));
-        });
+        }
     </script>
 </div>
