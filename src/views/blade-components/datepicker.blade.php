@@ -29,7 +29,7 @@
                     }
                 });
             }
-        }" class="max-w-sm w-full">
+        }" class="w-full">
         <x-square-ui.inputs::text class="w-full rounded-md border border-gray-200 px-3 py-2.5 cursor-pointer" id="date-picker-{{$id}}" :label="$label" :placeholder="$placeholder" {{$attributes}} x-ref="picker" right-icon="{{$timeOnly ? 'clock' : 'calendar'}}" readonly="readonly"/>
     </div>
 </div>
