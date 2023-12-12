@@ -10,7 +10,7 @@
             </label>
         </div>
     @endif
-    <div x-data="ckEditor('{{ $identifier }}', '{{ addslashes($value) }}', '{{ $model }}')" x-init="initEditor" >
+    <div x-data="ckEditor('{{ $identifier }}', '{{ addslashes($value) }}', '{{ $model }}', '{{ $componentId }}')" x-init="initEditor" >
         <textarea x-ref="ckeditor_{{ $identifier }}" {{ $attributes }}></textarea>
     </div>
     <script>
@@ -22,10 +22,11 @@
         });
 
         function initAlpineEditor() {
-            window.Alpine.data('ckEditor', (identifier, value, model) => ({
+            window.Alpine.data('ckEditor', (identifier, value, model, componentId) => ({
                 identifier: identifier,
                 value: value,
                 model: model,
+                componentId: componentId,
                 isInitialized: false,
                 initEditor() {
                     if(!this.isInitialized) {
@@ -52,7 +53,11 @@
                                 this.editor = editor;
                                 editor.setData(this.value);
                                 editor.model.document.on('change:data', () => {
-                                    @this.set(this.model, editor.getData());
+                                    if(this.componentId.length > 0) {
+                                        Livewire.find(this.componentId).set(this.model, editor.getData());
+                                    } else {
+                                        @this.set(this.model, editor.getData());
+                                    }
                                 });
 
                                 document.addEventListener('update-editor-data', (event) => {

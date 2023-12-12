@@ -11,7 +11,8 @@ class CkEditor extends Component
     public function __construct(
         public string $identifier,
         public string $model,
-        public string $value
+        public string $value,
+        public string $componentId = ''
     ) {
     }
 
