@@ -10,8 +10,16 @@
             </label>
         </div>
     @endif
-    <div x-data="ckEditor('{{ $identifier }}', '{{ addslashes($value) }}', '{{ $model }}', '{{ $componentId }}')" x-init="initEditor" >
-        <textarea x-ref="ckeditor_{{ $identifier }}" {{ $attributes }}></textarea>
+    <div  x-data="ckEditor('{{ $identifier }}', '{{ addslashes($value) }}', '{{ $model }}', '{{ $componentId }}')" x-init="initEditor" >
+        <div x-show="!showHtml">
+            <textarea x-ref="ckeditor_{{ $identifier }}" {{ $attributes }}></textarea>
+        </div>
+        <div x-show="showHtml">
+            <textarea class="input-style" style="width: 100%;" x-ref="ckeditor_{{ $identifier }}_preview"></textarea>
+        </div>
+        <div class="block w-full h-8">
+            <button class="text-sm float-right mt-1" x-on:click="changeMode()">Toon HTML</button>
+        </div>
     </div>
     <script>
         document.addEventListener('alpine:init', () => {
@@ -28,6 +36,7 @@
                 model: model,
                 componentId: componentId,
                 isInitialized: false,
+                showHtml: false,
                 initEditor() {
                     if(!this.isInitialized) {
                         ClassicEditor
@@ -47,12 +56,13 @@
                                     headers: {
                                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                     }
-                                }
+                                },
                             })
                             .then(editor => {
                                 this.editor = editor;
                                 editor.setData(this.value);
                                 editor.model.document.on('change:data', () => {
+                                    this.value = editor.getData();
                                     if(this.componentId.length > 0) {
                                         Livewire.find(this.componentId).set(this.model, editor.getData());
                                     } else {
@@ -77,6 +87,16 @@
                             });
 
                         this.isInitialized = true;
+                    }
+                },
+                changeMode() {
+                    if(this.showHtml) {
+                        const value = this.$refs['ckeditor_' + this.identifier + '_preview'].value;
+                        document.dispatchEvent(new CustomEvent('update-' + this.identifier + '-value', { detail: value}));
+                        this.showHtml = false;
+                    } else {
+                        this.$refs['ckeditor_' + this.identifier + '_preview'].value = this.value;
+                        this.showHtml = true;
                     }
                 }
             }));
