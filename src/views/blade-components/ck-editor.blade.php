@@ -18,7 +18,10 @@
             <textarea class="input-style" style="width: 100%;" x-ref="ckeditor_{{ $identifier }}_preview"></textarea>
         </div>
         <div class="block w-full h-8">
-            <button class="text-sm float-right mt-1" x-on:click="changeMode()">Toon HTML</button>
+            <button class="text-sm float-right mt-1" x-on:click="changeMode()">
+                <span x-show="!showHtml">Toon HTML</span>
+                <span x-show="showHtml">Verberg HTML</span>
+            </button>
         </div>
     </div>
     <script>
