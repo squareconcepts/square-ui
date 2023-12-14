@@ -60,6 +60,10 @@
                                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                     }
                                 },
+                                toolbar: [
+                                    'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'underline','strikethrough', '|', 'link', '|', 'bulletedList', 'numberedList', 'todoList', '|',
+                                    'outdent', 'indent', '|', 'blockQuote', 'insertTable', '|', 'alignment', '|', 'imageUpload', '|', 'codeBlock'
+                                ]
                             })
                             .then(editor => {
                                 this.editor = editor;
