@@ -6,8 +6,8 @@
         @endif
        <li  class="nav-item flex-1">
            <button
-               class="nav-link w-full p-2 whitespace-nowrap"
-               :class="activeTab == '{{$itemKey}}' && 'border-b border-blue-500' "
+               class="w-full p-2 whitespace-nowrap"
+               :class="activeTab == '{{$itemKey}}' && 'border-b border-slate-300' "
                type="button"
                x-on:click="activeTab = '{{$itemKey}}';"
                role="tab"
