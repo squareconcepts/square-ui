@@ -65,7 +65,7 @@ class SquareUiServiceProvider extends ServiceProvider
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
                 <script src="$path"></script>
                 <script src="/vendor/square-ui/ckeditor.js"></script>
-                <script src="/vendor/square-ui/datepicker-nl.js"></script>
+               <script src="https://npmcdn.com/flatpickr/dist/l10n/nl.js"></script>
                 <script>
                     flatpickr.localize(flatpickr.l10ns.nl);
                 </script>
