@@ -16,9 +16,6 @@
                     maxTime: {{empty($maxTime) ? 'null' : $maxTime}},
                     weekNumbers: true,
                     noCalendar: this.timeOnly,
-                    locale: {
-                        firstDayOfWeek: 1
-                    },
                     defaultDate: this.value,
                     onChange: (date, dateString) => {
                         if (!dateString) {
