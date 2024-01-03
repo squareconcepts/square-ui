@@ -1,4 +1,5 @@
 <div wire:ignore>
+    <script src="/vendor/square-ui/datepicker-nl.js"></script>
     <div
         x-data="{
             value: $wire.get('{{$model}}'),
@@ -16,6 +17,7 @@
                     maxTime: {{empty($maxTime) ? 'null' : $maxTime}},
                     weekNumbers: true,
                     noCalendar: this.timeOnly,
+                    locale: 'nl',
                     defaultDate: this.value,
                     onChange: (date, dateString) => {
                         if (!dateString) {
