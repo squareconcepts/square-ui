@@ -12,6 +12,10 @@ Route::post('upload', function () {
 
 Route::prefix('/chat')->name('chat-gpt.')->group( callback: function () {
     Route::post('ask', function () {
-        return ChatGPT::ask(request()->question);
+        try {
+            return ChatGPT::ask(request()->question);
+        } catch (\Exception $exception) {
+            return $exception->getMessage();
+        }
     })->name('ask');
 });
