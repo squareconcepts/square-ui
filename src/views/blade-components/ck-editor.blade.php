@@ -23,7 +23,7 @@
                 <span x-show="!showHtml">Toon HTML</span>
                 <span x-show="showHtml">Verberg HTML</span>
             </button>
-            @if($useChatGPT && Route::has('square-ui.chat-gpt.ask'))
+            @if($useChatGpt && Route::has('square-ui.chat-gpt.ask'))
                 <div class="text-sm mt-1 py-2 flex items-center gap-2 cursor-pointer" x-on:click="changeChatGptMode()">
                     <div x-show="!showChatGpt" class="relative p-1 rounded-sm h-9 w-9 text-white flex items-center justify-center bg-slate-200 p-2">
                         <x-square-ui.svg::chatgpt-logo/>
@@ -35,7 +35,7 @@
                 </div>
             @endif
         </div>
-        @if($useChatGPT && Route::has('square-ui.chat-gpt.ask'))
+        @if($useChatGpt && Route::has('square-ui.chat-gpt.ask'))
             <div x-show="showChatGpt" class="p-2 rounded bg-[#343541] mt-2 text-white flex flex-col gap-2" x-cloak>
                 <div class="header flex gap-2">
                     <div class="relative p-1 rounded-sm h-9 w-9 text-white flex items-center justify-center" style="background-color: rgb(25, 195, 125); width: 24px; height: 24px;">
