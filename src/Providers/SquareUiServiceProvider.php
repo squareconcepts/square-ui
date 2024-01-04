@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Squareconcepts\SquareUi\LivewireComponents\DataTable;
-use Squareconcepts\SquareUi\LivewireComponents\Editor;
 use Squareconcepts\SquareUi\LivewireComponents\IconPicker;
 use Squareconcepts\SquareUi\LivewireComponents\LocalizedStringComponent;
 use Squareconcepts\SquareUi\LivewireComponents\PasswordStrength;
@@ -88,7 +87,6 @@ class SquareUiServiceProvider extends ServiceProvider
     public function loadLivewireComponents(): void
     {
         Livewire::component('square-ui::data-table', DataTable::class);
-        Livewire::component('square-ui::editor', Editor::class);
         Livewire::component('square-ui::icon-picker', IconPicker::class);
         Livewire::component('square-ui::localized-string', LocalizedStringComponent::class);
         Livewire::component('square-ui::password-strength', PasswordStrength::class);

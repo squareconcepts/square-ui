@@ -12,7 +12,8 @@ class CkEditor extends Component
         public string $identifier,
         public string $model,
         public string $value,
-        public string $componentId = ''
+        public string $componentId = '',
+        public bool $useChatGPT = false
     ) {
     }
 

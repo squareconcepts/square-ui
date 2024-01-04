@@ -10,6 +10,21 @@ class SquareUi {
         self::writeNewEnvironmentFileWith($key, $api_key);
     }
 
+    public static function addKeysForChatGpt(): void
+    {
+       $keys = ['CHAT_GPT_API_TOKEN', 'CHAT_GPT_API_URL'];
+       $envKey = env('CHAT_GPT_API_TOKEN');
+       $envurl = env('CHAT_GPT_API_URL');
+       if(empty($envurl) && empty($envurl)) {
+           $input = file_get_contents(app()->environmentFilePath());
+           $input = str($input)->newLine(2)->append('#CHAT GPT
+CHAT_GPT_API_TOKEN=
+CHAT_GPT_API_URL=');
+           file_put_contents(app()->environmentFilePath(), $input);
+       }
+
+    }
+
     protected static function writeNewEnvironmentFileWith($key, $value): bool
     {
 
@@ -34,4 +49,8 @@ class SquareUi {
 
         return "/^$key{$escaped}/m";
     }
+
+
+
+
 }
