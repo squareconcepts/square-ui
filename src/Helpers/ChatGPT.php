@@ -15,7 +15,7 @@ class ChatGPT
     {
         if (empty(config('square-ui.chat_gpt_api_token')) || empty(config('square-ui.chat_gpt_base_url'))) {
             SquareUi::addKeysForChatGpt();
-            throw new Exception('Please provide ChatGPT api token adn base url. Set CHAT_GPT_API_TOKEN and CHAT_GPT_API_URL in your .env file');
+            throw new Exception('Please provide ChatGPT api token and base url. Set CHAT_GPT_API_TOKEN and CHAT_GPT_API_URL in your .env file');
         }
         $url = config('square-ui.chat_gpt_base_url') . 'chat/completions';
         $client = Http::withToken(config('square-ui.chat_gpt_api_token'));
