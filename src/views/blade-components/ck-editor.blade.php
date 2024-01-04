@@ -43,14 +43,17 @@
                     </div>
                     <p class="font-bold">ChatGPT 3.5</p>
                 </div>
-                <div class="prompt flex flex-col gap-2">
-                    <div class="relative flex h-full flex-1 items-stretch md:flex-col">
+                <div class="prompt flex flex-col gap-2 p-4">
+                    <div class="relative flex h-full flex-1 items-stretch md:flex-col mt-3">
                         <div class="flex w-full items-center">
-                            <div class="overflow-hidden [&amp;:has(textarea:focus)]:border-token-border-xheavy [&amp;:has(textarea:focus)]:shadow-[0_2px_6px_rgba(0,0,0,.05)] flex flex-col w-full border-token-border-heavy flex-grow relative border border-token-border-heavy text-white rounded-2xl bg-gray-800 shadow-[0_0_0_2px_rgba(255,255,255,0.95)] shadow-[0_0_0_2px_rgba(52,53,65,0.95)]">
-                                <textarea x-model="promptPrefix" id="prompt-textarea" tabindex="1"  rows="1" placeholder="Wat moet ik met de tekst doen?" class="m-0 w-full resize-none border-0 bg-transparent py-[10px] pr-10 focus:ring-0 focus-visible:ring-0 bg-transparent md:py-3.5 md:pr-12 placeholder-white/50 pl-3 md:pl-4"  style="max-height: 200px; height: 52px; overflow-y: hidden;"></textarea>
-
+                            <div class="relative w-full">
+                                <textarea x-model="promptPrefix" id="prompt-textarea" tabindex="1"  rows="1" placeholder="Wat moet ik met de tekst doen?" class="block px-2.5 pb-2.5 pt-4  pe-20 w-full text-sm  bg-gray-800 rounded-lg border-1 appearance-none text-white border-gray-600 focus:border-white focus:outline-none focus:ring-0 focus:border-white peer resize-none"></textarea>
+                                <label for="floating_outlined" class="absolute text-sm text-white duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-white  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
+                                    Wat moet ik met de tekst doen?
+                                </label>
                             </div>
                         </div>
+
                     </div>
                     <div class="relative flex h-full flex-1 items-stretch md:flex-col mt-3">
                         <div class="flex w-full items-center">
@@ -66,18 +69,37 @@
                         </div>
                     </div>
                 </div>
-                <div x-show="chatGptResult != null" class="result">
-                    <p class="font-bold">Resultaat:</p>
+                <div x-show="chatGptResult != null" class="result  p-4">
 
-                    <div class="markdown prose w-full break-words dark:prose-invert dark max-w-none">
-                        <pre class="break-words">
-                            <div class="bg-black rounded-md flex flex-col gap-0">
-                                <div class="flex items-center relative text-gray-200 bg-gray-800 dark:bg-token-surface-primary px-4 py-2 text-xs font-sans justify-between rounded-t-md"><span>html</span>
-                                    <button @click="useText()" class="flex gap-1 items-center">
-                                        <x-square-ui.svg::chatgpt-copy/> Deze tekst gebruiken</button></div>
-                                <div class="p-2 break-words" x-html="chatGptResult"></div>
+                    <div class="flex flex-1 text-base mx-auto gap-3 md:px-5 lg:px-1 xl:px-5 md:max-w-3xl lg:max-w-[40rem] xl:max-w-[48rem] group final-completion">
+                        <div class="flex-shrink-0 flex flex-col relative items-end"><div>
+                                <div class="pt-0.5">
+                                    <div class="gizmo-shadow-stroke flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
+                                        <div class="relative p-1 rounded-sm h-9 w-9 text-white flex items-center justify-center" style="background-color: rgb(25, 195, 125); width: 24px; height: 24px;">
+                                            <x-square-ui.svg::chatgpt-logo />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </pre>
+                        </div>
+                        <div class="relative flex w-full flex-col lg:w-[calc(100%-115px)] agent-turn">
+                            <div class="font-semibold select-none mb-3">ChatGPT</div>
+                            <div class="flex-col gap-1 md:gap-3">
+                                <div class="markdown prose w-full break-words dark:prose-invert dark max-w-none">
+                                    <div class="break-words">
+                                        <div class="bg-black rounded-md flex flex-col gap-0">
+                                            <div class="flex items-center relative text-gray-200 bg-gray-800 dark:bg-token-surface-primary px-4 py-2 text-xs font-sans justify-between rounded-t-md">
+                                                <span>html</span>
+                                                <div @click="useText()" class="flex gap-1 items-center cursor-pointer">
+                                                    <x-square-ui.svg::chatgpt-copy/> Deze tekst gebruiken
+                                                </div>
+                                            </div>
+                                            <div class="p-2 break-words text-white" x-html="chatGptResult"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -136,9 +158,11 @@
                                 editor.setData(this.value);
                                 this.prompt = this.value;
                                 this.promptPrefix = this.promptPrefixOption[0];
+                                this.getLineCount();
                                 editor.model.document.on('change:data', () => {
                                     this.value = editor.getData();
                                     this.prompt = this.value;
+                                    this.getLineCount();
                                     if(this.componentId.length > 0) {
                                         Livewire.find(this.componentId).set(this.model, editor.getData());
                                     } else {
