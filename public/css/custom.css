@@ -13,6 +13,21 @@
     padding: 10px;
 }
 
+.has-buttons input[type=number].square-ui-input::-webkit-inner-spin-button,
+.has-buttons input[type=number].square-ui-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.has-buttons input[type=number].square-ui-input {
+    padding: 0 50px;
+    text-align: center;
+}
+
+.has-buttons input[type=number].square-ui-input:focus{
+    border-color: #22B9C3;
+}
+
 @media (min-width: 640px) {
     .input-style {
         font-size: 0.875rem;
