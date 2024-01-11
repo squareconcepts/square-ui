@@ -38,6 +38,7 @@
                         swatches: @js($colorOptions),
                         components: {
                             preview: true,
+                            palette: true,
                             opacity: true,
                             hue: true,
                             interaction: {
@@ -46,6 +47,7 @@
                                 hsla: false,
                                 hsva: false,
                                 input: true,
+                                cancel: true,
                                 clear: true,
                                 save: true
                             }
@@ -71,6 +73,9 @@
                     }).on('clear', (color, instance) => {
                         this.value = color.toHEXA().toString();
                         this.setData(color.toHEXA().toString())
+                        instance.hide();
+                    }).on('cancel', (instance) => {
+                        this.value = @js($value);
                         instance.hide();
                     });
 
