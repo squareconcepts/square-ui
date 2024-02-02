@@ -8,8 +8,17 @@ use Squareconcepts\SquareUi\Helpers\BaseInput;
 
 class Number extends BaseInput
 {
-    public function __construct( string $label, ?string $placeholder = null, string $type = 'number', ?string $icon = null, ?string $rightIcon = null, bool $show1Password = false , public bool $hasButtons = false)
-    {
+    public function __construct(
+        string $label,
+        ?string $placeholder = null,
+        string $type = 'number',
+        ?string $icon = null,
+        ?string $rightIcon = null,
+        bool $show1Password = false,
+        public bool $hasButtons = false,
+        public float $step = 1,
+        public float $min = 1,
+    ) {
         parent::__construct($label, $placeholder, $type, $icon, $rightIcon, $show1Password);
     }
 
@@ -17,5 +26,4 @@ class Number extends BaseInput
     {
         return view('square-ui::blade-components.inputs.number');
     }
-
 }
