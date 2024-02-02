@@ -149,7 +149,7 @@
                     @endforeach
 
                     @if(!$hideActions)
-                        <th class="px-3 py-2 md:px-6 md:py-3 whitespace-nowrap text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-800">
+                        <th class="px-3 py-2 md:px-6 md:py-3 whitespace-nowrap text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:bg-gray-800">
                             <span class="block tracking-wider text-left">
                                 {{ __('square-ui::square-ui.tables.actions') }}
                             </span>
