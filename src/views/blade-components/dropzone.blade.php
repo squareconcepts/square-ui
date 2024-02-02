@@ -2,6 +2,7 @@
      @dragover.prevent="isDragging = true"
      @dragleave="isDragging = false"
      @drop.prevent="isDragging = false; handleDroppedFiles($event.dataTransfer.files)"
+     x-on:dropzone-reset.window="resetDropzone($event.detail)"
 >
     <label :class="{ 'bg-slate-300': isDragging }" class="py-8 w-full bg-slate-200 flex items-center justify-center border-2 border-slate-300 border-dashed rounded cursor-pointer hover:bg-slate-300 text-slate-500 font-bold uppercase rounded-xl" for="{{$identifier}}">
         {{$multiple ? $dropzoneText : 'Sleep bestand hier of klik om te bladeren'}}
@@ -142,6 +143,13 @@
         },
         resetProgress() {
            this.progress = 0;
+
+        },
+        resetDropzone(event) {
+           if(event.identifier === '{{$identifier}}') {
+               this.progress = 0;
+               this.files = [];
+           }
 
         }
 
