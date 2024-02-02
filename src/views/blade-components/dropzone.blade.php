@@ -18,7 +18,7 @@
        </div>
    </template>
     <input id="{{$identifier}}" type="file" style="display: none" @change="handleDroppedFiles($event.target.files)" @if($multiple) multiple @endif {{$attributes['wire:model']}}>
-    <div class="flex flex-col w-full leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-xl mt-4" x-show="files.length > 0">
+    <div class="flex flex-col w-full leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-xl mt-4" x-show="files.length > 0" x-cloak>
         <div class="flex items-center space-x-2 rtl:space-x-reverse mb-2">
             <span class="text-sm font-semibold text-gray-900 dark:text-white">Bestanden (<span x-text="files.length"></span>)</span>
         </div>
