@@ -45,7 +45,7 @@
                     <i class="fa fa-exclamation-circle mx-1"></i>
                 @endif
                 @if($hasButtons && !$attributes->has('disabled'))
-                    <button type="button" class="h-full px-2 py-1 text-sm text-white absolute bg-sc-blue rounded-r-md right-0" x-on:click="value += step"> <i class="fa fa-plus"></i></button>
+                        <button type="button" class="h-full px-2 py-1 text-sm text-white absolute bg-sc-blue rounded-r-md right-0" x-on:click="value = Number(value) + step"> <i class="fa fa-plus"></i></button>
                 @endif
             </div>
         @endif
