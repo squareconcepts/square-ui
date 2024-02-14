@@ -18,7 +18,7 @@
             <span class="text-red-500 font-bold">*</span>
         @endif
     </label>
-    <div class="relative rounded-md {{$hasButtons ? 'has-buttons' : ''}}">
+    <div class="relative w-fit rounded-md {{$hasButtons ? 'has-buttons' : ''}}">
         @if ($prefix || $icon)
             <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none
                 {{ $hasError ? 'text-red-500' : 'text-secondary-400' }}">
@@ -32,7 +32,7 @@
             </div>
         @endif
         @if($hasButtons && !$attributes->has('disabled'))
-            <button type="button" class="h-full px-2 py-1 text-sm text-white absolute bg-sc-blue rounded-l-md left-0" x-on:click="minus"> <i class="fa fa-minus"></i> </button>
+            <button type="button" class="h-full px-2 py-1 aspect-square text-sm text-white absolute bg-sc-blue rounded-l-md left-0" x-on:click="minus"> <i class="fa fa-minus"></i> </button>
         @endif
         <input {{ $attributes->merge(['class' => 'square-ui-input ' . $getClasses($errors->has($name)) ]) }} min="{{$min}}" step="{{$step}}" type="{{$type}}" name="{{ $name }}" {{ $attributes }} placeholder="{{$placeholder ?? $label}}" @if(!$show1Password) data-1p-ignore @endif />
         @if($hasError || $rightIcon != null || $hasButtons)
@@ -45,7 +45,7 @@
                     <i class="fa fa-exclamation-circle mx-1"></i>
                 @endif
                 @if($hasButtons && !$attributes->has('disabled'))
-                        <button type="button" class="h-full px-2 py-1 text-sm text-white absolute bg-sc-blue rounded-r-md right-0" x-on:click="value = Number(value) + step"> <i class="fa fa-plus"></i></button>
+                        <button type="button" class="h-full px-2 py-1 aspect-square text-sm text-white absolute bg-sc-blue rounded-r-md right-0" x-on:click="value = Number(value) + step"> <i class="fa fa-plus"></i></button>
                 @endif
             </div>
         @endif
