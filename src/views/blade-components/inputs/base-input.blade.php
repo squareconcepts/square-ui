@@ -10,7 +10,7 @@
         @endif
     </label>
     <div class="relative rounded-md">
-        <input {{ $attributes->merge(['class' => 'input-style' . ($errors->has($name) ? ' border-red-500 !border-2 text-red-500 !pl-10 !pr-10' : '') ]) }}  type="{{$type}}" name="{{ $name }}" {{ $attributes }} placeholder="{{$placeholder ?? $label}}"  />
+        <input {{ $attributes->merge(['class' => 'input-style' . ($errors->has($name) ? ' border-red-500 !border-2 text-red-500 !pl-10 !pr-10' : '') ]) }}  type="{{$type}}" name="{{ $name }}" {{ $attributes }} placeholder="{{$placeholder ?? $label}}" @if(!$show1Password) data-1p-ignore @endif/>
     @error($name)
         <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none justify-center
                 {{ $hasError ? 'text-red-500' : 'text-secondary-400' }}">
