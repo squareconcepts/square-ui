@@ -165,10 +165,20 @@
                         this.date = moment(this.xModelValue);
                         this.year = this.date.year();
                     } else {
-                        this.valueDate = moment('{{$value->toDateTimeString()}}');
+                        if(this.usingLivewire) {
+                            let modelDate = this.createDateFromString($wire.get(this.model));
+                            if(modelDate != null) {
+                                this.valueDate = moment(modelDate);
+                            } else {
+                                this.valueDate = moment('{{$value->toDateTimeString()}}');
+                            }
+
+                        } else {
+                            this.valueDate = moment('{{$value->toDateTimeString()}}');
+                        }
                         this.updateInternalDate();
-                        this.date = moment('{{$value->toDateTimeString()}}');
-                        this.year = moment('{{$value->toDateTimeString()}}').year();
+                        this.date =  this.valueDate;
+                        this.year = this.valueDate.year();
                     }
 
                     if(this.withTime) {
@@ -212,6 +222,34 @@
 
 
 
+                },
+                createDateFromString(dateString) {
+                    if(dateString == null) {
+                        return null;
+                    }
+                    // Probeer het te parsen als een ISO-8601 formaat met tijd
+                    let date = new Date(dateString);
+                    if (!isNaN(date.getTime())) {
+                        return date;
+                    }
+
+                    // Probeer het te parsen als een Amerikaanse datumnotatie (MM-DD-YYYY)
+                    const parts = dateString.split('-');
+                    if (parts.length === 3) {
+                        date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+                        if (!isNaN(date.getTime())) {
+                            return date;
+                        }
+                    }
+
+                    // Probeer het te parsen als een Europese datumnotatie (DD-MM-YYYY)
+                    date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+                    if (!isNaN(date.getTime())) {
+                        return date;
+                    }
+
+                    // Als geen enkel formaat werkt, retourneer null of een standaarddatum
+                    return null;
                 },
                 updateInternalDate(){
                     if(this.withTime) {
