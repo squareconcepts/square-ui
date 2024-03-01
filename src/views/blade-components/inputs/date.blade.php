@@ -1,4 +1,5 @@
-<div x-data="datepicker" class="relative" wire:ignore x-on:click.outside="submitChanges()" @keydown.escape.window="close()">
+<div x-data="datepicker({{$attributes->get('x-model')}})" class="relative" wire:ignore x-on:click.outside="submitChanges()" @keydown.escape.window="close()" {{$attributes->except(['wire:model'])}}>
+    @dump($attributes->getAttributes())
     <div class="relative">
         <label for="number" class="text-sm font-medium text-gray-700 flex items-center gap-1 relative ">
             {{$attributes->get('label')}}
@@ -63,7 +64,7 @@
                                              @click="selectDate(day)"
                                         >
                                             <p class="w-[40px] h-[40px] flex items-center justify-center text-center"
-                                                :class="day.isCurrent ? 'bg-positive-500 text-white font-extrabold rounded-full' : (day.monthType !== 'current' ? 'text-slate-700 opacity-50 group-hover:bg-slate-400 rounded-full' : 'group-hover:text-white group-hover:font-extrabold group-hover:bg-slate-400 group-hover:rounded-full')"
+                                               :class="day.isCurrent ? 'bg-positive-500 text-white font-extrabold rounded-full' : (day.monthType !== 'current' ? 'text-slate-700 opacity-50 group-hover:bg-slate-400 rounded-full' : 'group-hover:text-white group-hover:font-extrabold group-hover:bg-slate-400 group-hover:rounded-full')"
                                                x-text="day.date !== null ? day.date.format('DD') : ''"
                                             >
 
@@ -140,7 +141,7 @@
     @push('scripts')
         @script
         <script>
-            Alpine.data('datepicker', () => ({
+            Alpine.data('datepicker', (date) => ({
                 model: @js($model),
                 withTime: @js($withTime),
                 showingTimepicker: false,
@@ -148,7 +149,9 @@
                 minuteOptions: @js($minuteOptions),
                 hours: {{$value->hour}},
                 minutes: {{$value->minute}},
+                usingLivewire: @js($attributes->has('wire:model')),
                 value: '',
+                xModelValue: date,
                 valueDate: '',
                 open: false,
                 date: '',
@@ -156,15 +159,23 @@
                 monthString: '',
                 weeks: [],
                 init() {
-                    this.valueDate = moment('{{$value->toDateTimeString()}}');
-                    this.value = moment('{{$value->toDateTimeString()}}').format('DD-MM-YYYY HH:mm');
+                    if(this.xModelValue != null || this.xModelValue !== undefined) {
+                        this.value = moment(this.xModelValue).format('DD-MM-YYYY HH:mm');
+                        this.valueDate = moment(this.xModelValue);
+                        this.date = moment(this.xModelValue);
+                        this.year = this.date.year();
+                    } else {
+                        this.valueDate = moment('{{$value->toDateTimeString()}}');
+                        this.value = moment('{{$value->toDateTimeString()}}').format('DD-MM-YYYY HH:mm');
+                        this.date = moment('{{$value->toDateTimeString()}}');
+                        this.year = moment('{{$value->toDateTimeString()}}').year();
+                    }
+
                     if(this.withTime) {
                         this.hours = this.valueDate.format('HH');
                         this.minutes = this.valueDate.format('mm');
                     }
 
-                    this.date = moment('{{$value->toDateTimeString()}}');
-                    this.year = moment('{{$value->toDateTimeString()}}').year();
                     this.weeks = this.getDaysOfMonth();
                     this.monthString = this.getMonthName();
                     this.$watch('hours', (value) => {
@@ -191,9 +202,9 @@
 
                     });
                     this.$watch('open', (value) => {
-                       if(value){
-                           this.updatePosition();
-                       }
+                        if(value){
+                            this.updatePosition();
+                        }
 
                     });
 
@@ -317,15 +328,22 @@
                 increaseHour(){
                     this.hours = this.hours + 1;
                 },
+                submitChanges(){
+                    if(this.open){
+                        if(this.usingLivewire) {
+                            @this.set(this.model, this.value);
+                        } else {
+                            this.$dispatch('datechanged',  this.value);
+                        }
+
+                        this.close();
+                    }
+                },
                 increaseMinute(){
                     this.minutes = this.minutes + 1;
                 },
                 decreaseMinute(){
                     this.minutes = this.minutes - 1;
-                },
-                submitChanges(){
-                    @this.set(this.model, this.value);
-                    this.close();
                 },
                 close(){
                     if(this.open) {
