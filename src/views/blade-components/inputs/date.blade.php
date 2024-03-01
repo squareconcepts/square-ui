@@ -12,7 +12,7 @@
     </div>
 
     <template x-if="open">
-        <div class="absolute top-[67px] left-0 right-1 bg-white rounded w-full min-w-[400px] max-w-[400px] mb-4 shadow" x-ref="calendar" >
+        <div class="absolute top-[67px] left-0 right-1 bg-white rounded w-full min-w-[400px] max-w-[400px] mb-4 shadow z-[100]" x-ref="calendar" >
             <template x-if="!showingTimepicker">
                 <div>
                     <div class="flex justify-between items-center p-2">
@@ -35,11 +35,7 @@
                                 <option value="November">November </option>
                                 <option value="December">December </option>
                             </select>
-                            <select x-model="year" class="border-0 font-bold text-slate-700 uppercase ring-0 focus-visible:!ring-0 p-0 pr-8">
-                                @foreach (range((now()->year - 20), (now()->year + 50)) as $year)
-                                    <option value="{{$year}}">{{$year}} </option>
-                                @endforeach
-                            </select>
+                            <input type="number" x-model="year" class="border-0 font-bold text-slate-700 uppercase ring-0 focus-visible:!ring-0 p-0 w-[80px]"/>
                         </div>
 
                         <div @click="nextMonth()" class="w-10  h-10 hover:bg-slate-100 flex justify-center items-center cursor-pointer">
@@ -160,13 +156,17 @@
                 weeks: [],
                 init() {
                     if(this.xModelValue != null || this.xModelValue !== undefined) {
-                        this.value = moment(this.xModelValue).format('DD-MM-YYYY HH:mm');
+                        if(this.withTime) {
+                            this.value = moment(this.xModelValue).format('DD-MM-YYYY HH:mm');
+                        } else {
+                            this.value = moment(this.xModelValue).format('DD-MM-YYYY');
+                        }
                         this.valueDate = moment(this.xModelValue);
                         this.date = moment(this.xModelValue);
                         this.year = this.date.year();
                     } else {
                         this.valueDate = moment('{{$value->toDateTimeString()}}');
-                        this.value = moment('{{$value->toDateTimeString()}}').format('DD-MM-YYYY HH:mm');
+                        this.updateInternalDate();
                         this.date = moment('{{$value->toDateTimeString()}}');
                         this.year = moment('{{$value->toDateTimeString()}}').year();
                     }
@@ -180,15 +180,17 @@
                     this.monthString = this.getMonthName();
                     this.$watch('hours', (value) => {
                         this.valueDate.hour(value);
-                        this.value = this.valueDate.format('DD-MM-YYYY HH:mm');
+                        this.updateInternalDate();
+
 
                     });
                     this.$watch('minutes', (value) => {
                         this.valueDate.minutes(value);
-                        this.value = this.valueDate.format('DD-MM-YYYY HH:mm');
+                        this.updateInternalDate();
                     })
                     this.$watch('year', (value) => {
                         this.date.year(value);
+
                         this.$nextTick(() => {
                             this.updateCalendar();
                         });
@@ -210,6 +212,13 @@
 
 
 
+                },
+                updateInternalDate(){
+                    if(this.withTime) {
+                        this.value = this.valueDate.format('DD-MM-YYYY HH:mm');
+                    } else {
+                        this.value = this.valueDate.format('DD-MM-YYYY');
+                    }
                 },
                 updatePosition() {
                     if (this.open) {
@@ -305,7 +314,7 @@
                     this.valueDate = date.date;
                     this.valueDate.minutes(this.minutes);
                     this.valueDate.hours(this.hours);
-                    this.value = this.valueDate.format('DD-MM-YYYY HH:mm');
+                    this.updateInternalDate();
                     if (date.monthType === 'previous') {
                         this.prevMonth();
                     } else if (date.monthType === 'next') {
