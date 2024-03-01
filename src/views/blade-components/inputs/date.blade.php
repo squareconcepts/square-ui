@@ -1,5 +1,4 @@
 <div x-data="datepicker({{$attributes->get('x-model')}})" class="relative" wire:ignore x-on:click.outside="submitChanges()" @keydown.escape.window="close()" {{$attributes->except(['wire:model'])}}>
-    @dump($attributes->getAttributes())
     <div class="relative">
         <label for="number" class="text-sm font-medium text-gray-700 flex items-center gap-1 relative ">
             {{$attributes->get('label')}}
