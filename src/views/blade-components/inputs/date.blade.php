@@ -3,9 +3,10 @@
         <label for="number" class="text-sm font-medium text-gray-700 flex items-center gap-1 relative ">
             {{$attributes->get('label')}}
         </label>
-        <input type="text" readonly x-on:click="open = !open" class="input-style pr-10" x-model="value"  data-1p-ignore />
-        <div class="absolute right-0 mr-5 flex top-[20px] bottom-0 items-center justify-center">
-            <i class="fa-solid fa-calendar-alt text-slate-400"></i>
+
+        <div class="relative flex items-center">
+            <input type="text" readonly x-on:click="open = !open" class="input-style pr-10" x-model="value"  data-1p-ignore />
+            <i class="fa-solid fa-calendar-alt text-slate-400 absolute right-2 "></i>
         </div>
 
     </div>
