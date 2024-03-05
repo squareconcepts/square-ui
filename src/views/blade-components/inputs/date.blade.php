@@ -1,4 +1,4 @@
-<div x-data="datepicker({{$attributes->get('x-model')}})" class="relative" wire:ignore x-on:click.outside="submitChanges()" @keydown.escape.window="close()" {{$attributes->except(['wire:model'])}}>
+<div x-data="datepicker('{{ $attributes->has('x-model') ? 'true' : 'false' }}', {{$attributes->get('x-model')}})" class="relative" wire:ignore x-on:click.outside="submitChanges()" @keydown.escape.window="close()" {{$attributes->except(['wire:model'])}}>
     <div class="relative">
         <label for="number" class="text-sm font-medium text-gray-700 flex items-center gap-1 relative ">
             {{$attributes->get('label')}}
@@ -60,7 +60,7 @@
                                              @click="selectDate(day)"
                                         >
                                             <p class="w-[40px] h-[40px] flex items-center justify-center text-center"
-                                               :class="day.isCurrent ? 'bg-positive-500 text-white font-extrabold rounded-full' : (day.monthType !== 'current' ? 'text-slate-700 opacity-50 group-hover:bg-slate-400 rounded-full' : 'group-hover:text-white group-hover:font-extrabold group-hover:bg-slate-400 group-hover:rounded-full')"
+                                               :class="day.isCurrent ? 'bg-positive-500 text-white font-extrabold rounded-full' : (day.monthType !== 'current' ? (day.isToday ? 'bg-slate-100 text-slate-700 opacity-50 group-hover:bg-slate-400 rounded-full' : 'text-slate-700 opacity-50 group-hover:bg-slate-400 rounded-full') : 'group-hover:text-white group-hover:font-extrabold group-hover:bg-slate-400 group-hover:rounded-full')"
                                                x-text="day.date !== null ? day.date.format('DD') : ''"
                                             >
 
@@ -101,8 +101,9 @@
             </template>
             <div class="bg-slate-200 p-4 flex justify-between items-center">
                 <div>
-                    <x-button positive icon="check" @click="submitChanges()" :label="__('Save')"/>
-                    <x-button negative icon="x" @click="close()" label="Sluiten"/>
+                    <x-button sm positive icon="check" @click="submitChanges()" :label="__('Save')"/>
+                    <x-button sm negative icon="x" @click="close()" label="Sluiten"/>
+                    <x-button sm icon="trash" @click="clearPicker()"/>
                 </div>
                 <template x-if="withTime">
                     <div class="flex items-center gap-2 p-2">
@@ -137,7 +138,7 @@
     @push('scripts')
         @script
         <script>
-            Alpine.data('datepicker', (date) => ({
+            Alpine.data('datepicker', (useXModel, date) => ({
                 model: @js($model),
                 withTime: @js($withTime),
                 showingTimepicker: false,
@@ -147,6 +148,8 @@
                 minutes: {{$value->minute}},
                 usingLivewire: @js($attributes->has('wire:model')),
                 value: '',
+                prevValue: '',
+                useXModel: useXModel,
                 xModelValue: date,
                 valueDate: '',
                 open: false,
@@ -155,14 +158,18 @@
                 monthString: '',
                 weeks: [],
                 init() {
-                    if(this.xModelValue != null || this.xModelValue !== undefined) {
-                        if(this.withTime) {
-                            this.value = moment(this.xModelValue).format('DD-MM-YYYY HH:mm');
+                    if(this.useXModel == 'true') {
+                        if(this.xModelValue != null && this.xModelValue !== undefined) {
+                            if (this.withTime) {
+                                this.value = moment(this.xModelValue).format('DD-MM-YYYY HH:mm');
+                            } else {
+                                this.value = moment(this.xModelValue).format('DD-MM-YYYY');
+                            }
+                            this.valueDate = moment(this.xModelValue);
+                            this.date = moment(this.xModelValue);
                         } else {
-                            this.value = moment(this.xModelValue).format('DD-MM-YYYY');
+                            this.date = moment();
                         }
-                        this.valueDate = moment(this.xModelValue);
-                        this.date = moment(this.xModelValue);
                         this.year = this.date.year();
                     } else {
                         if(this.usingLivewire) {
@@ -181,21 +188,31 @@
                         this.year = this.valueDate.year();
                     }
 
-                    if(this.withTime) {
+                    if(this.withTime && this.valueDate != null && this.valueDate != '') {
                         this.hours = this.valueDate.format('HH');
                         this.minutes = this.valueDate.format('mm');
                     }
 
                     this.weeks = this.getDaysOfMonth();
                     this.monthString = this.getMonthName();
+
+                    this.setPrevValue();
+
+                    document.addEventListener('updateDatepicker', event => {
+                        this.resetDate(event.detail);
+                    });
+
                     this.$watch('hours', (value) => {
-                        this.valueDate.hour(value);
+                        if (this.valueDate != null && this.valueDate != '') {
+                            this.valueDate.hour(value);
+                        }
+
                         this.updateInternalDate();
-
-
                     });
                     this.$watch('minutes', (value) => {
-                        this.valueDate.minutes(value);
+                        if (this.valueDate != null && this.valueDate != '') {
+                            this.valueDate.minutes(value);
+                        }
                         this.updateInternalDate();
                     })
                     this.$watch('year', (value) => {
@@ -219,9 +236,6 @@
                         }
 
                     });
-
-
-
                 },
                 createDateFromString(dateString) {
                     if(dateString == null) {
@@ -252,10 +266,14 @@
                     return null;
                 },
                 updateInternalDate(){
-                    if(this.withTime) {
-                        this.value = this.valueDate.format('DD-MM-YYYY HH:mm');
+                    if(this.valueDate != null && this.valueDate != '') {
+                        if (this.withTime) {
+                            this.value = this.valueDate.format('DD-MM-YYYY HH:mm');
+                        } else {
+                            this.value = this.valueDate.format('DD-MM-YYYY');
+                        }
                     } else {
-                        this.value = this.valueDate.format('DD-MM-YYYY');
+                        this.value = '';
                     }
                 },
                 updatePosition() {
@@ -291,13 +309,13 @@
                     // Vul de eerste week met lege cellen totdat de eerste dag van de maand bereikt is
                     for (let i = 1; i < startDay; i++) {
                         const prevMonthDate = firstDayOfMonth.clone().subtract(startDay - i, 'days');
-                        week.push({ date: prevMonthDate, isCurrent: false, showDate: true, monthType: 'previous' });
+                        week.push({ date: prevMonthDate, isCurrent: false, isToday: false, showDate: true, monthType: 'previous' });
                     }
 
                     // Loop door elke dag van de maand en vul de weken dienovereenkomstig
                     for (let i = 1; i <= daysInMonth; i++) {
                         const dayDate = moment([year, month, i]);
-                        week.push({ date: dayDate, isCurrent: dayDate.isSame(this.valueDate, 'day'), showDate: true, monthType: 'current' });
+                        week.push({ date: dayDate, isCurrent: dayDate.isSame(this.valueDate, 'day'), isToday: dayDate.isSame(moment(), 'day'), showDate: true, monthType: 'current' });
 
                         // Als het einde van de week is bereikt, voeg de week toe aan de dagen en reset de week array
                         if (week.length === 7) {
@@ -312,7 +330,7 @@
                         const nextMonth = moment([year, month]).add(1, 'month');
                         for (let i = 1; week.length < 7; i++) {
                             const nextMonthDate = nextMonth.clone().date(i);
-                            week.push({ date: nextMonthDate, isCurrent: false, showDate: true, monthType: 'next' });
+                            week.push({ date: nextMonthDate, isCurrent: false, isToday: false, showDate: true, monthType: 'next' });
                         }
                         days.push(week);
                     }
@@ -348,6 +366,59 @@
                     this.monthString = this.getMonthName();
                     this.year = this.date.year();
                 },
+                resetDate(date) {
+                    if(date != null && date != '') {
+                        var isoPattern = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{6})Z$/;
+                        const isIso = isoPattern.test(date);
+                        if (this.withTime) {
+                            if(isIso) {
+                                this.value = moment(date).format('DD-MM-YYYY HH:mm');
+                                this.prevValue = moment(date).format('DD-MM-YYYY HH:mm');
+                            } else {
+                                this.value = moment(date, 'DD-MM-YYYY HH:mm').format('DD-MM-YYYY HH:mm');
+                                this.prevValue = moment(date, 'DD-MM-YYYY HH:mm').format('DD-MM-YYYY HH:mm');
+                            }
+                        } else {
+                            if(isIso) {
+                                this.value = moment(date).format('DD-MM-YYYY');
+                                this.prevValue = moment(date).format('DD-MM-YYYY');
+                            } else {
+                                this.value = moment(date, 'DD-MM-YYYY HH:mm').format('DD-MM-YYYY');
+                                this.prevValue = moment(date, 'DD-MM-YYYY HH:mm').format('DD-MM-YYYY');
+                            }
+                        }
+
+                        if(isIso) {
+                            this.valueDate = moment(date);
+                            this.date = moment(date);
+                        } else {
+                            this.valueDate = moment(date, 'DD-MM-YYYY HH:mm');
+                            this.date = moment(date, 'DD-MM-YYYY HH:mm');
+                        }
+                    } else {
+                        this.date = moment();
+                        this.value = '';
+                        this.prevValue = '';
+                        this.valueDate = '';
+                    }
+
+                    this.year = this.date.year();
+
+                    if(this.withTime && this.valueDate != null && this.valueDate != '') {
+                        this.hours = this.valueDate.format('HH');
+                        this.minutes = this.valueDate.format('mm');
+                    } else {
+                        this.hours = 0;
+                        this.minutes = 0;
+                    }
+
+                    this.weeks = this.getDaysOfMonth();
+                    this.monthString = this.getMonthName();
+                    this.setPrevValue();
+                    this.$nextTick(() => {
+                        this.updateCalendar();
+                    });
+                },
                 selectDate(date) {
                     this.valueDate = date.date;
                     this.valueDate.minutes(this.minutes);
@@ -366,8 +437,6 @@
                     if(this.withTime) {
                         this.showingTimepicker = true;
                     }
-
-
                 },
                 decreaseHour(){
                     this.hours = this.hours - 1;
@@ -382,7 +451,7 @@
                         } else {
                             this.$dispatch('datechanged',  this.value);
                         }
-
+                        this.setPrevValue();
                         this.close();
                     }
                 },
@@ -392,9 +461,22 @@
                 decreaseMinute(){
                     this.minutes = this.minutes - 1;
                 },
+                clearPicker() {
+                    this.value = '';
+                    this.valueDate = '';
+                    this.$nextTick(() => {
+                        this.updateCalendar();
+                    });
+                    this.submitChanges();
+                },
+                setPrevValue() {
+                    this.prevValue = JSON.parse(JSON.stringify(this.value));
+                },
                 close(){
                     if(this.open) {
                         this.open = false;
+                        this.showingTimepicker = false;
+                        this.value = this.prevValue
                     }
                 }
             }));
