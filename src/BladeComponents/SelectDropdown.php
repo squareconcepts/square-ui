@@ -3,20 +3,19 @@
 namespace Squareconcepts\SquareUi\BladeComponents;
 
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\Component;
-use Ramsey\Collection\Collection;
 
 class SelectDropdown extends Component
 {
     public function __construct(
-        public string $optionLabel,
-        public string $optionValue = 'id',
-        public array|Collection|\Illuminate\Database\Eloquent\Collection $items = [],
-        public ?string $asyncRoute = null,
-        public bool $multiple = false
-    )
-    {
-    }
+        public string           $optionLabel,
+        public string           $optionValue = 'id',
+        public array|Collection $items = [],
+        public ?string          $asyncRoute = null,
+        public bool             $multiple = false,
+        public string           $optionDescription = '',
+    ) {}
 
     public function render(): View
     {
