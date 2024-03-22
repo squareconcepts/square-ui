@@ -16,6 +16,8 @@ class Card extends Component
         public bool $bordered = false,
         public bool $small = false,
         public $header_slot = null,
+        public string $titleBackgroundColor = 'slate-200',
+        public string $titleTextColor = 'slate-700'
     )
     {
     }
