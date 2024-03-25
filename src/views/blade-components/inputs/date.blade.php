@@ -5,7 +5,7 @@
         </label>
 
         <div class="relative flex items-center">
-            <input type="text" readonly x-on:click="open = !open" class="input-style pr-10" x-model="value"  data-1p-ignore />
+            <input type="text" readonly x-on:click="open = !open" class="input-style pr-10" x-model="value"  data-1p-ignore placeholder="Selecteer een datum" />
             <i class="fa-solid fa-calendar-alt text-slate-400 absolute right-2 "></i>
         </div>
 
