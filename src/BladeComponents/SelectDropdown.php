@@ -15,6 +15,7 @@ class SelectDropdown extends Component
         public ?string          $asyncRoute = null,
         public bool             $multiple = false,
         public string           $optionDescription = '',
+        public ?string          $classes = '',
     ) {}
 
     public function render(): View

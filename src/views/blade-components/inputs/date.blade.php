@@ -7,7 +7,6 @@
         <div class="relative flex items-center">
             <input type="text" readonly x-on:click="open = !open" class="placeholder-secondary-400 dark:bg-secondary-800 dark:text-secondary-400 dark:placeholder-secondary-500 border border-secondary-300 focus:ring-primary-500 focus:border-primary-500 dark:border-secondary-600 form-input block w-full sm:text-sm rounded-md transition ease-in-out duration-100 focus:outline-none shadow-sm input-style pr-10 @error($model) !border-red-500 @enderror" x-model="value"  data-1p-ignore />
             <i class="fa-solid fa-calendar-alt text-slate-400 absolute right-2 @error($model) !text-red-500 @enderror"></i>
-
         </div>
         @error($model)
         <p class="mt-1 text-sm text-red-600" wire:model="{{$model}}">

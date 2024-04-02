@@ -1,4 +1,4 @@
-<div class="relative" x-data="{
+<div class="relative {{$classes}}" x-data="{
         open: false,
         search: '',
         results: {{ json_encode($items) }},
