@@ -1,18 +1,35 @@
-<div x-data="datepicker('{{ $attributes->has('x-model') ? 'true' : 'false' }}', {{$attributes->get('x-model')}})" class="relative" wire:ignore x-on:click.outside="submitChanges()" @keydown.escape.window="close()" {{$attributes->except(['wire:model'])}}>
+<div x-data="datepicker('{{ $attributes->has('x-model') ? 'true' : 'false' }}', {{$attributes->get('x-model')}})" class="relative"  x-on:click.outside="submitChanges()" @keydown.escape.window="close()" {{$attributes->except(['wire:model'])}}>
     <div class="relative">
-        <label for="number" class="text-sm font-medium text-gray-700 flex items-center gap-1 relative ">
+        <label for="number" class="text-sm font-medium text-gray-700 flex items-center gap-1 relative @error($model) !text-red-500 @enderror">
             {{$attributes->get('label')}}
         </label>
 
         <div class="relative flex items-center">
-            <input type="text" readonly x-on:click="open = !open" class="input-style pr-10" x-model="value"  data-1p-ignore />
-            <i class="fa-solid fa-calendar-alt text-slate-400 absolute right-2 "></i>
+            <input type="text" readonly x-on:click="open = !open" class="placeholder-secondary-400 dark:bg-secondary-800 dark:text-secondary-400 dark:placeholder-secondary-500 border border-secondary-300 focus:ring-primary-500 focus:border-primary-500 dark:border-secondary-600 form-input block w-full sm:text-sm rounded-md transition ease-in-out duration-100 focus:outline-none shadow-sm input-style pr-10 @error($model) !border-red-500 @enderror" x-model="value"  data-1p-ignore />
+            <i class="fa-solid fa-calendar-alt text-slate-400 absolute right-2 @error($model) !text-red-500 @enderror"></i>
+
         </div>
+        @error($model)
+        <p class="mt-1 text-sm text-red-600" wire:model="{{$model}}">
+            {{$message}}
+        </p>
+        @enderror
 
     </div>
 
     <template x-if="open">
         <div class="absolute top-[67px] left-0 right-1 bg-white rounded w-full min-w-[400px] max-w-[400px] mb-4 shadow z-[100]" x-ref="calendar" >
+            <div class="grid grid-cols-3 gap-1 p-1">
+                <div @click="selectYesterday()" class="outline-none inline-flex justify-center items-center group transition-all ease-in duration-150  disabled:opacity-80 disabled:cursor-not-allowed rounded gap-x-2 text-sm px-4 py-2 border text-slate-500 hover:bg-slate-100 bg-slate-200 border-slate-200 hover:bg-slate-100 hover:border-slate-100 shadow-none cursor-pointer">
+                    Gister
+                </div>
+                <div @click="selectToday()" class="outline-none inline-flex justify-center items-center group transition-all ease-in duration-150  disabled:opacity-80 disabled:cursor-not-allowed rounded gap-x-2 text-sm px-4 py-2 border text-slate-500 hover:bg-slate-100 bg-slate-200 border-slate-200 hover:bg-slate-100 hover:border-slate-100 shadow-none cursor-pointer">
+                    Vandaag
+                </div>
+                <div @click="selectTomorrow()"  class="outline-none inline-flex justify-center items-center group transition-all ease-in duration-150  disabled:opacity-80 disabled:cursor-not-allowed rounded gap-x-2 text-sm px-4 py-2 border text-slate-500 hover:bg-slate-100 bg-slate-200 border-slate-200 hover:bg-slate-100 hover:border-slate-100 shadow-none cursor-pointer">
+                    Morgen
+                </div>
+            </div>
             <template x-if="!showingTimepicker">
                 <div>
                     <div class="flex justify-between items-center p-2">
@@ -59,8 +76,20 @@
                                         <div class="w-[50px] h-[50px] flex items-center justify-center cursor-pointer group"
                                              @click="selectDate(day)"
                                         >
-                                            <p class="w-[40px] h-[40px] flex items-center justify-center text-center"
-                                               :class="day.isCurrent ? 'bg-positive-500 text-white font-extrabold rounded-full' : (day.monthType !== 'current' ? (day.isToday ? 'bg-slate-100 text-slate-700 opacity-50 group-hover:bg-slate-400 rounded-full' : 'text-slate-700 opacity-50 group-hover:bg-slate-400 rounded-full') : 'group-hover:text-white group-hover:font-extrabold group-hover:bg-slate-400 group-hover:rounded-full')"
+                                            <p class="w-[40px] h-[40px] flex items-center justify-center text-center "
+{{--                                               :class="--}}
+{{--                                               day.isCurrent ? 'bg-primary-500 text-white font-extrabold rounded-full' :--}}
+{{--                                               (day.monthType !== 'current' ? (day.isToday ? 'bg-slate-100 text-slate-700 opacity-50 group-hover:bg-slate-200 rounded-full' : 'text-slate-700 opacity-50 group-hover:bg-slate-400 rounded-full')--}}
+{{--                                               : 'group-hover:text-white group-hover:font-extrabold group-hover:bg-slate-200 group-hover:rounded-full')--}}
+{{--                                               "--}}
+
+                                               :class="{
+                                                'bg-primary-500 text-white font-extrabold rounded-full' : day.isCurrent,
+                                                'group-hover:bg-slate-200 group-hover:rounded-full' : !day.isToday && !day.isCurrent,
+                                                'border border-primary-500 rounded-full' : day.isToday,
+                                                'text-slate-700 opacity-50 group-hover:bg-slate-400 rounded-full' : day.monthType !== 'current' && !day.isToday,
+
+                                               }"
                                                x-text="day.date !== null ? day.date.format('DD') : ''"
                                             >
 
@@ -100,10 +129,10 @@
                 </div>
             </template>
             <div class="bg-slate-200 p-4 flex justify-between items-center">
-                <div>
-                    <x-button sm positive icon="check" @click="submitChanges()" :label="__('Save')"/>
-                    <x-button sm negative icon="x" @click="close()" label="Sluiten"/>
-                    <x-button sm icon="trash" @click="clearPicker()"/>
+                <div class="flex flex-wrap gap-1">
+                    <x-button sm primary icon="check" @click="submitChanges()" :label="__('Save')"/>
+                    <x-button sm icon="x" @click="close()" label="Sluiten"/>
+                    <x-button sm icon="trash" @click="clearPicker()" label="Wissen"/>
                 </div>
                 <template x-if="withTime">
                     <div class="flex items-center gap-2 p-2">
@@ -418,6 +447,18 @@
                     this.$nextTick(() => {
                         this.updateCalendar();
                     });
+                },
+                selectYesterday(){
+                    let date = moment().subtract(1, 'day');
+                    this.selectDate({date:date});
+                },
+                selectToday(){
+                    let date = moment();
+                    this.selectDate({date:date});
+                },
+                selectTomorrow(){
+                    let date = moment().add(1, 'day');
+                    this.selectDate({date:date});
                 },
                 selectDate(date) {
                     this.valueDate = date.date;
