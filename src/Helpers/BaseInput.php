@@ -28,7 +28,7 @@
 
         public function getClasses( $hasError = false): string
         {
-            $baseClass = 'input-style';
+            $baseClass = 'border-secondary-300 input-style';
             $errorClass = 'border-red-500 !border-2 text-red-500 !pr-10';
             $rightIconClass = '!pr-10';
             $iconClass = '!pl-10';
