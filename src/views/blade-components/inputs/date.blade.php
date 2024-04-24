@@ -76,11 +76,11 @@
                                              @click="selectDate(day)"
                                         >
                                             <p class="w-[40px] h-[40px] flex items-center justify-center text-center "
-{{--                                               :class="--}}
-{{--                                               day.isCurrent ? 'bg-primary-500 text-white font-extrabold rounded-full' :--}}
-{{--                                               (day.monthType !== 'current' ? (day.isToday ? 'bg-slate-100 text-slate-700 opacity-50 group-hover:bg-slate-200 rounded-full' : 'text-slate-700 opacity-50 group-hover:bg-slate-400 rounded-full')--}}
-{{--                                               : 'group-hover:text-white group-hover:font-extrabold group-hover:bg-slate-200 group-hover:rounded-full')--}}
-{{--                                               "--}}
+                                               {{--                                               :class="--}}
+                                               {{--                                               day.isCurrent ? 'bg-primary-500 text-white font-extrabold rounded-full' :--}}
+                                               {{--                                               (day.monthType !== 'current' ? (day.isToday ? 'bg-slate-100 text-slate-700 opacity-50 group-hover:bg-slate-200 rounded-full' : 'text-slate-700 opacity-50 group-hover:bg-slate-400 rounded-full')--}}
+                                               {{--                                               : 'group-hover:text-white group-hover:font-extrabold group-hover:bg-slate-200 group-hover:rounded-full')--}}
+                                               {{--                                               "--}}
 
                                                :class="{
                                                 'bg-primary-500 text-white font-extrabold rounded-full' : day.isCurrent,
@@ -264,6 +264,8 @@
                         }
 
                     });
+
+                    this.submitInitialValue();
                 },
                 createDateFromString(dateString) {
                     if(dateString == null) {
@@ -494,6 +496,16 @@
                         this.setPrevValue();
                         this.close();
                     }
+                },
+                submitInitialValue(){
+                    this.selectDate({date:this.valueDate});
+                    if(this.usingLivewire) {
+                        @this.set(this.model, this.value);
+                    } else {
+                        this.$dispatch('datechanged',  this.value);
+                    }
+                    this.setPrevValue();
+                    this.close();
                 },
                 increaseMinute(){
                     this.minutes = this.minutes + 1;
