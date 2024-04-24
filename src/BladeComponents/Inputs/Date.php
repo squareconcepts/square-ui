@@ -18,6 +18,22 @@
                     $this->value = Carbon::parse($this->value);
                 }
             }
+
+            if($this->value instanceof Carbon) {
+                $minutes = $this->value->minute;
+
+                // Bereken hoeveel minuten naar het volgende veelvoud van 5 minuten moeten worden afgerond
+                $remainder = $minutes % $this->minuteOptions[1];
+                $rounding = $this->minuteOptions[1] - $remainder;
+
+                // Als de huidige minuten al het dichtstbijzijnde veelvoud van 5 minuten zijn, retourneer het datetime-object ongewijzigd
+                if ( $remainder === 0 ) {
+                    return;
+                }
+
+                // Anders rond naar het dichtstbijzijnde veelvoud van 5 minuten
+                $this->value = $this->value->addMinutes($rounding);
+            }
         }
 
         public function render(): View
