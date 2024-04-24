@@ -57,6 +57,10 @@
                     $this->minuteOptions = range(0,59);
                 }
 
+                if($this->value->hour > $hour){
+                    $this->value->setMinutes($this->minuteOptions[0]);
+                }
+
             }
         }
 
