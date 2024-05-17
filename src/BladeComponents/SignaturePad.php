@@ -10,6 +10,7 @@ class SignaturePad extends Component
 {
     public function __construct(
         public string $label = 'Signature',
+        public bool $autoSave = true,
         public string $saveButtonText = 'Save',
         public string $clearText = 'Clear',
     ) {

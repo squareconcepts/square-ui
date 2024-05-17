@@ -13,6 +13,9 @@
         if (this.signature) {
             this.signaturePad.fromDataURL(this.signature, { ratio: this.ratio });
         }
+        @if($autoSave)
+            this.signaturePad.addEventListener('endStroke', () =>  this.save());
+        @endif
     },
     save() {
         const data = this.signaturePad.toData();
@@ -45,7 +48,9 @@
             @class(['w-full h-full border-2 border-dashed rounded-md bg-white border-gray-300 max-w-[400px]']) style="height: 200px;"></canvas>
     <div class="flex mt-2 space-x-2">
         <x-square-ui::button :label="$clearText" x-on:click="clear()" />
-        <x-square-ui::button :label="$saveButtonText" type="positive" x-on:click="save()" />
+        @if(!$autoSave)
+            <x-square-ui::button :label="$saveButtonText" type="positive" x-on:click="save()" />
+        @endif
     </div>
 
 </div>
