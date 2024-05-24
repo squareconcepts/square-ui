@@ -10,7 +10,7 @@
                 @endif
             </div>
         </div>
-        <span class="bg-primary-500">
+        <span stylye="background: {{$iconBackgroundColor == null ? 'transparent' : $iconBackgroundColor}};">
                 <i class="{{ $icon }} fa-3x" style="color: {{ $iconColor }}"></i>
             </span>
     </div>
