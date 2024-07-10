@@ -10,7 +10,7 @@
             </label>
         </div>
     @endif
-    <div  x-data="ckEditor('{{ $identifier }}', '{{ addslashes($value) }}', '{{ $model }}', '{{ $componentId }}')" x-init="initEditor" >
+    <div  x-data="ckEditor('{{ $identifier }}', '{{ addslashes($value) }}', '{{ $model }}', '{{ $componentId }}', '{{ route('square-ui.file-upload') }}', '{{ csrf_token() }}', '{{ Route::has('square-ui.chat-gpt.ask') ? route('square-ui.chat-gpt.ask') : null }}')" x-init="initEditor" >
         <div x-show="!showHtml">
             <textarea x-ref="ckeditor_{{ $identifier }}" {{ $attributes }}></textarea>
         </div>
@@ -105,149 +105,149 @@
             </div>
         @endif
     </div>
-    <script>
-        document.addEventListener('alpine:init', () => {
-            initAlpineEditor()
-        });
-        document.addEventListener('livewire:navigated', () => {
-            initAlpineEditor()
-        });
+{{--    <script>--}}
+{{--        document.addEventListener('alpine:init', () => {--}}
+{{--            initAlpineEditor()--}}
+{{--        });--}}
+{{--        document.addEventListener('livewire:navigated', () => {--}}
+{{--            initAlpineEditor()--}}
+{{--        });--}}
 
-        function initAlpineEditor() {
-            window.Alpine.data('ckEditor', (identifier, value, model, componentId) => ({
-                identifier: identifier,
-                value: value,
-                model: model,
-                componentId: componentId,
-                isInitialized: false,
-                showHtml: false,
-                showChatGpt: false,
-                promptPrefixOption: ['Kun je van deze tekst een makkelijker te lezen sales ingestoken variant maken maar behoud de html zoals deze al in te tekst staat:', ''],
-                promptPrefix: '',
-                prompt: '',
-                promptRows: 1,
-                chatGptResult: null,
-                askingChatGpt: false,
-                initEditor() {
-                    if(!this.isInitialized) {
-                        ClassicEditor
-                            .create(this.$refs['ckeditor_' + this.identifier], {
-                                mediaEmbed: {
-                                    previewsInData: true
-                                },
-                                removePlugins: ["MediaEmbedToolbar"],
-                                simpleUpload: {
-                                    // The URL that the images are uploaded to.
-                                    uploadUrl: '{{ route('square-ui.file-upload') }}',
+{{--        function initAlpineEditor() {--}}
+{{--            window.Alpine.data('ckEditor', (identifier, value, model, componentId) => ({--}}
+{{--                identifier: identifier,--}}
+{{--                value: value,--}}
+{{--                model: model,--}}
+{{--                componentId: componentId,--}}
+{{--                isInitialized: false,--}}
+{{--                showHtml: false,--}}
+{{--                showChatGpt: false,--}}
+{{--                promptPrefixOption: ['Kun je van deze tekst een makkelijker te lezen sales ingestoken variant maken maar behoud de html zoals deze al in te tekst staat:', ''],--}}
+{{--                promptPrefix: '',--}}
+{{--                prompt: '',--}}
+{{--                promptRows: 1,--}}
+{{--                chatGptResult: null,--}}
+{{--                askingChatGpt: false,--}}
+{{--                initEditor() {--}}
+{{--                    if(!this.isInitialized) {--}}
+{{--                        ClassicEditor--}}
+{{--                            .create(this.$refs['ckeditor_' + this.identifier], {--}}
+{{--                                mediaEmbed: {--}}
+{{--                                    previewsInData: true--}}
+{{--                                },--}}
+{{--                                removePlugins: ["MediaEmbedToolbar"],--}}
+{{--                                simpleUpload: {--}}
+{{--                                    // The URL that the images are uploaded to.--}}
+{{--                                    uploadUrl: '{{ route('square-ui.file-upload') }}',--}}
 
-                                    // Enable the XMLHttpRequest.withCredentials property.
-                                    withCredentials: true,
+{{--                                    // Enable the XMLHttpRequest.withCredentials property.--}}
+{{--                                    withCredentials: true,--}}
 
-                                    // Headers sent along with the XMLHttpRequest to the upload server.
-                                    headers: {
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                    }
-                                },
-                                toolbar: [
-                                    'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'underline','strikethrough', '|', 'link', '|', 'bulletedList', 'numberedList', 'todoList', '|',
-                                    'outdent', 'indent', '|', 'blockQuote', 'insertTable', '|', 'alignment', '|', 'imageUpload', '|', 'codeBlock'
-                                ]
-                            })
-                            .then(editor => {
-                                this.editor = editor;
-                                editor.setData(this.value);
-                                this.prompt = this.value;
-                                this.promptPrefix = this.promptPrefixOption[0];
-                                this.getLineCount();
-                                editor.model.document.on('change:data', () => {
-                                    this.value = editor.getData();
-                                    this.prompt = this.value;
-                                    this.getLineCount();
-                                    if(this.componentId.length > 0) {
-                                        Livewire.find(this.componentId).set(this.model, editor.getData());
-                                    } else {
-                                        @this.set(this.model, editor.getData());
-                                    }
-                                });
+{{--                                    // Headers sent along with the XMLHttpRequest to the upload server.--}}
+{{--                                    headers: {--}}
+{{--                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',--}}
+{{--                                    }--}}
+{{--                                },--}}
+{{--                                toolbar: [--}}
+{{--                                    'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'underline','strikethrough', '|', 'link', '|', 'bulletedList', 'numberedList', 'todoList', '|',--}}
+{{--                                    'outdent', 'indent', '|', 'blockQuote', 'insertTable', '|', 'alignment', '|', 'imageUpload', '|', 'codeBlock'--}}
+{{--                                ]--}}
+{{--                            })--}}
+{{--                            .then(editor => {--}}
+{{--                                this.editor = editor;--}}
+{{--                                editor.setData(this.value);--}}
+{{--                                this.prompt = this.value;--}}
+{{--                                this.promptPrefix = this.promptPrefixOption[0];--}}
+{{--                                this.getLineCount();--}}
+{{--                                editor.model.document.on('change:data', () => {--}}
+{{--                                    this.value = editor.getData();--}}
+{{--                                    this.prompt = this.value;--}}
+{{--                                    this.getLineCount();--}}
+{{--                                    if(this.componentId.length > 0) {--}}
+{{--                                        Livewire.find(this.componentId).set(this.model, editor.getData());--}}
+{{--                                    } else {--}}
+{{--                                        @this.set(this.model, editor.getData());--}}
+{{--                                    }--}}
+{{--                                });--}}
 
-                                document.addEventListener('update-editor-data', (event) => {
-                                    const id = event.detail[0]['id'];
-                                    const value = event.detail[0]['value'];
-                                    if(id === this.identifier) {
-                                        editor.setData(value)
-                                    }
-                                })
+{{--                                document.addEventListener('update-editor-data', (event) => {--}}
+{{--                                    const id = event.detail[0]['id'];--}}
+{{--                                    const value = event.detail[0]['value'];--}}
+{{--                                    if(id === this.identifier) {--}}
+{{--                                        editor.setData(value)--}}
+{{--                                    }--}}
+{{--                                })--}}
 
-                                document.addEventListener('update-'+ this.identifier +'-value', (event) => {
-                                    editor.setData(event.detail)
-                                })
-                            })
-                            .catch(error => {
-                                console.error('Error initializing CKEditor:', error);
-                            });
+{{--                                document.addEventListener('update-'+ this.identifier +'-value', (event) => {--}}
+{{--                                    editor.setData(event.detail)--}}
+{{--                                })--}}
+{{--                            })--}}
+{{--                            .catch(error => {--}}
+{{--                                console.error('Error initializing CKEditor:', error);--}}
+{{--                            });--}}
 
-                        this.isInitialized = true;
-                    }
-                },
-                changeMode() {
-                    if(this.showHtml) {
-                        const value = this.$refs['ckeditor_' + this.identifier + '_preview'].value;
-                        document.dispatchEvent(new CustomEvent('update-' + this.identifier + '-value', { detail: value}));
-                        this.showHtml = false;
-                    } else {
-                        this.$refs['ckeditor_' + this.identifier + '_preview'].value = this.value;
-                        this.showHtml = true;
-                    }
-                },
-                changeChatGptMode() {
-                    this.showChatGpt = ! this.showChatGpt;
-                },
-                getLineCount() {
-                    if(!this.showChatGpt) {
-                        return 1;
-                    }
-                    const textarea = this.$refs['chatgpt_' + this.identifier + '_prompt_preview'];
+{{--                        this.isInitialized = true;--}}
+{{--                    }--}}
+{{--                },--}}
+{{--                changeMode() {--}}
+{{--                    if(this.showHtml) {--}}
+{{--                        const value = this.$refs['ckeditor_' + this.identifier + '_preview'].value;--}}
+{{--                        document.dispatchEvent(new CustomEvent('update-' + this.identifier + '-value', { detail: value}));--}}
+{{--                        this.showHtml = false;--}}
+{{--                    } else {--}}
+{{--                        this.$refs['ckeditor_' + this.identifier + '_preview'].value = this.value;--}}
+{{--                        this.showHtml = true;--}}
+{{--                    }--}}
+{{--                },--}}
+{{--                changeChatGptMode() {--}}
+{{--                    this.showChatGpt = ! this.showChatGpt;--}}
+{{--                },--}}
+{{--                getLineCount() {--}}
+{{--                    if(!this.showChatGpt) {--}}
+{{--                        return 1;--}}
+{{--                    }--}}
+{{--                    const textarea = this.$refs['chatgpt_' + this.identifier + '_prompt_preview'];--}}
 
-                    const lineHeight = parseInt(getComputedStyle(textarea).lineHeight);
-                    const textareaHeight = Math.max(textarea.scrollHeight,textarea.clientHeight) ;
-                    this.promptRows = Math.round(textareaHeight / lineHeight);
-                },
-                askChatGPT() {
-                    this.chatGptResult = null;
-                    this.askingChatGpt = true;
-                    const question = this.promptPrefix + ' ' + this.prompt;
-                    const route = @js(Route::has('square-ui.chat-gpt.ask') ? route('square-ui.chat-gpt.ask') : null);
-                    if(route == null ) {
-                        console.error('Error: Er bestaat geen route met de naam: "square-ui.chat-gpt.ask". Maak een post route aan met deze naam.')
-                        return;
-                    }
+{{--                    const lineHeight = parseInt(getComputedStyle(textarea).lineHeight);--}}
+{{--                    const textareaHeight = Math.max(textarea.scrollHeight,textarea.clientHeight) ;--}}
+{{--                    this.promptRows = Math.round(textareaHeight / lineHeight);--}}
+{{--                },--}}
+{{--                askChatGPT() {--}}
+{{--                    this.chatGptResult = null;--}}
+{{--                    this.askingChatGpt = true;--}}
+{{--                    const question = this.promptPrefix + ' ' + this.prompt;--}}
+{{--                    const route = @js(Route::has('square-ui.chat-gpt.ask') ? route('square-ui.chat-gpt.ask') : null);--}}
+{{--                    if(route == null ) {--}}
+{{--                        console.error('Error: Er bestaat geen route met de naam: "square-ui.chat-gpt.ask". Maak een post route aan met deze naam.')--}}
+{{--                        return;--}}
+{{--                    }--}}
 
-                    fetch(route, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ question: question }),
-                    })
-                        .then(response => response.text())
-                        .then(data => {
-                            this.chatGptResult = data;
-                            this.askingChatGpt = false;
-                        })
-                        .catch(error => {
-                            console.error('Error:', error)
-                            this.askingChatGpt = false;
-                        })
+{{--                    fetch(route, {--}}
+{{--                        method: 'POST',--}}
+{{--                        headers: {--}}
+{{--                            'X-CSRF-TOKEN': '{{ csrf_token() }}',--}}
+{{--                            'Content-Type': 'application/json',--}}
+{{--                        },--}}
+{{--                        body: JSON.stringify({ question: question }),--}}
+{{--                    })--}}
+{{--                        .then(response => response.text())--}}
+{{--                        .then(data => {--}}
+{{--                            this.chatGptResult = data;--}}
+{{--                            this.askingChatGpt = false;--}}
+{{--                        })--}}
+{{--                        .catch(error => {--}}
+{{--                            console.error('Error:', error)--}}
+{{--                            this.askingChatGpt = false;--}}
+{{--                        })--}}
 
-                },
-                useText() {
-                    document.dispatchEvent(new CustomEvent('update-' + this.identifier + '-value', { detail: this.chatGptResult}));
-                    this.chatGptResult = null;
-                    this.changeChatGptMode();
-                }
+{{--                },--}}
+{{--                useText() {--}}
+{{--                    document.dispatchEvent(new CustomEvent('update-' + this.identifier + '-value', { detail: this.chatGptResult}));--}}
+{{--                    this.chatGptResult = null;--}}
+{{--                    this.changeChatGptMode();--}}
+{{--                }--}}
 
-            }));
-        }
-    </script>
+{{--            }));--}}
+{{--        }--}}
+{{--    </script>--}}
 </div>
