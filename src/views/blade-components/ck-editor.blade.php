@@ -10,7 +10,7 @@
             </label>
         </div>
     @endif
-    <div  x-data="ckEditor('{{ $identifier }}', '{{ addslashes($value) }}', '{{ $model }}', '{{ $componentId }}')" x-init="initEditor" >
+    <div  x-data="ckEditor('{{ $identifier }}', @js(addslashes(str_replace(['\n', '\r', '\r\n'], '<br>', $value))), '{{ $model }}', '{{ $componentId }}')" x-init="initEditor" >
         <div x-show="!showHtml">
             <textarea x-ref="ckeditor_{{ $identifier }}" {{ $attributes }}></textarea>
         </div>
