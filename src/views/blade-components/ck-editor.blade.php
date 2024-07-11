@@ -105,16 +105,9 @@
             </div>
         @endif
     </div>
-    <script>
-        document.addEventListener('alpine:init', () => {
-            initAlpineEditor()
-        });
-        document.addEventListener('livewire:navigated', () => {
-            initAlpineEditor()
-        });
-
-        function initAlpineEditor() {
-            window.Alpine.data('ckEditor', (identifier, value, model, componentId) => ({
+    @script
+        <script>
+            Alpine.data('ckEditor', (identifier, value, model, componentId) => ({
                 identifier: identifier,
                 value: value,
                 model: model,
@@ -248,6 +241,6 @@
                 }
 
             }));
-        }
-    </script>
+        </script>
+    @endscript
 </div>
