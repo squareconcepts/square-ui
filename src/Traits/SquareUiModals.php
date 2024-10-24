@@ -30,9 +30,9 @@
                     confirmButtonText: '$confirmButtonText',
                     cancelButtonText: '$cancelButtonText'
                 }).then((result) => {
-                    if(result.isConfirmed ){
+                   if(result.isConfirmed ){
                         Livewire.dispatch('confirmCalled', {params: '$serialized'});
-                    } else if('$cancelButtonCallback' != null) {
+                    } else if(result.isDenied && '$cancelButtonCallback' != null) {
                         Livewire.dispatch('$cancelButtonCallback',  {params: '$serialized'});
                     }
                 });
