@@ -33,7 +33,7 @@
                     if(result.isConfirmed ){
                         Livewire.dispatch('confirmCalled', {params: '$serialized'});
                     } else if('$cancelButtonCallback' != null) {
-                        Livewire.dispatch('$cancelButtonCallback');
+                        Livewire.dispatch('$cancelButtonCallback',  {params: '$serialized'});
                     }
                 });
             JS);
