@@ -13,7 +13,7 @@
                 return array_merge( $this->listeners, [ 'confirmCalled'] );
             }
        }
-        public function confirm( string $message, ?string $title = null, $icon = 'question', $confirmButtonText = 'Ok', $cancelButtonText = 'Cancel' , $cancelButtonCallback = null, $params = null )
+        public function confirm( string $message, ?string $title = null, $icon = 'question', $confirmButtonText = 'Ok', $cancelButtonText = 'Cancel' , $cancelButtonCallback = null, $params = null, $cancelButtonsColor =   '#ef4444', $confirmButtonColor =   "#10b981")
         {
             $title = $title ?? __('square-ui::square-ui.modal.confirm');
             $serialized = serialize($params);
@@ -24,8 +24,8 @@
                     text: '$message',
                     icon: '$icon',
                     showCancelButton: 1,
-                    cancelButtonColor: '#ef4444',
-                    confirmButtonColor: "#10b981",
+                    cancelButtonColor: '$cancelButtonsColor',
+                    confirmButtonColor:  '$confirmButtonColor',
                     inputValue: '$params',
                     confirmButtonText: '$confirmButtonText',
                     cancelButtonText: '$cancelButtonText'
