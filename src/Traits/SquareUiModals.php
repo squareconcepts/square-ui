@@ -13,7 +13,7 @@
                 return array_merge( $this->listeners, [ 'confirmCalled'] );
             }
        }
-        public function confirm( string $message, ?string $title = null, $icon = 'question', $confirmButtonText = 'Ok', $cancelButtonText = 'Cancel' , $cancelButtonCallback = null, $params = null, $cancelButtonsColor =   '#ef4444', $confirmButtonColor =   "#10b981")
+        public function confirm( string $message, ?string $title = null, $icon = 'question', $confirmButtonText = 'Ok', $cancelButtonText = 'Cancel' , $cancelButtonCallback = null, $params = null, $cancelButtonsColor =   '#ef4444', $confirmButtonColor =   "#10b981", $allowClickOutside = false, $allowEscape = false)
         {
             $title = $title ?? __('square-ui::square-ui.modal.confirm');
             $serialized = serialize($params);
@@ -28,11 +28,13 @@
                     confirmButtonColor:  '$confirmButtonColor',
                     inputValue: '$params',
                     confirmButtonText: '$confirmButtonText',
-                    cancelButtonText: '$cancelButtonText'
+                    cancelButtonText: '$cancelButtonText',
+                    allowOutsideClick:'$allowClickOutside',
+                    allowEscapeKey: '$allowEscape',
                 }).then((result) => {
                    if(result.isConfirmed ){
                         Livewire.dispatch('confirmCalled', {params: '$serialized'});
-                    } else if(result.isDenied && '$cancelButtonCallback' != null) {
+                    } else if('$cancelButtonCallback' != null) {
                         Livewire.dispatch('$cancelButtonCallback',  {params: '$serialized'});
                     }
                 });
