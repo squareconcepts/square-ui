@@ -99,4 +99,54 @@
 
         }
 
+        private function getToast($showConfirmButton = false, $timer = 1500, $progressBar = true)
+        {
+            // Merk op dat we de parameters $showConfirmButton, $timer en $progressBar gebruiken
+            $showConfirmButton = $showConfirmButton ? 'true' : 'false';
+            $progressBar = $progressBar ? 'true' : 'false';
+
+            return <<<JS
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: $showConfirmButton,
+                        timer: $timer,
+                        timerProgressBar: $progressBar,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                      }
+                    });
+                JS;
+
+
+        }
+
+        public function successToast($message, $duration = 1500, $showConfirmButton = false, $progressBar = true)
+        {
+            $toastJs = $this->getToast($showConfirmButton, timer: $duration, progressBar: $progressBar);
+
+            $this->js(<<<JS
+            $toastJs
+            Toast.fire({
+                icon: 'success',
+                text: '$message',
+            });
+        JS);
+        }
+
+        public function errorToast($message, $duration = 1500, $showConfirmButton = false, $progressBar = true)
+        {
+            $toastJs = $this->getToast($showConfirmButton, timer: $duration, progressBar: $progressBar);
+
+            // Roep de toast aan met de juiste parameters
+            $this->js(<<<JS
+            $toastJs
+            Toast.fire({
+                icon: 'error',
+                text: '$message',
+            });
+        JS);
+        }
+
     }
