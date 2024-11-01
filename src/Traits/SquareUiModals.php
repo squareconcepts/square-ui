@@ -12,7 +12,7 @@
             } else {
                 return array_merge( $this->listeners, [ 'confirmCalled'] );
             }
-       }
+        }
         public function confirm( string $message, ?string $title = null, $icon = 'question', $confirmButtonText = 'Ok', $cancelButtonText = 'Cancel' , $cancelButtonCallback = null, $params = null, $cancelButtonsColor =   '#ef4444', $confirmButtonColor =   "#10b981", $allowClickOutside = false, $allowEscape = false)
         {
             $title = $title ?? __('square-ui::square-ui.modal.confirm');
@@ -34,7 +34,7 @@
                 }).then((result) => {
                    if(result.isConfirmed ){
                         Livewire.dispatch('confirmCalled', {params: '$serialized'});
-                    } else if('$cancelButtonCallback' != null) {
+                    } else if('$cancelButtonCallback' != null && event.key !== 'Escape') {
                         Livewire.dispatch('$cancelButtonCallback',  {params: '$serialized'});
                     }
                 });
@@ -74,7 +74,7 @@
         {
             $title = $title ?? __('square-ui::square-ui.modal.confirm');
 
-                $this->js('Swal.fire({
+            $this->js('Swal.fire({
                 title: "' . $title . '",
                 text: "' . $message . '",
                 icon: "' . $icon . '",
@@ -86,16 +86,16 @@
 
         public function handleConfirmed($params)
         {
-           if(!blank($params)){
-               info('Confirm modal returned params but are ignored. Please add the handleConfirmed method to your component. This method should accept $params as a parameter.');
-           }
+            if(!blank($params)){
+                info('Confirm modal returned params but are ignored. Please add the handleConfirmed method to your component. This method should accept $params as a parameter.');
+            }
         }
 
         public function confirmCalled($params)
         {
             $params = unserialize($params);
 
-           $this->handleConfirmed($params);
+            $this->handleConfirmed($params);
 
         }
 
