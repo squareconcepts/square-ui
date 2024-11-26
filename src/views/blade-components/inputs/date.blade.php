@@ -463,8 +463,12 @@
                 },
                 selectDate(date) {
                     this.valueDate = date.date;
-                    this.valueDate.minutes(this.minutes);
-                    this.valueDate.hours(this.hours);
+
+                    if (this.valueDate !== null && this.valueDate !== '') {
+                        this.valueDate.minutes(this.minutes);
+                        this.valueDate.hours(this.hours);
+                    }
+
                     this.updateInternalDate();
                     if (date.monthType === 'previous') {
                         this.prevMonth();
