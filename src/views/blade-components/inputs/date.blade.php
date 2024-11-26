@@ -19,25 +19,25 @@
     <template x-if="open">
         <div class="absolute top-[67px] left-0 right-1 bg-white rounded w-full min-w-[400px] max-w-[400px] mb-4 shadow z-[100]" x-ref="calendar" >
             <div class="grid grid-cols-3 gap-1 p-1">
-                <div @click="selectYesterday()" class="outline-none inline-flex justify-center items-center group transition-all ease-in duration-150  disabled:opacity-80 disabled:cursor-not-allowed rounded gap-x-2 text-sm px-4 py-2 border text-slate-500 hover:bg-slate-100 bg-slate-200 border-slate-200 hover:bg-slate-100 hover:border-slate-100 shadow-none cursor-pointer">
+                <div @click="selectYesterday()" class="outline-none inline-flex justify-center items-center group transition-all ease-in duration-150  disabled:opacity-80 disabled:cursor-not-allowed rounded gap-x-2 text-sm px-4 py-2 border text-slate-500 hover:bg-slate-100 bg-slate-100 border-slate-100 hover:bg-slate-100 hover:border-slate-100 shadow-none cursor-pointer">
                     Gister
                 </div>
-                <div @click="selectToday()" class="outline-none inline-flex justify-center items-center group transition-all ease-in duration-150  disabled:opacity-80 disabled:cursor-not-allowed rounded gap-x-2 text-sm px-4 py-2 border text-slate-500 hover:bg-slate-100 bg-slate-200 border-slate-200 hover:bg-slate-100 hover:border-slate-100 shadow-none cursor-pointer">
+                <div @click="selectToday()" class="outline-none inline-flex justify-center items-center group transition-all ease-in duration-150  disabled:opacity-80 disabled:cursor-not-allowed rounded gap-x-2 text-sm px-4 py-2 border text-slate-500 hover:bg-slate-100 bg-slate-100 border-slate-100 hover:bg-slate-100 hover:border-slate-100 shadow-none cursor-pointer">
                     Vandaag
                 </div>
-                <div @click="selectTomorrow()"  class="outline-none inline-flex justify-center items-center group transition-all ease-in duration-150  disabled:opacity-80 disabled:cursor-not-allowed rounded gap-x-2 text-sm px-4 py-2 border text-slate-500 hover:bg-slate-100 bg-slate-200 border-slate-200 hover:bg-slate-100 hover:border-slate-100 shadow-none cursor-pointer">
+                <div @click="selectTomorrow()"  class="outline-none inline-flex justify-center items-center group transition-all ease-in duration-150  disabled:opacity-80 disabled:cursor-not-allowed rounded gap-x-2 text-sm px-4 py-2 border text-slate-500 hover:bg-slate-100 bg-slate-100 border-slate-100 hover:bg-slate-100 hover:border-slate-100 shadow-none cursor-pointer">
                     Morgen
                 </div>
             </div>
             <template x-if="!showingTimepicker">
                 <div>
-                    <div class="flex justify-between items-center p-2">
-                        <div @click="prevMonth()" class="w-10 h-10 hover:bg-slate-100 flex justify-center items-center cursor-pointer">
-                            <i class="fa-solid fa-chevron-left"></i>
+                    <div class="flex justify-between items-center p-2 border-b">
+                        <div @click="prevMonth()" class="w-8 h-8 hover:bg-slate-100 flex justify-center items-center cursor-pointer">
+                            <i class="fa-solid fa-chevron-left fa-xs"></i>
                         </div>
 
-                        <div class="flex-1 font-bold text-slate-700 uppercase text-center flex justify-center items-center gap-1">
-                            <select x-model="monthString" class="border-0 font-bold text-slate-700 ring-0 focus-visible:!ring-0 p-0 pr-8">
+                        <div class="flex-1 text-slate-700 uppercase text-center flex justify-center items-center gap-1 text-[14px]">
+                            <select x-model="monthString" class="appearance-none border-0 text-slate-700 ring-0 focus-visible:!ring-0 p-0 pr-8">
                                 <option value="Januari">Januari </option>
                                 <option value="Februari">Februari </option>
                                 <option value="Maart">Maart </option>
@@ -51,28 +51,28 @@
                                 <option value="November">November </option>
                                 <option value="December">December </option>
                             </select>
-                            <input type="number" x-model="year" class="border-0 font-bold text-slate-700 uppercase ring-0 focus-visible:!ring-0 p-0 w-[80px]"/>
+                            <input type="number" x-model="year" class="border-0 w-[111px] text-center text-slate-700 uppercase ring-0 focus-visible:!ring-0 p-0 w-[80px]"/>
                         </div>
 
-                        <div @click="nextMonth()" class="w-10  h-10 hover:bg-slate-100 flex justify-center items-center cursor-pointer">
-                            <i class="fa-solid fa-chevron-right"></i>
+                        <div @click="nextMonth()" class="w-8  h-8 hover:bg-slate-100 flex justify-center items-center cursor-pointer">
+                            <i class="fa-solid fa-chevron-right fa-xs"></i>
                         </div>
                     </div>
                     <div class="grid grid-cols-8 w-full">
-                        <div class="min-min-w-[50px] h-[30px] flex items-center justify-center bg-slate-300 font-bold text-slate-700 uppercase text-xs">Week</div>
-                        <div class="min-min-w-[50px] h-[30px] flex items-center justify-center font-bold bg-slate-300  text-slate-700 uppercase text-xs">ma</div>
-                        <div class="min-w-[50px] h-[30px] flex items-center justify-center font-bold bg-slate-300  text-slate-700 uppercase text-xs">di</div>
-                        <div class="min-w-[50px] h-[30px] flex items-center justify-center font-bold bg-slate-300  text-slate-700 uppercase text-xs">wo</div>
-                        <div class="min-w-[50px] h-[30px] flex items-center justify-center font-bold bg-slate-300  text-slate-700 uppercase text-xs">do</div>
-                        <div class="min-w-[50px] h-[30px] flex items-center justify-center font-bold bg-slate-300  text-slate-700 uppercase text-xs">vr</div>
-                        <div class="min-w-[50px] h-[30px] flex items-center justify-center font-bold bg-slate-300  text-slate-700 uppercase text-xs">za</div>
-                        <div class="min-w-[50px] h-[30px] flex items-center justify-center font-bold bg-slate-300  text-slate-700 uppercase text-xs">zo</div>
+                        <div class="w-[40px] h-[30px] flex items-center justify-center text-slate-400 uppercase text-[10px] border-r">Week</div>
+                        <div class="min-w-[50px] h-[30px] flex items-center justify-center text-slate-400 uppercase text-[10px]">ma</div>
+                        <div class="min-w-[50px] h-[30px] flex items-center justify-center text-slate-400 uppercase text-[10px]">di</div>
+                        <div class="min-w-[50px] h-[30px] flex items-center justify-center text-slate-400 uppercase text-[10px]">wo</div>
+                        <div class="min-w-[50px] h-[30px] flex items-center justify-center text-slate-400 uppercase text-[10px]">do</div>
+                        <div class="min-w-[50px] h-[30px] flex items-center justify-center text-slate-400 uppercase text-[10px]">vr</div>
+                        <div class="min-w-[50px] h-[30px] flex items-center justify-center text-slate-400 uppercase text-[10px]">za</div>
+                        <div class="min-w-[50px] h-[30px] flex items-center justify-center text-slate-400 uppercase text-[10px]">zo</div>
                         <template x-for="(week, weekIndex) in weeks" :key="'week-' + weekIndex">
                             <div class="col-span-full grid grid-cols-8">
-                                <div class="w-[50px] h-[50px] flex items-center justify-center opacity-50 bg-slate-300" x-text="getWeekNumber(week[0].date)"></div>
+                                <div class="w-[40px] h-[40px] flex items-center justify-center opacity-50 text-[12px] border-r border-slate-300" x-text="getWeekNumber(week[0].date)"></div>
                                 <template x-for="(day, dayIndex) in week" :key="'day-' + dayIndex">
                                     <template x-if="day.showDate">
-                                        <div class="w-[50px] h-[50px] flex items-center justify-center cursor-pointer group"
+                                        <div class="w-[40px] h-[40px] flex items-center justify-center cursor-pointer group"
                                              @click="selectDate(day)"
                                         >
                                             <p class="w-[40px] h-[40px] flex items-center justify-center text-center "
@@ -127,11 +127,11 @@
                     </div>
                 </div>
             </template>
-            <div class="bg-slate-200 p-4 flex justify-between items-center">
+            <div class="p-2 flex justify-between items-center">
                 <div class="flex flex-wrap gap-1">
                     <x-button sm primary icon="check" @click="submitChanges()" :label="__('Save')"/>
-                    <x-button sm icon="x" @click="close()" label="Sluiten"/>
-                    <x-button sm icon="trash" @click="clearPicker()" label="Wissen"/>
+                    <x-button sm flat icon="x" @click="close()" label="Sluiten"/>
+                    <x-button sm flat negative icon="trash" @click="clearPicker()" label="Wissen"/>
                 </div>
                 <template x-if="withTime">
                     <div class="flex items-center gap-2 p-2">
@@ -308,14 +308,19 @@
                 },
                 updatePosition() {
                     if (this.open) {
-                        const inputRect = this.$el.getBoundingClientRect();
-                        const calendarRect = this.$refs.calendar.getBoundingClientRect();
+                        // const inputRect = this.$el.getBoundingClientRect();
+                        // const calendarRect = this.$refs.calendar.getBoundingClientRect();
+                        //
+                        // if (inputRect.bottom + calendarRect.height > window.innerHeight) {
+                        //     this.$refs.calendar.style.top = '-'+calendarRect.height + 'px';
+                        // } else {
+                        //     this.$refs.calendar.style.top = '63px';
+                        // }
 
-                        if (inputRect.bottom + calendarRect.height > window.innerHeight) {
-                            this.$refs.calendar.style.top = '-'+calendarRect.height + 'px';
-                        } else {
-                            this.$refs.calendar.style.top = '63px';
-                        }
+                        this.$refs.calendar.scrollIntoView({
+                            behavior: "smooth", // or "auto" or "instant"
+                            block: "end" // or "end"
+                        });
 
                         this.open = true;
                     }
