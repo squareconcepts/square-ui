@@ -53,6 +53,8 @@
                 }).then((result) => {
                    if(result.isConfirmed ){
                         Livewire.dispatch('confirmCalled', {params: '$serialized'});
+                    } else if(result.isDenied ){
+                        Livewire.dispatch('$denyButtonCallback',  {params: '$serialized'});
                     } else if('$cancelButtonCallback' != null && event.key !== 'Escape') {
                         Livewire.dispatch('$cancelButtonCallback',  {params: '$serialized'});
                     }
