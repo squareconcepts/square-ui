@@ -13,10 +13,25 @@
                 return array_merge( $this->listeners, [ 'confirmCalled'] );
             }
         }
-        public function confirm( string $message, ?string $title = null, $icon = 'question', $confirmButtonText = 'Ok', $cancelButtonText = 'Cancel' , $cancelButtonCallback = null, $params = null, $cancelButtonsColor =   '#ef4444', $confirmButtonColor =   "#10b981", $allowClickOutside = false, $allowEscape = false)
-        {
+        public function confirm(
+            string $message,
+            ?string $title = null,
+            $icon = 'question',
+            $confirmButtonText = 'Ok',
+            $confirmButtonColor =   "#10b981",
+            $cancelButtonText = 'Cancel' ,
+            $cancelButtonCallback = null,
+            $cancelButtonsColor =   '#ef4444',
+            $denyButtonText = null,
+            $denyButtonColor = null,
+            $denyButtonCallback = null,
+            $params = null,
+            $allowClickOutside = false,
+            $allowEscape = false
+        ){
             $title = $title ?? __('square-ui::square-ui.modal.confirm');
             $serialized = serialize($params);
+            $showDenyButton = $denyButtonText != null;
 
             $this->js(<<<JS
                 Swal.fire({
@@ -31,6 +46,10 @@
                     cancelButtonText: '$cancelButtonText',
                     allowOutsideClick:'$allowClickOutside',
                     allowEscapeKey: '$allowEscape',
+                    showDenyButton: '$showDenyButton',
+                    denyButtonText: '$denyButtonText',
+                    denyButtonColor: '$denyButtonColor',
+                    denyButtonCallback: '$denyButtonCallback',
                 }).then((result) => {
                    if(result.isConfirmed ){
                         Livewire.dispatch('confirmCalled', {params: '$serialized'});
