@@ -19,6 +19,7 @@
             $icon = 'question',
             $confirmButtonText = 'Ok',
             $confirmButtonColor =   "#10b981",
+            $confirmButtonCallback = 'confirmCalled',
             $cancelButtonText = 'Cancel' ,
             $cancelButtonCallback = null,
             $cancelButtonsColor =   '#ef4444',
@@ -52,7 +53,7 @@
                     denyButtonCallback: '$denyButtonCallback',
                 }).then((result) => {
                    if(result.isConfirmed ){
-                        Livewire.dispatch('confirmCalled', {params: '$serialized'});
+                        Livewire.dispatch('$confirmButtonCallback', {params: '$serialized'});
                     } else if(result.isDenied ){
                         Livewire.dispatch('$denyButtonCallback',  {params: '$serialized'});
                     } else if('$cancelButtonCallback' != null && event.key !== 'Escape') {
