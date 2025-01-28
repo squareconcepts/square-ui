@@ -28,7 +28,10 @@
             $denyButtonCallback = null,
             $params = null,
             $allowClickOutside = false,
-            $allowEscape = false
+            $allowEscape = false,
+            $customClassConfirm =  '',
+            $customClassDeny =  '',
+            $customClassCancel =  '',
         ){
             $title = $title ?? __('square-ui::square-ui.modal.confirm');
             $serialized = serialize($params);
@@ -51,6 +54,11 @@
                     denyButtonText: '$denyButtonText',
                     denyButtonColor: '$denyButtonColor',
                     denyButtonCallback: '$denyButtonCallback',
+                    customClass: {
+                        confirmButton: '$customClassConfirm',
+                        denyButton: '$customClassDeny',
+                        cancelButton: '$customClassCancel'
+                    }
                 }).then((result) => {
                    if(result.isConfirmed ){
                         Livewire.dispatch('$confirmButtonCallback', {params: '$serialized'});
