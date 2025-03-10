@@ -10,7 +10,7 @@
             </label>
         </div>
     @endif
-    <div  x-data="ckEditor('{{ $identifier }}', @js(str_replace(['\n', '\r', '\r\n'], '<br>', $value)), '{{ $model }}', '{{ $componentId }}')" x-init="initEditor" >
+    <div x-data="ckEditor('{{ $identifier }}', @js(str_replace(['\n', '\r', '\r\n'], '<br>', $value)), '{{ $model }}', '{{ $componentId }}', {{ $debounceTime }})" x-init="initEditor" >
         <div x-show="!showHtml">
             <textarea x-ref="ckeditor_{{ $identifier }}" {{ $attributes }}></textarea>
         </div>
@@ -107,11 +107,12 @@
     </div>
     @script
         <script>
-            Alpine.data('ckEditor', (identifier, value, model, componentId) => ({
+            Alpine.data('ckEditor', (identifier, value, model, componentId, debounceTime) => ({
                 identifier: identifier,
                 value: value,
                 model: model,
                 componentId: componentId,
+                debounceTime: debounceTime,
                 isInitialized: false,
                 showHtml: false,
                 showChatGpt: false,
@@ -121,6 +122,7 @@
                 promptRows: 1,
                 chatGptResult: null,
                 askingChatGpt: false,
+                debounceTimer: null,
                 initEditor() {
                     if(!this.isInitialized) {
                         ClassicEditor
@@ -153,14 +155,17 @@
                                 this.promptPrefix = this.promptPrefixOption[0];
                                 this.getLineCount();
                                 editor.model.document.on('change:data', () => {
-                                    this.value = editor.getData();
-                                    this.prompt = this.value;
-                                    this.getLineCount();
-                                    if(this.componentId.length > 0) {
-                                        Livewire.find(this.componentId).set(this.model, editor.getData());
-                                    } else {
-                                        @this.set(this.model, editor.getData());
-                                    }
+                                    clearInterval(this.debounceTimer);
+                                    this.debounceTimer = setTimeout(() => {
+                                        this.value = editor.getData();
+                                        this.prompt = this.value;
+                                        this.getLineCount();
+                                        if(this.componentId.length > 0) {
+                                            Livewire.find(this.componentId).set(this.model, editor.getData());
+                                        } else {
+                                            @this.set(this.model, editor.getData());
+                                        }
+                                    }, this.debounceTime);
                                 });
 
                                 document.addEventListener('update-editor-data', (event) => {
