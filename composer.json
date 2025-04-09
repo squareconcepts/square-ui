@@ -3,8 +3,7 @@
     "description": "Collection of blade and livewire components",
     "type": "library",
     "require": {
-        "livewire/livewire": ">=v2.0.0",
-        "wireui/wireui": ">=v1.17.0",
+        "livewire/livewire": ">=v3.0.0",
         "laravel/framework": ">9.0.0",
         "guzzlehttp/guzzle": ">7.5@dev",
         "outhebox/blade-flags": "^1.2.0"
