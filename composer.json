@@ -4,7 +4,7 @@
     "type": "library",
     "require": {
         "livewire/livewire": ">=v3.0.0",
-        "laravel/framework": ">9.0.0",
+        "laravel/framework": ">11.0.0",
         "guzzlehttp/guzzle": ">7.5@dev",
         "outhebox/blade-flags": "^1.2.0"
     },

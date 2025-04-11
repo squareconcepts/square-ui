@@ -12,7 +12,8 @@
         public function __construct(
             public int  $seconds,
             public ?int $compareToSeconds = null,
-            public bool $showAsBadge = true
+            public bool $showAsBadge = true,
+            public?string $color = null
         )
         {
             $hours = intval($this->seconds / 3600);

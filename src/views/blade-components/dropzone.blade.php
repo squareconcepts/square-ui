@@ -4,14 +4,15 @@
      @drop.prevent="isDragging = false; handleDroppedFiles($event.dataTransfer.files)"
      x-on:dropzone-reset.window="resetDropzone($event.detail)"
 >
-    <label :class="{ 'bg-slate-300': isDragging }" class="py-8 w-full bg-slate-200 flex items-center justify-center border-2 border-slate-300 border-dashed rounded cursor-pointer hover:bg-slate-300 text-slate-500 font-bold uppercase rounded-xl" for="{{$identifier}}">
+
+    <label :class="{ 'bg-white': isDragging }" class="py-8 w-full bg-white flex items-center justify-center border-2 border-zinc-100 border-dashed cursor-pointer hover:bg-zinc-100/50 text-zinc-500  rounded-xl" for="{{$identifier}}">
         {{$multiple ? $dropzoneText : 'Sleep bestand hier of klik om te bladeren'}}
     </label>
    <template x-if="progress > 0">
        <div  class="my-2">
            <div class="flex justify-between mb-1" >
-               <span class="text-base font-medium text-slate-700">Upload voortgang</span>
-               <span class="text-sm font-medium text-slate-700" x-text="progress + '%'">0&</span>
+               <span class="text-base font-medium text-zinc-500">Upload voortgang</span>
+               <span class="text-sm font-medium text-zinc-500" x-text="progress + '%'">0&</span>
            </div>
            <div class="w-full bg-slate-100 rounded-full h-2.5">
                <div class="bg-green-500 h-2.5 rounded-full w-0" :style="{width: progress + '%'}"></div>

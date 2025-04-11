@@ -9,13 +9,12 @@ use Ramsey\Collection\Collection;
 class StatisticTile extends Component
 {
     public function __construct(
-        public string $label = '',
-        public string $icon = '',
-        public string $iconColor = '#000',
-        public ?string $iconBackgroundColor = null,
-        public string $valueColor = '#000',
-        public int $value = 0,
-        public bool $isCurrency = false,
+        public string $title = '',
+        public string $text = '',
+        public string $icon = 'home',
+        public string $iconColor = 'text-primary-500',
+        public ?string $shoutOut = null
+
     ) {
     }
 

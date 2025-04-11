@@ -4,13 +4,11 @@ namespace Squareconcepts\SquareUi\BladeComponents\Inputs;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
-use Squareconcepts\SquareUi\Helpers\BaseInput;
 
-class Password extends BaseInput
+class Password extends Component
 {
-    public function __construct( string $label, ?string $placeholder = null, string $type = 'password', bool $show1Password = false, )
+    public function __construct(public ?string $label = null, public bool $showPasswordStrength = true)
     {
-        parent::__construct($label, $placeholder, $type, 'key', 'eye', $show1Password, null);
     }
 
     public function render(): View

@@ -1,16 +1,16 @@
 <div>
     @if($compareToSeconds == null)
         @if($showAsBadge)
-            <x-badge flat secondary label="{{$time}}"/>
+            <flux:badge :color="$color ?? 'default'"> {{$time}}</flux:badge>
         @else
             <span>{{ $time }}</span>
         @endif
     @else
         @if($showAsBadge)
             @if($compareToSeconds < $seconds)
-                <x-badge flat negative label="{{$time}}"/>
+                <flux:badge :color="$color ?? 'red'"> {{$time}}</flux:badge>
             @else
-                <x-badge flat positive label="{{$time}}"/>
+                <flux:badge :color="$color ?? 'green'"> {{$time}}</flux:badge>
             @endif
         @else
             <span>{{ $time }}</span>

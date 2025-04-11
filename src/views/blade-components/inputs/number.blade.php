@@ -1,59 +1,71 @@
-<div class="flex flex-col mb-4 {{$attributes->has('disabled') ? 'opacity-60' : ''}}" x-data="{
-    value: $wire.entangle('{{ $attributes['wire:model'] }}').live,
-    step: {{$step}},
-    minus() {
-        if (this.value - this.step >= {{$min}}) {
-            this.value -= this.step;
+@php
+    $wireModel = $attributes->wire('model')->value();
+
+    if($wireModel){
+
+        $value = $this->{$attributes->wire('model')->value()};
+         if(isset($value) && !is_numeric($value)){
+            throw new InvalidArgumentException(' SquareUI input Exception: [Number input] wire:model has to be a integer');
         }
+    } else {
+        throw new InvalidArgumentException(' SquareUI input Exception: [Number input] wire:model is required');
     }
-}">
-    <?php
-    $name = $attributes->get('name') ?? $attributes->get('wire:model');
-    $hasError = $errors->has($name);
-    ?>
+    $min = null;
+    $max = null;
+    if($attributes->has('min')) {
+        $min = $attributes->get('min');
+    }
 
-    <label for="{{ $name }}" class="text-sm font-medium text-gray-700 flex items-center gap-1 {{$errors->has($name) ? 'text-red-500 !font-bold' : ''}}">
-        {{ $label }}
-        @if ($attributes->get('required'))
-            <span class="text-red-500 font-bold">*</span>
-        @endif
-    </label>
-    <div class="relative w-fit rounded-md {{$hasButtons ? 'has-buttons' : ''}}">
-        @if ($prefix || $icon)
-            <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none
-                {{ $hasError ? 'text-red-500' : 'text-secondary-400' }}">
-                @if ($icon)
-                    <i class="fa fa-{{$icon}} mx-1"></i>
-                @elseif($prefix)
-                    <span class="flex items-center self-center pl-1">
-                        {{ $prefix }}
-                    </span>
-                @endif
-            </div>
-        @endif
-        @if($hasButtons && !$attributes->has('disabled'))
-            <button type="button" class="h-full px-2 py-1 aspect-square text-sm text-white absolute bg-sc-blue rounded-l-md left-0" x-on:click="minus"> <i class="fa fa-minus"></i> </button>
-        @endif
-        <input {{ $attributes->merge(['class' => 'square-ui-input ' . $getClasses($errors->has($name)) ]) }} min="{{$min}}" step="{{$step}}" type="{{$type}}" name="{{ $name }}" {{ $attributes }} placeholder="{{$placeholder ?? $label}}" @if(!$show1Password) data-1p-ignore @endif />
-        @if($hasError || $rightIcon != null || $hasButtons)
-            <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center justify-center
-                    {{ $hasError ? 'text-red-500' : 'text-secondary-400' }}">
+    if($attributes->has('max')) {
+        $max = $attributes->get('max');
+    }
 
-                @if ($rightIcon)
-                    <i class="fa fa-{{$rightIcon}} mx-1"></i>
-                @elseif ($hasError)
-                    <i class="fa fa-exclamation-circle mx-1"></i>
-                @endif
-                @if($hasButtons && !$attributes->has('disabled'))
-                        <button type="button" class="h-full px-2 py-1 aspect-square text-sm text-white absolute bg-sc-blue rounded-r-md right-0" x-on:click="value = Number(value) + step"> <i class="fa fa-plus"></i></button>
-                @endif
-            </div>
-        @endif
+
+@endphp
+<div x-data="{
+    value: $wire.entangle('{{$attributes->wire('model')?->value()}}').live ?? 0,
+    minValue: @js($min),
+    maxValue: @js($max),
+    init() {
+        this.value = Number(this.value);
+        this.value = this.validateValue();
+    },
+    validateValue() {
+        if(this.minValue != null) {
+            if(this.value < this.minValue) {
+                return this.minValue;
+            }
+        }
+        if(this.maxValue != null) {
+            return Math.min(this.maxValue, this.value);
+        }
+        return this.value;
+    },
+   plus() {
+    this.value++;
+     this.value = this.validateValue();
+   },
+   min() {
+      this.value = Math.max(0, (this.value - 1));
+       this.value = this.validateValue();
+   }
+
+}"
+     class="flex flex-col"
+     wire:ignore
+>
+
+    <div class="w-full relative block group/input !text-center" data-flux-input="">
+        <div class="z-10 absolute top-0 bottom-0 flex items-center justify-center text-xs text-zinc-400/75 ps-3 start-0">
+            <flux:button size="sm" variant="danger" icon="minus" class="-ml-2" @click="min()" />
+        </div>
+
+        <input type="tel" class=" text-center w-full border rounded-lg block disabled:shadow-none dark:shadow-none appearance-none text-base sm:text-sm py-2 h-10 leading-[1.375rem] ps-10 pe-10 bg-white dark:bg-white/10 dark:disabled:bg-white/[7%] text-zinc-700 disabled:text-zinc-500 placeholder-zinc-400 disabled:placeholder-zinc-400/70 dark:text-zinc-300 dark:disabled:text-zinc-400 dark:placeholder-zinc-400 dark:disabled:placeholder-zinc-500 shadow-xs border-zinc-200 border-b-zinc-300/80 disabled:border-b-zinc-200 dark:border-white/10 dark:disabled:border-white/5"
+               x-model="value" x-mask="99999999999999999999999" data-flux-control="" data-flux-group-target="">
+
+        <div class="absolute top-0 bottom-0 flex items-center gap-x-1.5 pe-3 end-0 text-xs text-zinc-400">
+            <flux:button size="sm" variant="positive" icon="plus" class="-mr-2" @click="plus()" />
+        </div>
     </div>
 
-    @error($name)
-    <p {{ $attributes->merge(['class' => 'mt-1 text-sm text-red-600']) }}>
-        {{ $message }}
-    </p>
-    @enderror
 </div>

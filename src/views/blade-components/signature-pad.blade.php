@@ -40,16 +40,21 @@
     }
 }" @resize.window="resizeCanvas" x-init="init" x-intersect="init">
     <div class="flex justify-between items-end mb-1">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-400">
+        <flux:subheading>
             {{ $label }}
-        </label>
+        </flux:subheading>
+
     </div>
     <canvas x-ref="canvas"
-            @class(['w-full h-full border-2 border-dashed rounded-md bg-white border-gray-300 max-w-[400px]']) style="height: 200px;"></canvas>
-    <div class="flex mt-2 space-x-2">
-        <x-square-ui::button :label="$clearText" x-on:click="clear()" />
+            @class(['w-full h-full border rounded-md bg-white border-zinc-100 ']) style="height: 200px;"></canvas>
+    <div class="flex space-x-2 mt-3">
+        <flux:button  variant="danger" @click="clear()" icon="trash">
+            {{$clearText}}
+        </flux:button>
         @if(!$autoSave)
-            <x-square-ui::button :label="$saveButtonText" type="positive" x-on:click="save()" />
+            <flux:button variant="positive" @click="save()">
+                {{$saveButtonText}}
+            </flux:button>
         @endif
     </div>
 

@@ -77,13 +77,13 @@ class ScFontAwesome implements \Livewire\Wireable
     public static function getStyles(): array
     {
         return [
-            ["name" => "Font Awesome Solid", "value" => "fa-solid"],
-            ["name" => "Font Awesome Brands", "value" => "fa-brands"],
-            ["name" => "Font Awesome Regular", "value" => "fa-regular"],
-            ["name" => "Font Awesome Light", "value" => "fa-light"],
-            ["name" => "Font Awesome Thin", "value" => "fa-thin"],
-            ["name" => "Font Awesome Duotone", "value" => "fa-duotone"],
-            ["name" => "Font Awesome Sharp Solid", "value" => "fa-sharp fa-solid"],
+            ["name" => "Solid", "value" => "fa-solid"],
+            ["name" => "Brands", "value" => "fa-brands"],
+            ["name" => "Regular", "value" => "fa-regular"],
+            ["name" => "Light", "value" => "fa-light"],
+            ["name" => "Thin", "value" => "fa-thin"],
+            ["name" => "Duotone", "value" => "fa-duotone"],
+            ["name" => "Sharp Solid", "value" => "fa-sharp fa-solid"],
         ];
     }
 

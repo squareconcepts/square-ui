@@ -5,11 +5,9 @@ namespace Squareconcepts\SquareUi\LivewireComponents;
 use Livewire\Component;
 use Squareconcepts\SquareUi\Helpers\ScFontAwesome;
 use Squareconcepts\SquareUi\SquareUi;
-use WireUi\Traits\Actions;
 
 class IconPicker extends Component
 {
-    use Actions;
 
     public ScFontAwesome $service;
     public $style = 'fa-solid';

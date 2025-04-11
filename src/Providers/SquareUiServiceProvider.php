@@ -4,6 +4,7 @@ namespace Squareconcepts\SquareUi\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\ComponentAttributeBag;
 use Livewire\Livewire;
 use Squareconcepts\SquareUi\LivewireComponents\DataTable;
 use Squareconcepts\SquareUi\LivewireComponents\IconPicker;
@@ -51,6 +52,9 @@ class SquareUiServiceProvider extends ServiceProvider
         $this->addDirectives();
         $this->addDisks();
         $this->addRoutes();
+        ComponentAttributeBag::macro('addClass', function (string $class) {
+            $this->class($class);
+        });
     }
 
     public function addDirectives(  )
@@ -82,7 +86,11 @@ class SquareUiServiceProvider extends ServiceProvider
     {
         Blade::componentNamespace('Squareconcepts\\SquareUi\\BladeComponents', 'square-ui');
         Blade::anonymousComponentPath(__DIR__. '/../views/blade-components/svg', 'square-ui.svg');
+        Blade::anonymousComponentPath(__DIR__. '/../views/blade-components/alerts', 'square-ui.alerts');
+        Blade::anonymousComponentPath(__DIR__. '/../views/blade-components/session-message', 'square-ui.session');
         Blade::componentNamespace('Squareconcepts\\SquareUi\\BladeComponents\\Inputs', 'square-ui.inputs');
+        Blade::component('square-ui::blade-components.tooltip', 'square-ui.tooltip');
+        Blade::component('square-ui::blade-components.inputs.pin', 'square-ui.inputs.pin');
     }
 
     public function loadLivewireComponents(): void
