@@ -2,6 +2,7 @@
 
 namespace Squareconcepts\SquareUi\LivewireComponents;
 
+use Livewire\Attributes\Modelable;
 use Livewire\Component;
 use Squareconcepts\SquareUi\Helpers\ScFontAwesome;
 use Squareconcepts\SquareUi\SquareUi;
@@ -10,87 +11,31 @@ class IconPicker extends Component
 {
 
     public ScFontAwesome $service;
-    public $style = 'fa-solid';
-    public $name;
     public $icons = [];
-    public $field;
-    public $value;
-    public $event;
-
     public $api_token = '';
+
+    #[Modelable]
+    public  $value;
     public bool $apiTokenIsEmpty = false;
 
     public string $identifier = '';
 
     protected array $rules = [
-        'style' => 'nullable',
-        'name' => 'nullable',
         'icons' => 'nullable',
-        'icon' => 'nullable',
+        'icon' => 'value',
         'api_token' => 'nullable'
     ];
 
     public function render()
     {
-        return view('square-ui::livewire-components.icon-picker', ['styles' => ScFontAwesome::getStyles()]);
+        return view('square-ui::livewire-components.icon-picker');
     }
 
-    public function emitValue(): void
-    {
-        if(config('square-ui.livewire_version') < 3) {
-            $this->emit($this->event, $this->field, $this->value, $this->identifier);
-        } else {
-            $this->dispatch($this->event, field: $this->field, value:  $this->value, identifier: $this->identifier);
-        }
-    }
-
-    public function updatedStyle(): void
-    {
-        if (empty($this->style) || empty($this->name)) {
-            $this->value = null;
-        } else {
-            $this->value = $this->style . ' fa-' . $this->name;
-        }
-
-        $this->emitValue();
-    }
-
-    public function searchName(): void
-    {
-        if(!empty($this->name)) {
-            $data = $this->service->searchIcon($this->name);
-
-            if (!empty($data) && $data['success'] === true) {
-                $this->icons = $data['data'];
-            }
-        } else {
-            $this->icons = [];
-        }
-
-        $this->updatedStyle();
-    }
 
     public function instantiateService(): void
     {
         $this->service = new ScFontAwesome();
 
-        if (!empty($this->value)) {
-            $values = explode(' ', $this->value);
-
-            if (!empty($values[0])) {
-                $this->style = $values[0];
-            }
-
-            if (!empty($values[1])) {
-                $name = explode('fa-', $values[1]);
-
-                if (!empty($name[1])) {
-                    $this->name = $name[1];
-                } else {
-                    $this->name = $values[1];
-                }
-            }
-        }
     }
     public function init(): void
     {
@@ -103,10 +48,6 @@ class IconPicker extends Component
         }
     }
 
-    public function setOption($value): void
-    {
-        $this->name = $value;
-    }
 
     public function storeApiKey(): void
     {
@@ -114,5 +55,19 @@ class IconPicker extends Component
         SquareUi::handleFontawesome($this->api_token);
 
         $this->init();
+    }
+
+    public function fetchResults($searchValue  ): array
+    {
+        if(!empty($searchValue)) {
+            $data = $this->service->searchIcon($searchValue);
+            if (!empty($data) && $data['success'] === true) {
+                $data['data'] = array_map(function ( $item) {
+                      return $item->toLivewire();
+                }, $data['data']);
+                return $data;
+            }
+        }
+       return [];
     }
 }

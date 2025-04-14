@@ -38,7 +38,7 @@
                     @click.outside="open = false"
                     wire:ignore
                     wire:cloak
-                    class="max-sm:max-h-full! max-sm:fixed! max-sm:inset-0!  block mt-1 self-start mx-0 min-w-24 z-50"
+                    class="max-sm:max-h-full! max-sm:fixed! max-sm:inset-0!  block mt-1 self-start mx-0 min-w-24 z-50 "
                 >
                     <flux:card>
                         {{$content}}

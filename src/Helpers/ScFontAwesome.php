@@ -5,14 +5,13 @@ namespace Squareconcepts\SquareUi\Helpers;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Squareconcepts\SquareUi\Helpers\FontAwesomeIcon;
 
 class ScFontAwesome implements \Livewire\Wireable
 {
 
     private ?string $accessToken;
     private ?Carbon $expiresAt;
-
-
 
     /**
      * @throws \Exception
@@ -63,12 +62,30 @@ class ScFontAwesome implements \Livewire\Wireable
         }
 
         $response = Http::withToken($this->accessToken)
-            ->post('https://api.fontawesome.com', ['query' => "{ search (version: \"6.0.0\", query: \"$search\", first: 10) { id }}"]);
+            ->post('https://api.fontawesome.com', [
+                'query' => '
+        {
+            search(version: "6.0.0", query: "' . $search . '", first: 500) {
+                id
+                label
+                styles
+            }
+        }'
+            ]);
 
         $json = $response->json();
 
         if (!empty($json) && !empty($json['data']) && isset($json['data']['search'])) {
-            return ["success" => true, "data" => array_column($json['data']['search'], 'id')];
+
+            $icons = array_map(function ($item) {
+                return FontAwesomeIcon::make(
+                    $item['id'] ?? '',
+                    $item['label'] ?? '',
+                    $item['styles'] ?? [],
+                );
+            }, $json['data']['search']);
+
+            return ["success" => true, "data" => $icons];
         }
 
         return ["success" => false, "message" => "Something went wrong while trying to search for icons"];

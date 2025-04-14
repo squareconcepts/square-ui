@@ -27,10 +27,10 @@ class LocalizedStringComponent extends Component
         return view('square-ui::livewire-components.localized-string-component');
     }
 
-    public function emitValue(): void
-    {
-        $this->dispatch($this->event, $this->field, $this->value, $this->identifier);
-    }
+//    public function emitValue(): void
+//    {
+//        $this->dispatch($this->event, $this->field, $this->value, $this->identifier);
+//    }
 
     public function rerenderValue($data): void
     {
