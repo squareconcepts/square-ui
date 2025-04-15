@@ -5,8 +5,7 @@
     "require": {
         "livewire/livewire": ">=v3.0.0",
         "laravel/framework": ">11.0.0",
-        "guzzlehttp/guzzle": ">7.5@dev",
-        "outhebox/blade-flags": "^1.2.0"
+        "guzzlehttp/guzzle": ">7.5@dev"
     },
     "license": "MIT",
     "extra": {
@@ -24,17 +23,20 @@
     "scripts": {
         "post-autoload-dump": [
             "npm i",
-            "@php artisan vendor:publish --tag=square-ui-assets --force"
+            "@php artisan vendor:publish --tag=square-ui-assets --force",
+            "@php artisan vendor:publish --tag=square-ui-images --force"
         ],
         "post-install-cmd": [
             "npm i",
             "@php artisan vendor:publish --tag=config --force",
-            "@php artisan vendor:publish --tag=square-ui-assets --force"
+            "@php artisan vendor:publish --tag=square-ui-assets --force",
+            "@php artisan vendor:publish --tag=square-ui-images --force"
         ],
         "post-update-cmd": [
             "npm i",
             "@php artisan vendor:publish --tag=config --force",
-            "@php artisan vendor:publish --tag=square-ui-assets --force"
+            "@php artisan vendor:publish --tag=square-ui-assets --force",
+            "@php artisan vendor:publish --tag=square-ui-images --force"
         ]
     },
     "authors": [

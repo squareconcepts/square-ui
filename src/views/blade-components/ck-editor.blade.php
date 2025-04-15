@@ -11,11 +11,11 @@
         </div>
     @endif
     <div x-data="ckEditor('{{ $identifier }}', @js(str_replace(['\n', '\r', '\r\n'], '<br>', $value)), '{{ $model }}', '{{ $componentId }}', {{ $debounceTime }})" x-init="initEditor" >
-        <div x-show="!showHtml">
-            <textarea x-ref="ckeditor_{{ $identifier }}" {{ $attributes }}></textarea>
+        <div x-show="!showHtml" x-cloak>
+            <flux:textarea rows="auto"   x-ref="ckeditor_{{ $identifier }}" {{$attributes}}   />
         </div>
-        <div x-show="showHtml">
-            <textarea class="input-style" style="width: 100%;" x-ref="ckeditor_{{ $identifier }}_preview"></textarea>
+        <div x-show="showHtml" x-cloak>
+            <flux:textarea rows="auto"  x-ref="ckeditor_{{ $identifier }}_preview" />
         </div>
         <div class="flex items-center justify-between flex-row-reverse">
 
@@ -105,7 +105,11 @@
             </div>
         @endif
     </div>
-    @script
+        @pushonce('scripts')
+            <script src="{{asset('vendor/square-ui/ckeditor.js')}}"></script>
+        @endpushonce
+
+        @script
         <script>
             Alpine.data('ckEditor', (identifier, value, model, componentId, debounceTime) => ({
                 identifier: identifier,
@@ -248,4 +252,36 @@
             }));
         </script>
     @endscript
+    <style>
+        .ck-editor h1, .ck-editor h2, .ck-editor h3, .ck-editor h4, .ck-editor h5, .ck-editor h6 {font-weight: bold}
+        .ck-editor h1 {font-size: 1.8rem;}
+        .ck-editor h2 {font-size: 1.5rem;}
+        .ck-editor h3 {font-size: 1.4rem;}
+        .ck-editor h4 {font-size: 1.3rem;}
+        .ck-editor h5 {font-size: 1.2rem;}
+        .ck-editor h6 {font-size: 1.1rem;}
+        .ck-editor a {text-decoration: underline !important;}
+        .ck-editor .ck-content ul {margin-left: 1rem;}
+
+        /** Html content **/
+        .html_content ol, .html_content ul:not(.todo-list) {display: block !important;list-style-type: decimal !important;margin-block-start: 1em !important;margin-block-end: 1em !important;margin-inline-start: 0 !important;margin-inline-end: 0 !important;padding-inline-start: 40px !important;}
+        .html_content ol {list-style-type: decimal !important;}
+        .html_content ol ol {list-style-type: lower-alpha !important;}
+        .html_content ul:not(.todo-list):not(.ck-list) {list-style-type: disc !important;}
+        .html_content ul:not(.todo-list):not(.ck-list) ul {list-style-type: circle !important;}
+        .html_content a {color: #1d68cd;text-decoration: underline;}
+        .html_content blockquote {padding: 1rem 2rem;border-left: 2px solid #ccc;}
+        .html_content table {width: 100%;}
+        .html_content table th, .html_content table td {border: 1px solid #ddd;}
+        .html_content .marker-yellow {background-color: yellow;}
+        .html_content .marker-green {background-color: lime;}
+        .html_content .marker-pink {background-color: hotpink;}
+        .html_content .marker-blue {background-color: cornflowerblue;}
+        .html_content .pen-red {background-color: transparent;color: red;}
+        .html_content .pen-green {background-color: transparent;color: green;}
+        .html_content figure.media {width: 100%;margin-bottom: 2rem;}
+        .html_content .todo-list__label input:checked ~ span {text-decoration: line-through;}
+        .html_content .todo-list__label span {margin-left: 1rem;}
+        .html_content hr {width: 100% !important;}
+    </style>
 </div>

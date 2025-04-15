@@ -61,7 +61,7 @@
         </div>
 
         <input type="tel" class=" text-center w-full border rounded-lg block disabled:shadow-none dark:shadow-none appearance-none text-base sm:text-sm py-2 h-10 leading-[1.375rem] ps-10 pe-10 bg-white dark:bg-white/10 dark:disabled:bg-white/[7%] text-zinc-700 disabled:text-zinc-500 placeholder-zinc-400 disabled:placeholder-zinc-400/70 dark:text-zinc-300 dark:disabled:text-zinc-400 dark:placeholder-zinc-400 dark:disabled:placeholder-zinc-500 shadow-xs border-zinc-200 border-b-zinc-300/80 disabled:border-b-zinc-200 dark:border-white/10 dark:disabled:border-white/5"
-               x-model="value" x-mask="99999999999999999999999" data-flux-control="" data-flux-group-target="">
+               x-model="value" x-mask="9999999999" data-flux-control="" data-flux-group-target="">
 
         <div class="absolute top-0 bottom-0 flex items-center gap-x-1.5 pe-3 end-0 text-xs text-zinc-400">
             <flux:button size="sm" variant="positive" icon="plus" class="-mr-2" @click="plus()" />

@@ -3,7 +3,7 @@
         @if(!$hideToolbar)
             <div class="flex justify-between">
                 <div class="mx-2">
-                    <x-input wire:model.live="searchString" placeholder="{{__('square-ui::square-ui.tables.search_for')}}" class="input-style"/>
+                    <flux:input icon="magnifying-glass" clearable wire:model.live="searchString" placeholder="{{__('square-ui::square-ui.tables.search_for')}}" />
                 </div>
                 <div class="md:flex md:items-center space-y-4 md:space-y-0 md:space-x-2">
                     <div>
@@ -157,7 +157,7 @@
                     @endif
                 </tr>
                 </thead>
-                <tbody wire:sortable="" class="bg-white divide-y divide-gray-200">
+                <tbody wire:sortable class="bg-white divide-y divide-gray-200">
                 @if(!empty($this->items) && $this->items->count() > 0)
                     @foreach($this->items->map(function ($item) {
                             return (object) $item;
@@ -207,25 +207,23 @@
                                 <td class="whitespace-nowrap px-3 py-2 md:px-6 md:py-4 leading-5 text-gray-900 w-0">
                                     @foreach($customButtons as $button)
                                         @if(!empty($button['label']))
-                                            <x-button color="{{$button['color']}}" label="{{$button['label']}}"
-                                                      wire:click="{{$button['method']}}({{$row->id}})"
-                                                      icon="{{$button['icon']}}"/>
+                                            <flux:button icon="{{$button['icon']}}" wire:click="{{$button['method']}}({{$row->id}})" outline :variant="$button['color']">
+                                                {{$button['label']}}
+                                            </flux:button>
+
                                         @else
-                                            <x-button outline color="{{$button['color']}}" icon="{{$button['icon']}}"
-                                                      wire:click="{{$button['method']}}({{$row->id}})"/>
+                                            <flux:button icon="{{$button['icon']}}" wire:click="{{$button['method']}}({{$row->id}})" outline :variant="$button['color']" />
                                         @endif
                                     @endforeach
                                     @if(!$hideRead)
-                                        <x-button outline primary icon="eye"
-                                                  wire:click="handleAction('viewRow', {{json_encode($result)}})"/>
+                                            <flux:button icon="eye" wire:click="handleAction('viewRow', {{json_encode($result)}})" outline variant="primary" />
                                     @endif
                                     @if(!$hideEdit)
-                                        <x-button outline warning icon="pencil"
-                                                  wire:click="handleAction('editRow', {{json_encode($result)}})"/>
+                                            <flux:button icon="pencil" wire:click="handleAction('editRow', {{json_encode($result)}})" outline variant="warning" />
+                                    @endif
                                     @endif
                                     @if(!$hideDelete)
-                                        <x-button outline negative icon="trash"
-                                                  wire:click="handleAction('deleteRow', {{json_encode($result)}})"/>
+                                            <flux:button icon="trash" wire:click="handleAction('deleteRow', {{json_encode($result)}})" outline variant="danger" />
                                     @endif
                                 </td>
                             @endif

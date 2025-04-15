@@ -39,46 +39,19 @@ class SquareUiServiceProvider extends ServiceProvider
         ], 'square-ui-lang');
 
         $this->publishes([
-            __DIR__.'/../../public/js/datepicker-nl.js' => public_path('vendor/square-ui/datepicker-nl.js'),
-            __DIR__.'/../../public/js/main.js' => public_path('vendor/square-ui/square-ui.js'),
             __DIR__.'/../../public/js/ckeditor/ckeditor.js' => public_path('vendor/square-ui/ckeditor.js'),
         ], 'square-ui-assets');
+
         $this->publishes([
-            __DIR__.'/../../public/css/custom.css' => public_path('vendor/square-ui/square-ui.css'),
-        ], 'square-ui-assets');
+            __DIR__.'/../../public/images' => public_path('vendor/squareconcepts/square-ui'),
+        ], 'square-ui-images');
 
         $this->loadLivewireComponents();
         $this->loadBladeComponents();
-        $this->addDirectives();
         $this->addDisks();
         $this->addRoutes();
         ComponentAttributeBag::macro('addClass', function (string $class) {
             $this->class($class);
-        });
-    }
-
-    public function addDirectives(  )
-    {
-        Blade::directive('squareUiScripts', function () {
-            $path = '/vendor/square-ui/square-ui.js';
-            return <<<HTML
-                <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-                <script src="https://kit.fontawesome.com/267cc97312.js" crossorigin="anonymous"></script>
-                <script src="https://cdn.jsdelivr.net/npm/marked@2.1.3/marked.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
-                <script src="$path"></script>
-                <script src="/vendor/square-ui/ckeditor.js"></script>
-            HTML;
-        });
-
-        Blade::directive('squareUiStyles', function () {
-            $path = '/vendor/square-ui/square-ui.css';
-            return <<<HTML
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
-                <link rel="stylesheet" href="$path">
-            HTML;
         });
     }
 
@@ -98,7 +71,6 @@ class SquareUiServiceProvider extends ServiceProvider
         Livewire::component('square-ui::data-table', DataTable::class);
         Livewire::component('square-ui::icon-picker', IconPicker::class);
         Livewire::component('square-ui::localized-string', LocalizedStringComponent::class);
-        Livewire::component('square-ui::password-strength', PasswordStrength::class);
     }
 
     public function addDisks(): void

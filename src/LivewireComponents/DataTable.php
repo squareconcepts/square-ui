@@ -9,11 +9,11 @@ use Illuminate\Support\Collection;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
-use WireUi\Traits\Actions;
+use Squareconcepts\SquareUi\Traits\SquareUiModals;
 
 class DataTable extends Component
 {
-    use Actions, WithPagination;
+    use SquareUiModals, WithPagination;
 
     public bool $hasPagination = true;
     public bool $hideActions = false;
@@ -217,15 +217,15 @@ class DataTable extends Component
 
         try {
             if(!$model->delete()) {
-                $this->notification()->error(__('square-ui::square-ui.error'), __('square-ui::square-ui.delete_failed'));
+                $this->error(__('square-ui::square-ui.error'), __('square-ui::square-ui.delete_failed'));
                 return;
             }
         } catch (\Exception) {
-            $this->notification()->error(__('square-ui::square-ui.error'), __('square-ui::square-ui.delete_failed'));
+            $this->error(__('square-ui::square-ui.error'), __('square-ui::square-ui.delete_failed'));
             return;
         }
 
-        $this->notification()->success(__('square-ui::square-ui.delete_success'));
+        $this->success(__('square-ui::square-ui.delete_success'));
         $this->loadData();
         $this->filteredResults = $this->results;
     }
