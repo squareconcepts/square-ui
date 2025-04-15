@@ -15,7 +15,7 @@
                 @if($text instanceof \Illuminate\View\ComponentSlot)
                     {{$text}}
                 @else
-                    <flux:text level="3" size="xl" class="{{$textColor ?? 'text-primary-500'}}">{{$title}}</flux:text>
+                    <flux:text level="3" size="xl" class="{{$textColor ?? 'text-primary-500'}}">{{$text}}</flux:text>
                 @endif
         </div>
     @if($shoutOut)

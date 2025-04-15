@@ -4,7 +4,9 @@
     if($wireModel){
 
         $value = $this->{$attributes->wire('model')->value()};
-         if(isset($value) && !is_numeric($value)){
+        if($value == null){
+        }
+         else if(isset($value) && !is_numeric($value)){
             throw new InvalidArgumentException(' SquareUI input Exception: [Number input] wire:model has to be a integer');
         }
     } else {
