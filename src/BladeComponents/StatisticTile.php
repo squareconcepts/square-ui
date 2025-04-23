@@ -14,7 +14,7 @@ class StatisticTile extends Component
         public string $iconColor = '#000',
         public ?string $iconBackgroundColor = null,
         public string $valueColor = '#000',
-        public int $value = 0,
+        public int|string $value = 0,
         public bool $isCurrency = false,
     ) {
     }
