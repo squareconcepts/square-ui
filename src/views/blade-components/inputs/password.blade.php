@@ -103,11 +103,11 @@
         init() {
         },
         get strength() {
-            return this.rulesMet().length;
+            return this.rulesMet()?.length ?? 0;
         },
         rulesMet() {
             return [
-                this.value.length >= 8,
+                this.value?.length >= 8,
                 /[a-z]/.test(this.value),
                 /[A-Z]/.test(this.value),
                 /[^A-Za-z0-9]/.test(this.value),

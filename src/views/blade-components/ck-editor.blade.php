@@ -105,152 +105,360 @@
             </div>
         @endif
     </div>
-        @pushonce('scripts')
-            <script src="{{asset('vendor/square-ui/ckeditor.js')}}"></script>
-        @endpushonce
 
-        @script
-        <script>
-            Alpine.data('ckEditor', (identifier, value, model, componentId, debounceTime) => ({
-                identifier: identifier,
-                value: value,
-                model: model,
-                componentId: componentId,
-                debounceTime: debounceTime,
-                isInitialized: false,
-                showHtml: false,
-                showChatGpt: false,
-                promptPrefixOption: ['Kun je van deze tekst een makkelijker te lezen sales ingestoken variant maken maar behoud de html zoals deze al in te tekst staat:', ''],
-                promptPrefix: '',
-                prompt: '',
-                promptRows: 1,
-                chatGptResult: null,
-                askingChatGpt: false,
-                debounceTimer: null,
-                initEditor() {
-                    if(!this.isInitialized) {
-                        ClassicEditor
-                            .create(this.$refs['ckeditor_' + this.identifier], {
-                                mediaEmbed: {
-                                    previewsInData: true
-                                },
-                                removePlugins: ["MediaEmbedToolbar"],
-                                simpleUpload: {
-                                    // The URL that the images are uploaded to.
-                                    uploadUrl: '{{ route('square-ui.file-upload') }}',
 
-                                    // Enable the XMLHttpRequest.withCredentials property.
-                                    withCredentials: true,
 
-                                    // Headers sent along with the XMLHttpRequest to the upload server.
-                                    headers: {
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                    }
-                                },
-                                toolbar: [
-                                    'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'underline','strikethrough', '|', 'link', '|', 'bulletedList', 'numberedList', 'todoList', '|',
-                                    'outdent', 'indent', '|', 'blockQuote', 'insertTable', '|', 'alignment', '|', 'imageUpload', '|', 'codeBlock'
-                                ]
-                            })
-                            .then(editor => {
-                                this.editor = editor;
-                                editor.setData(this.value);
-                                this.prompt = this.value;
-                                this.promptPrefix = this.promptPrefixOption[0];
-                                this.getLineCount();
-                                editor.model.document.on('change:data', () => {
-                                    clearInterval(this.debounceTimer);
-                                    this.debounceTimer = setTimeout(() => {
-                                        this.value = editor.getData();
-                                        this.prompt = this.value;
-                                        this.getLineCount();
-                                        if(this.componentId.length > 0) {
-                                            Livewire.find(this.componentId).set(this.model, editor.getData());
-                                        } else {
-                                            @this.set(this.model, editor.getData());
-                                        }
-                                    }, this.debounceTime);
-                                });
+    @script
+    <script type="module">
+        Alpine.data('ckEditor', (identifier, value, model, componentId, debounceTime) => ({
+            identifier: identifier,
+            value: value,
+            model: model,
+            componentId: componentId,
+            debounceTime: debounceTime,
+            isInitialized: false,
+            showHtml: false,
+            showChatGpt: false,
+            promptPrefixOption: ['Kun je van deze tekst een makkelijker te lezen sales ingestoken variant maken maar behoud de html zoals deze al in te tekst staat:', ''],
+            promptPrefix: '',
+            prompt: '',
+            promptRows: 1,
+            chatGptResult: null,
+            askingChatGpt: false,
+            debounceTimer: null,
+            initEditor() {
+                const {
+                    ClassicEditor,
+                    Alignment,
+                    Autoformat,
+                    AutoImage,
+                    Autosave,
+                    BlockQuote,
+                    Bold,
+                    Code,
+                    CodeBlock,
+                    Emoji,
+                    Essentials,
+                    Heading,
+                    ImageBlock,
+                    ImageCaption,
+                    ImageInline,
+                    ImageInsert,
+                    ImageInsertViaUrl,
+                    ImageResize,
+                    ImageStyle,
+                    ImageTextAlternative,
+                    ImageToolbar,
+                    ImageUpload,
+                    Indent,
+                    IndentBlock,
+                    Italic,
+                    Link,
+                    LinkImage,
+                    List,
+                    ListProperties,
+                    MediaEmbed,
+                    Mention,
+                    Paragraph,
+                    PasteFromOffice,
+                    SimpleUploadAdapter,
+                    Table,
+                    TableCaption,
+                    TableCellProperties,
+                    TableColumnResize,
+                    TableProperties,
+                    TableToolbar,
+                    TextTransformation,
+                    TodoList,
+                    Underline
+                } = window.CKEDITOR;
 
-                                document.addEventListener('update-editor-data', (event) => {
-                                    const id = event.detail[0]['id'];
-                                    const value = event.detail[0]['value'];
-                                    if(id === this.identifier) {
-                                        editor.setData(value)
-                                    }
-                                })
+                const LICENSE_KEY =
+                    @js(config('square-ui.ck_editor_license', 'GPL'));
 
-                                document.addEventListener('update-'+ this.identifier +'-value', (event) => {
-                                    editor.setData(event.detail)
-                                })
-                            })
-                            .catch(error => {
-                                console.error('Error initializing CKEditor:', error);
-                            });
+                const editorConfig = {
+                    removePlugins: ["MediaEmbedToolbar"],
+                    simpleUpload: {
+                        // The URL that the images are uploaded to.
+                        uploadUrl: '{{ route('square-ui.file-upload') }}',
 
-                        this.isInitialized = true;
-                    }
-                },
-                changeMode() {
-                    if(this.showHtml) {
-                        const value = this.$refs['ckeditor_' + this.identifier + '_preview'].value;
-                        document.dispatchEvent(new CustomEvent('update-' + this.identifier + '-value', { detail: value}));
-                        this.showHtml = false;
-                    } else {
-                        this.$refs['ckeditor_' + this.identifier + '_preview'].value = this.value;
-                        this.showHtml = true;
-                    }
-                },
-                changeChatGptMode() {
-                    this.showChatGpt = ! this.showChatGpt;
-                },
-                getLineCount() {
-                    if(!this.showChatGpt) {
-                        return 1;
-                    }
-                    const textarea = this.$refs['chatgpt_' + this.identifier + '_prompt_preview'];
+                        // Enable the XMLHttpRequest.withCredentials property.
+                        withCredentials: true,
 
-                    const lineHeight = parseInt(getComputedStyle(textarea).lineHeight);
-                    const textareaHeight = Math.max(textarea.scrollHeight,textarea.clientHeight) ;
-                    this.promptRows = Math.round(textareaHeight / lineHeight);
-                },
-                askChatGPT() {
-                    this.chatGptResult = null;
-                    this.askingChatGpt = true;
-                    const question = this.promptPrefix + ' ' + this.prompt;
-                    const route = @js(Route::has('square-ui.chat-gpt.ask') ? route('square-ui.chat-gpt.ask') : null);
-                    if(route == null ) {
-                        console.error('Error: Er bestaat geen route met de naam: "square-ui.chat-gpt.ask". Maak een post route aan met deze naam.')
-                        return;
-                    }
-
-                    fetch(route, {
-                        method: 'POST',
+                        // Headers sent along with the XMLHttpRequest to the upload server.
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ question: question }),
-                    })
-                        .then(response => response.text())
-                        .then(data => {
-                            this.chatGptResult = data;
-                            this.askingChatGpt = false;
+                        }
+                    },
+                    toolbar: {
+                        items: [
+                            'heading',
+                            '|',
+                            'bold',
+                            'italic',
+                            'underline',
+                            'code',
+                            '|',
+                            'emoji',
+                            'link',
+                            'insertImage',
+                            'mediaEmbed',
+                            'insertTable',
+                            'blockQuote',
+                            'codeBlock',
+                            '|',
+                            'alignment',
+                            '|',
+                            'bulletedList',
+                            'numberedList',
+                            'todoList',
+                            'outdent',
+                            'indent'
+                        ],
+                        shouldNotGroupWhenFull: false
+                    },
+                    plugins: [
+                        Alignment,
+                        Autoformat,
+                        AutoImage,
+                        Autosave,
+                        BlockQuote,
+                        Bold,
+                        Code,
+                        CodeBlock,
+                        Emoji,
+                        Essentials,
+                        Heading,
+                        ImageBlock,
+                        ImageCaption,
+                        ImageInline,
+                        ImageInsert,
+                        ImageInsertViaUrl,
+                        ImageResize,
+                        ImageStyle,
+                        ImageTextAlternative,
+                        ImageToolbar,
+                        ImageUpload,
+                        Indent,
+                        IndentBlock,
+                        Italic,
+                        Link,
+                        LinkImage,
+                        List,
+                        ListProperties,
+                        MediaEmbed,
+                        Mention,
+                        Paragraph,
+                        PasteFromOffice,
+                        SimpleUploadAdapter,
+                        Table,
+                        TableCaption,
+                        TableCellProperties,
+                        TableColumnResize,
+                        TableProperties,
+                        TableToolbar,
+                        TextTransformation,
+                        TodoList,
+                        Underline
+                    ],
+                    heading: {
+                        options: [
+                            {
+                                model: 'paragraph',
+                                title: 'Paragraph',
+                                class: 'ck-heading_paragraph'
+                            },
+                            {
+                                model: 'heading1',
+                                view: 'h1',
+                                title: 'Heading 1',
+                                class: 'ck-heading_heading1'
+                            },
+                            {
+                                model: 'heading2',
+                                view: 'h2',
+                                title: 'Heading 2',
+                                class: 'ck-heading_heading2'
+                            },
+                            {
+                                model: 'heading3',
+                                view: 'h3',
+                                title: 'Heading 3',
+                                class: 'ck-heading_heading3'
+                            },
+                            {
+                                model: 'heading4',
+                                view: 'h4',
+                                title: 'Heading 4',
+                                class: 'ck-heading_heading4'
+                            },
+                            {
+                                model: 'heading5',
+                                view: 'h5',
+                                title: 'Heading 5',
+                                class: 'ck-heading_heading5'
+                            },
+                            {
+                                model: 'heading6',
+                                view: 'h6',
+                                title: 'Heading 6',
+                                class: 'ck-heading_heading6'
+                            }
+                        ]
+                    },
+                    image: {
+                        toolbar: [
+                            'toggleImageCaption',
+                            'imageTextAlternative',
+                            '|',
+                            'imageStyle:inline',
+                            'imageStyle:wrapText',
+                            'imageStyle:breakText',
+                            '|',
+                            'resizeImage'
+                        ]
+                    },
+                    initialData:
+                        '<h2>Congratulations on setting up CKEditor 5! 🎉</h2>\n<p>\n\tYou\'ve successfully created a CKEditor 5 project. This powerful text editor\n\twill enhance your application, enabling rich text editing capabilities that\n\tare customizable and easy to use.\n</p>\n<h3>What\'s next?</h3>\n<ol>\n\t<li>\n\t\t<strong>Integrate into your app</strong>: time to bring the editing into\n\t\tyour application. Take the code you created and add to your application.\n\t</li>\n\t<li>\n\t\t<strong>Explore features:</strong> Experiment with different plugins and\n\t\ttoolbar options to discover what works best for your needs.\n\t</li>\n\t<li>\n\t\t<strong>Customize your editor:</strong> Tailor the editor\'s\n\t\tconfiguration to match your application\'s style and requirements. Or\n\t\teven write your plugin!\n\t</li>\n</ol>\n<p>\n\tKeep experimenting, and don\'t hesitate to push the boundaries of what you\n\tcan achieve with CKEditor 5. Your feedback is invaluable to us as we strive\n\tto improve and evolve. Happy editing!\n</p>\n<h3>Helpful resources</h3>\n<ul>\n\t<li>📝 <a href="https://portal.ckeditor.com/checkout?plan=free">Trial sign up</a>,</li>\n\t<li>📕 <a href="https://ckeditor.com/docs/ckeditor5/latest/installation/index.html">Documentation</a>,</li>\n\t<li>⭐️ <a href="https://github.com/ckeditor/ckeditor5">GitHub</a> (star us if you can!),</li>\n\t<li>🏠 <a href="https://ckeditor.com">CKEditor Homepage</a>,</li>\n\t<li>🧑‍💻 <a href="https://ckeditor.com/ckeditor-5/demo/">CKEditor 5 Demos</a>,</li>\n</ul>\n<h3>Need help?</h3>\n<p>\n\tSee this text, but the editor is not starting up? Check the browser\'s\n\tconsole for clues and guidance. It may be related to an incorrect license\n\tkey if you use premium features or another feature-related requirement. If\n\tyou cannot make it work, file a GitHub issue, and we will help as soon as\n\tpossible!\n</p>\n',
+                    language: 'nl',
+                    licenseKey: LICENSE_KEY,
+                    link: {
+                        addTargetToExternalLinks: true,
+                        defaultProtocol: 'https://',
+                        decorators: {
+                            toggleDownloadable: {
+                                mode: 'manual',
+                                label: 'Downloadable',
+                                attributes: {
+                                    download: 'file'
+                                }
+                            }
+                        }
+                    },
+                    list: {
+                        properties: {
+                            styles: true,
+                            startIndex: true,
+                            reversed: true
+                        }
+                    },
+                    mention: {
+                        feeds: [
+                            {
+                                marker: '@',
+                                feed: [
+                                    /* See: https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html */
+                                ]
+                            }
+                        ]
+                    },
+                    placeholder: 'Type or paste your content here!',
+                    table: {
+                        contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
+                    }
+                };
+                if(!this.isInitialized) {
+                    ClassicEditor
+                        .create(this.$refs['ckeditor_' + this.identifier], editorConfig)
+                        .then(editor => {
+                            this.editor = editor;
+                            editor.setData(this.value);
+                            this.prompt = this.value;
+                            this.promptPrefix = this.promptPrefixOption[0];
+                            this.getLineCount();
+                            editor.model.document.on('change:data', () => {
+                                clearInterval(this.debounceTimer);
+                                this.debounceTimer = setTimeout(() => {
+                                    this.value = editor.getData();
+                                    this.prompt = this.value;
+                                    this.getLineCount();
+                                    if(this.componentId.length > 0) {
+                                        Livewire.find(this.componentId).set(this.model, editor.getData());
+                                    } else {
+                                        @this.set(this.model, editor.getData());
+                                    }
+                                }, this.debounceTime);
+                            });
+
+                            document.addEventListener('update-editor-data', (event) => {
+                                const id = event.detail[0]['id'];
+                                const value = event.detail[0]['value'];
+                                if(id === this.identifier) {
+                                    editor.setData(value)
+                                }
+                            })
+
+                            document.addEventListener('update-'+ this.identifier +'-value', (event) => {
+                                editor.setData(event.detail)
+                            })
                         })
                         .catch(error => {
-                            console.error('Error:', error)
-                            this.askingChatGpt = false;
-                        })
+                            console.error('Error initializing CKEditor:', error);
+                        });
 
-                },
-                useText() {
-                    document.dispatchEvent(new CustomEvent('update-' + this.identifier + '-value', { detail: this.chatGptResult}));
-                    this.chatGptResult = null;
-                    this.changeChatGptMode();
+                    this.isInitialized = true;
+                }
+            },
+            changeMode() {
+                if(this.showHtml) {
+                    const value = this.$refs['ckeditor_' + this.identifier + '_preview'].value;
+                    document.dispatchEvent(new CustomEvent('update-' + this.identifier + '-value', { detail: value}));
+                    this.showHtml = false;
+                } else {
+                    this.$refs['ckeditor_' + this.identifier + '_preview'].value = this.value;
+                    this.showHtml = true;
+                }
+            },
+            changeChatGptMode() {
+                this.showChatGpt = ! this.showChatGpt;
+            },
+            getLineCount() {
+                if(!this.showChatGpt) {
+                    return 1;
+                }
+                const textarea = this.$refs['chatgpt_' + this.identifier + '_prompt_preview'];
+
+                const lineHeight = parseInt(getComputedStyle(textarea).lineHeight);
+                const textareaHeight = Math.max(textarea.scrollHeight,textarea.clientHeight) ;
+                this.promptRows = Math.round(textareaHeight / lineHeight);
+            },
+            askChatGPT() {
+                this.chatGptResult = null;
+                this.askingChatGpt = true;
+                const question = this.promptPrefix + ' ' + this.prompt;
+                const route = @js(Route::has('square-ui.chat-gpt.ask') ? route('square-ui.chat-gpt.ask') : null);
+                if(route == null ) {
+                    console.error('Error: Er bestaat geen route met de naam: "square-ui.chat-gpt.ask". Maak een post route aan met deze naam.')
+                    return;
                 }
 
-            }));
-        </script>
+                fetch(route, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: question }),
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        this.chatGptResult = data;
+                        this.askingChatGpt = false;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error)
+                        this.askingChatGpt = false;
+                    })
+
+            },
+            useText() {
+                document.dispatchEvent(new CustomEvent('update-' + this.identifier + '-value', { detail: this.chatGptResult}));
+                this.chatGptResult = null;
+                this.changeChatGptMode();
+            }
+
+        }));
+    </script>
     @endscript
     <style>
         .ck-editor h1, .ck-editor h2, .ck-editor h3, .ck-editor h4, .ck-editor h5, .ck-editor h6 {font-weight: bold}

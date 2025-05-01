@@ -18,4 +18,5 @@ return [
     ],
     'chat_gpt_api_token' =>env('CHAT_GPT_API_TOKEN'),
     'chat_gpt_base_url' =>env('CHAT_GPT_API_URL', 'https://api.openai.com/v1/'),
+    'ck_editor_license' => env('CKEDITOR_LICENSE', 'GPL') // check 1password for the license,
 ];

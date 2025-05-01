@@ -81,6 +81,10 @@
     @endphp
 
    <div class="relative">
+       <flux:field>
+           @if($label)
+           <flux:label>{{$label}}</flux:label>
+           @endif
        <flux:input
            class="cursor-pointer"
            as="button"
@@ -89,6 +93,7 @@
        >
            <div x-text="dateString"></div>
        </flux:input>
+       </flux:field>
 
 
        {{-- De dialog --}}
