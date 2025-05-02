@@ -38,9 +38,9 @@ class SquareUiServiceProvider extends ServiceProvider
             __DIR__ . '/../lang' => lang_path('vendor/square-ui'),
         ], 'square-ui-lang');
 
-        $this->publishes([
-            __DIR__.'/../../public/js/ckeditor/ckeditor.js' => public_path('vendor/square-ui/ckeditor.js'),
-        ], 'square-ui-assets');
+//        $this->publishes([
+//            __DIR__.'/../../public/js/ckeditor/ckeditor.js' => public_path('vendor/square-ui/ckeditor.js'),
+//        ], 'square-ui-assets');
 
         $this->publishes([
             __DIR__.'/../../public/images' => public_path('vendor/squareconcepts/square-ui'),

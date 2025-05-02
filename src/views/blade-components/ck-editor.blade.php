@@ -461,6 +461,7 @@
     </script>
     @endscript
     <style>
+        .ck.ck-balloon-panel.ck-powered-by-balloon .ck.ck-powered-by{display: none!important;}
         .ck-editor h1, .ck-editor h2, .ck-editor h3, .ck-editor h4, .ck-editor h5, .ck-editor h6 {font-weight: bold}
         .ck-editor h1 {font-size: 1.8rem;}
         .ck-editor h2 {font-size: 1.5rem;}
