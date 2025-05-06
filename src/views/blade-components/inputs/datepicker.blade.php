@@ -8,6 +8,49 @@
     hours: null,
     minutes: null,
     init() {
+        if(this.model !== null){
+            if(this.model.indexOf('T') == -1){
+               let dateValues = this.model.split('-');
+               const getTime  = (string) => {
+                    let splitString = string.split('+');
+                    let timeValues = splitString[0].split(':');
+                    let date = new Date();
+                    date.setHours(timeValues[0].slice(-2));
+                    date.setMinutes(timeValues[1]);
+                    date.setSeconds(timeValues[2] ?? '0');
+                    return date;
+
+               };
+                if(dateValues[0].length == 4 ){
+                    //us date format
+                    let date = new Date();
+                    date.setYear(dateValues[0]);
+                    date.setMonth(dateValues[1] - 1);
+                    date.setDate(dateValues[2].substring(0,2));
+                    if(this.enableTime) {
+                        let timeDate = getTime(dateValues[2])
+                        date.setHours(timeDate.getHours());
+                        date.setMinutes(timeDate.getMinutes());
+                        date.setSeconds(timeDate.getSeconds());
+                    }
+                     this.model = date.toISOString();
+                } else {
+                     let date = new Date();
+                    date.setDate(dateValues[0]);
+                    date.setMonth(dateValues[1] - 1);
+                    date.setYear(dateValues[2].substring(0,4));
+                     if(this.enableTime) {
+                        let timeDate = getTime(dateValues[2])
+                        date.setHours(timeDate.getHours());
+                        date.setMinutes(timeDate.getMinutes());
+                        date.setSeconds(timeDate.getSeconds());
+                    }
+
+                    this.model = date.toISOString();
+                }
+            }
+
+        }
         let date = this.model ? new Date(this.model) : null;
         if(date !== null) {
 
@@ -104,6 +147,7 @@
            @click="open = true"
            clearable
        >
+
            <div x-text="dateString"></div>
 
        </flux:input>

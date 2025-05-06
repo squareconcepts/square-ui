@@ -23,5 +23,10 @@ class Datepicker extends Component
     {
         return view('square-ui::blade-components.inputs.datepicker');
     }
+
+    public function getCarbonDate(  )
+    {
+        dd($this->attributes->wire('model'));
+    }
 }
 
