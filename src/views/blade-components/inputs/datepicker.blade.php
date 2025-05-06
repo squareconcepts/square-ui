@@ -8,34 +8,40 @@
     hours: null,
     minutes: null,
     init() {
-        let date = this.model ? new Date(this.model) : new Date();
-        this.date = date.toISOString();
-        this.hours = date.getHours();
-        this.minutes = date.getMinutes();
-        this.setModelString();
-        this.$watch('hours', (value) => {
-            if (value > 23) {
-                this.$nextTick(() => { this.hours = 23 });
-            }
-            date.setHours(this.hours);
-            date.setMinutes(this.minutes);
-            this.setDate(date);
-        });
+        let date = this.model ? new Date(this.model) : null;
+        if(date !== null) {
 
-        this.$watch('minutes', (value) => {
-            if (value > 59) {
-                this.$nextTick(() => { this.minutes = 59 });
-            }
-            date.setMinutes(this.minutes);
-            date.setHours(this.hours);
+            this.date = date.toISOString();
+            this.hours = date.getHours();
+            this.minutes = date.getMinutes();
+            this.setModelString();
+            this.$watch('hours', (value) => {
+                if (value > 23) {
+                    this.$nextTick(() => { this.hours = 23 });
+                }
+                date.setHours(this.hours);
+                date.setMinutes(this.minutes);
+                this.setDate(date);
+            });
 
-            this.setDate(date);
-        });
-        this.$watch('model', (value) => {
-           if(!this.enableTime){
-               this.$nextTick(() => { this.open = false;});
-           }
-        });
+            this.$watch('minutes', (value) => {
+                if (value > 59) {
+                    this.$nextTick(() => { this.minutes = 59 });
+                }
+                date.setMinutes(this.minutes);
+                date.setHours(this.hours);
+
+                this.setDate(date);
+            });
+            this.$watch('model', (value) => {
+               if(!this.enableTime){
+                   this.$nextTick(() => { this.open = false;});
+               }
+            });
+        } else {
+            this.hours = new Date().getHours();
+            this.minutes = new Date().getMinutes();
+        }
     },
      setDate(date) {
         this.model = date;
@@ -70,6 +76,11 @@
 
             this.model = this.dateString;
         }
+    },
+    resetDate() {
+        this.model = null;
+        this.date = null;
+        this.dateString  = null;
     }
     }"
     @keydown.escape.window="open = false"
@@ -85,14 +96,18 @@
            @if($label)
            <flux:label>{{$label}}</flux:label>
            @endif
+
        <flux:input
            class="cursor-pointer"
            as="button"
-           icon-trailing="calendar"
+           icon="calendar"
            @click="open = true"
+           clearable
        >
            <div x-text="dateString"></div>
+
        </flux:input>
+
        </flux:field>
 
 
@@ -131,10 +146,26 @@
                @if($enableTime)
                    <flux:separator :text="__('Time')"  class="my-3"/>
                    <div class="flex gap-4 justify-evenly px-4">
-                       <flux:input mask="99"  x-model="hours" min="0" max="23" type="number"/>
-                       <flux:input mask="99"  x-model="minutes" min="0" max="59" type="number"/>
+                       @if($asDropdown)
+                           <flux:select variant="listbox"   x-model="hours"  placeholder="Choose hours...">
+                               @foreach(range(0,23) as $hour)
+                                   <flux:select.option>{{$hour}}</flux:select.option>
+                               @endforeach
+                           </flux:select>
+                           <flux:select variant="listbox"   x-model="minutes"  placeholder="Choose minutes...">
+                               @foreach(range(0,59) as $minute)
+                                   <flux:select.option>{{$minute}}</flux:select.option>
+                               @endforeach
+                           </flux:select>
+                       @else
+                           <flux:input mask="99"  x-model="hours" min="0" max="23" type="number"/>
+                           <flux:input mask="99"  x-model="minutes" min="0" max="59" type="number"/>
+                       @endif
+
                    </div>
                @endif
+               <flux:separator  class="my-3"/>
+               <flux:button variant="danger" @click="resetDate()" class="w-full" >Wissen</flux:button>
            </div>
        </dialog>
    </div>

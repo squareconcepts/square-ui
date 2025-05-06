@@ -13,6 +13,7 @@ class Datepicker extends Component
     public function __construct(
         public bool $enableTime = true,
         public ?string $label = '',
+        public bool $asDropdown = true
     ) {
         $this->id = Str::uuid();
 
