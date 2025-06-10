@@ -49,8 +49,38 @@
                     this.model = date.toISOString();
                 }
             }
-
         }
+
+        this.$watch('hours', (value) => {
+            if (this.model == null) {
+                console.log('model is null');
+                return;
+            }
+            if (value > 23) {
+                this.$nextTick(() => { this.hours = 23 });
+            }
+
+            let date = this.model ? new Date(this.model) : null;
+            date.setHours(this.hours);
+            date.setMinutes(this.minutes);
+            this.setDate(date);
+        });
+
+        this.$watch('minutes', (value) => {
+            if (this.model == null) {
+                console.log('model is null');
+                return;
+            }
+            if (value > 59) {
+                this.$nextTick(() => { this.minutes = 59 });
+            }
+
+            let date = this.model ? new Date(this.model) : null;
+            date.setMinutes(this.minutes);
+            date.setHours(this.hours);
+            this.setDate(date);
+        });
+
         let date = this.model ? new Date(this.model) : null;
         if(date !== null) {
 
@@ -58,24 +88,7 @@
             this.hours = date.getHours();
             this.minutes = date.getMinutes();
             this.setModelString();
-            this.$watch('hours', (value) => {
-                if (value > 23) {
-                    this.$nextTick(() => { this.hours = 23 });
-                }
-                date.setHours(this.hours);
-                date.setMinutes(this.minutes);
-                this.setDate(date);
-            });
 
-            this.$watch('minutes', (value) => {
-                if (value > 59) {
-                    this.$nextTick(() => { this.minutes = 59 });
-                }
-                date.setMinutes(this.minutes);
-                date.setHours(this.hours);
-
-                this.setDate(date);
-            });
             this.$watch('model', (value) => {
                if(!this.enableTime){
                    this.$nextTick(() => { this.open = false;});
