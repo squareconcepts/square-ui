@@ -53,7 +53,6 @@
 
         this.$watch('hours', (value) => {
             if (this.model == null) {
-                console.log('model is null');
                 return;
             }
             if (value > 23) {
@@ -68,7 +67,6 @@
 
         this.$watch('minutes', (value) => {
             if (this.model == null) {
-                console.log('model is null');
                 return;
             }
             if (value > 59) {
