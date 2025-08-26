@@ -13,7 +13,9 @@ class Datepicker extends Component
     public function __construct(
         public bool $enableTime = true,
         public ?string $label = '',
-        public bool $asDropdown = true
+        public bool $asDropdown = true,
+        public bool $showPeriods = false,
+        public array $periodOption = ['today', 'tomorrow' , 'week' , 'next_week', 'month', 'next_month']
     ) {
         $this->id = Str::uuid();
 

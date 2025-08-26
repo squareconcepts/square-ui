@@ -131,6 +131,60 @@
             this.model = this.dateString;
         }
     },
+    changePeriod(period) {
+        let now = new Date();
+        let newDate;
+
+        switch (period) {
+            case 'today':
+                newDate = now;
+                break;
+            case 'tomorrow':
+                newDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+                break;
+            case 'week':
+                let dayOfWeek = now.getDay();
+                let daysUntilFriday = 5 - dayOfWeek;
+                if (daysUntilFriday < 0) {
+                    daysUntilFriday += 7;
+                }
+                newDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilFriday);
+                break;
+            case 'next_week':
+                let currentDay = now.getDay();
+                let daysToNextFriday = (5 - currentDay + 7) % 7;
+                if (daysToNextFriday === 0) {
+                    daysToNextFriday = 7;
+                }
+                newDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysToNextFriday + 7);
+                break;
+            case 'month':
+                newDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+                while (newDate.getDay() === 6 || newDate.getDay() === 0) {
+                    newDate.setDate(newDate.getDate() - 1);
+                }
+                break;
+            case 'next_month':
+                newDate = new Date(now.getFullYear(), now.getMonth() + 2, 0);
+
+                while (newDate.getDay() === 6 || newDate.getDay() === 0) {
+                    newDate.setDate(newDate.getDate() - 1);
+                }
+                break;
+            default:
+                newDate = now;
+        }
+
+        newDate.setHours(17);
+        newDate.setMinutes(0);
+        newDate.setSeconds(0);
+
+        this.date = newDate.toISOString();
+        this.hours = newDate.getHours();
+        this.minutes = newDate.getMinutes();
+        this.setDate(newDate);
+    },
     resetDate() {
         this.model = null;
         this.date = null;
@@ -145,41 +199,51 @@
             ->keys()->toArray();
     @endphp
 
-   <div class="relative">
-       <flux:field>
-           @if($label)
-           <flux:label>{{$label}}</flux:label>
-           @endif
+    <div class="relative">
+        <flux:field>
+            @if($label)
+                <flux:label>{{$label}}</flux:label>
+            @endif
 
-       <flux:input
-           class="cursor-pointer"
-           as="button"
-           icon="calendar"
-           @click="open = true"
-           clearable
-       >
+            <flux:input
+                class="cursor-pointer"
+                as="button"
+                icon="calendar"
+                @click="open = true"
+                clearable
+            >
 
-           <div x-text="dateString"></div>
+                <div x-text="dateString"></div>
 
-       </flux:input>
+            </flux:input>
 
-       </flux:field>
+        </flux:field>
 
 
-       {{-- De dialog --}}
-       <dialog
-           x-ref="dialog"
-           x-show="open"
-           x-transition
-           @click.outside="open = false"
-           wire:ignore
-           wire:cloak
-           class="max-sm:max-h-full! rounded-xl shadow-xl sm:shadow-2xs max-sm:fixed! max-sm:inset-0! sm:backdrop:bg-transparent bg-white dark:bg-zinc-900 sm:border border-zinc-200 dark:border-white/10 block mt-1 self-start mx-0 z-10"
-       >
-           <div class="p-4">
-               <flux:calendar
-                   x-model="date"
-                   @change="(newDate) => {
+        {{-- De dialog --}}
+        <dialog
+            x-ref="dialog"
+            x-show="open"
+            x-transition
+            @click.outside="open = false"
+            wire:ignore
+            wire:cloak
+            class="max-sm:max-h-full! rounded-xl shadow-xl sm:shadow-2xs max-sm:fixed! max-sm:inset-0! sm:backdrop:bg-transparent bg-white dark:bg-zinc-900 sm:border border-zinc-200 dark:border-white/10 block mt-1 self-start mx-0 z-10"
+        >
+            <div class="p-4 flex">
+                @if($showPeriods)
+                    <div class="flex flex-col gap-2  items-start ">
+                        @foreach($periodOption as  $period)
+                            <flux:button size="xs" variant="ghost"  x-on:click="changePeriod('{{$period}}')">@lang('report.period.'.$period)</flux:button>
+                        @endforeach
+
+                    </div>
+                    <flux:separator vertical class="mx-3" />
+                @endif
+                <div>
+                    <flux:calendar
+                        x-model="date"
+                        @change="(newDate) => {
                        if (newDate?.target?.value) {
                            let parts = newDate.target.value.split('-');
                            if (parts.length === 3) {
@@ -197,31 +261,32 @@
                            }
                        }
                    }"
-               ></flux:calendar>
-               @if($enableTime)
-                   <flux:separator :text="__('Time')"  class="my-3"/>
-                   <div class="flex gap-4 justify-evenly px-4">
-                       @if($asDropdown)
-                           <flux:select variant="listbox"   x-model="hours"  placeholder="Choose hours...">
-                               @foreach(range(0,23) as $hour)
-                                   <flux:select.option>{{$hour}}</flux:select.option>
-                               @endforeach
-                           </flux:select>
-                           <flux:select variant="listbox"   x-model="minutes"  placeholder="Choose minutes...">
-                               @foreach(range(0,59) as $minute)
-                                   <flux:select.option>{{$minute}}</flux:select.option>
-                               @endforeach
-                           </flux:select>
-                       @else
-                           <flux:input mask="99"  x-model="hours" min="0" max="23" type="number"/>
-                           <flux:input mask="99"  x-model="minutes" min="0" max="59" type="number"/>
-                       @endif
+                    ></flux:calendar>
+                    @if($enableTime)
+                        <flux:separator :text="__('Time')"  class="my-3"/>
+                        <div class="flex gap-4 justify-evenly px-4">
+                            @if($asDropdown)
+                                <flux:select variant="listbox"   x-model="hours"  placeholder="Choose hours...">
+                                    @foreach(range(0,23) as $hour)
+                                        <flux:select.option>{{$hour}}</flux:select.option>
+                                    @endforeach
+                                </flux:select>
+                                <flux:select variant="listbox"   x-model="minutes"  placeholder="Choose minutes...">
+                                    @foreach(range(0,59) as $minute)
+                                        <flux:select.option>{{$minute}}</flux:select.option>
+                                    @endforeach
+                                </flux:select>
+                            @else
+                                <flux:input mask="99"  x-model="hours" min="0" max="23" type="number"/>
+                                <flux:input mask="99"  x-model="minutes" min="0" max="59" type="number"/>
+                            @endif
 
-                   </div>
-               @endif
-               <flux:separator  class="my-3"/>
-               <flux:button variant="danger" @click="resetDate()" class="w-full" >Wissen</flux:button>
-           </div>
-       </dialog>
-   </div>
+                        </div>
+                    @endif
+                    <flux:separator  class="my-3"/>
+                    <flux:button variant="danger" @click="resetDate()" class="w-full" >Wissen</flux:button>
+                </div>
+            </div>
+        </dialog>
+    </div>
 </div>
