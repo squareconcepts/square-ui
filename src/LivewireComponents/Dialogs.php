@@ -6,7 +6,7 @@ use Flux\Flux;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class ConfirmDialog extends Component
+class Dialogs extends Component
 {
     public string $title;
     public string $description;
@@ -20,7 +20,7 @@ class ConfirmDialog extends Component
 
     public function render()
     {
-        return view('square-ui::livewire-components.confirm-dialog');
+        return view('square-ui::livewire-components.dialogs');
     }
 
     public function showConfirmModal($data = [])
@@ -132,6 +132,44 @@ class ConfirmDialog extends Component
         }
         $this->dispatch('confirm-dialog-response', accepted: false);
         Flux::modal('confirm-dialog')->close();
+        $this->reset();
+    }
+
+
+    public function showErrorDialog($data = [])
+    {
+        $options = $data['options'] ?? [];
+        if(count($options) == 0 || empty($options['title']) || empty($options['description'])) {
+            return;
+        }
+        $this->title = $options['title'];
+        $this->description = $options['description'];
+        Flux::modal('error-dialog')->show();
+    }
+
+    public function closeErrorDialog()
+    {
+        $this->dispatch('error-dialog-response');
+        Flux::modal('error-dialog')->close();
+        $this->reset();
+    }
+
+
+    public function showSuccessDialog($data = [])
+    {
+        $options = $data['options'] ?? [];
+        if(count($options) == 0 || empty($options['title']) || empty($options['description'])) {
+            return;
+        }
+        $this->title = $options['title'];
+        $this->description = $options['description'];
+        Flux::modal('success-dialog')->show();
+    }
+
+    public function closeSuccessDialog()
+    {
+        $this->dispatch('success-dialog-response');
+        Flux::modal('success-dialog')->close();
         $this->reset();
     }
 }

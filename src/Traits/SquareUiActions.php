@@ -52,4 +52,14 @@ trait SquareUiActions
     {
         Flux::modal('confirm-dialog')->close();
     }
+
+    public function errorDialog($title, $message)
+    {
+        $this->dispatch('show-error-dialog', options: ['title' => $title, 'description' => $message]);
+    }
+
+    public function successDialog($title, $message)
+    {
+        $this->dispatch('show-success-dialog', options: ['title' => $title, 'description' => $message]);
+    }
 }

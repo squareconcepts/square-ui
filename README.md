@@ -11,7 +11,7 @@ composer require squareconcepts/square-ui
 
 ```html
 <flux:toast.group position="top end"><flux:toast/></flux:toast.group>
-<livewire:square-ui::confirm-dialog />
+<livewire:square-ui::dialogs />
 ```
 
 ### Add these to the page [DEPRECATED]
