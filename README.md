@@ -6,7 +6,15 @@ You can install the package via composer:
 composer require squareconcepts/square-ui
 ```
 
+
 ### Add these to the page
+
+```html
+<flux:toast.group position="top end"><flux:toast/></flux:toast.group>
+<livewire:square-ui::confirm-dialog />
+```
+
+### Add these to the page [DEPRECATED]
  in the head tag
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/45.0.0/ckeditor5.css" crossorigin>

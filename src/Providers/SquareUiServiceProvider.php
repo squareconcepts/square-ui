@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\ComponentAttributeBag;
 use Livewire\Livewire;
+use Squareconcepts\SquareUi\LivewireComponents\ConfirmDialog;
 use Squareconcepts\SquareUi\LivewireComponents\DataTable;
 use Squareconcepts\SquareUi\LivewireComponents\IconPicker;
 use Squareconcepts\SquareUi\LivewireComponents\LocalizedStringComponent;
@@ -71,6 +72,7 @@ class SquareUiServiceProvider extends ServiceProvider
         Livewire::component('square-ui::data-table', DataTable::class);
         Livewire::component('square-ui::icon-picker', IconPicker::class);
         Livewire::component('square-ui::localized-string', LocalizedStringComponent::class);
+        Livewire::component('square-ui::confirm-dialog', ConfirmDialog::class);
     }
 
     public function addDisks(): void

@@ -4,6 +4,7 @@
     "type": "library",
     "require": {
         "livewire/livewire": ">=v3.0.0",
+        "livewire/flux": "^2.0",
         "laravel/framework": ">11.0.0",
         "guzzlehttp/guzzle": ">7.5@dev"
     },
