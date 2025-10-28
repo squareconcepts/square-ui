@@ -39,7 +39,7 @@
                     <flux:heading size="xl">{{$title}}</flux:heading>
                     @if(!empty($description))
                         <flux:text class="mt-2">
-                            <p>{{$description}}</p>
+                            <p>{!! $description !!}</p>
                         </flux:text>
                     @endif
                 </div>
@@ -60,7 +60,7 @@
                     <flux:heading size="xl">{{$title}}</flux:heading>
                     @if(!empty($description))
                         <flux:text class="mt-2">
-                            <p>{{$description}}</p>
+                            <p>{!! $description !!}</p>
                         </flux:text>
                     @endif
                 </div>
