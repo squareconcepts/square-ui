@@ -39,9 +39,7 @@ class SquareUiServiceProvider extends ServiceProvider
             __DIR__ . '/../lang' => lang_path('vendor/square-ui'),
         ], 'square-ui-lang');
 
-//        $this->publishes([
-//            __DIR__.'/../../public/js/ckeditor/ckeditor.js' => public_path('vendor/square-ui/ckeditor.js'),
-//        ], 'square-ui-assets');
+
 
         $this->publishes([
             __DIR__.'/../../public/images' => public_path('vendor/squareconcepts/square-ui'),
@@ -49,8 +47,6 @@ class SquareUiServiceProvider extends ServiceProvider
 
         $this->loadLivewireComponents();
         $this->loadBladeComponents();
-        $this->addDisks();
-        $this->addRoutes();
         ComponentAttributeBag::macro('addClass', function (string $class) {
             $this->class($class);
         });
@@ -75,25 +71,4 @@ class SquareUiServiceProvider extends ServiceProvider
         Livewire::component('square-ui::dialogs', Dialogs::class);
     }
 
-    public function addDisks(): void
-    {
-        $this->app['config']['filesystems.disks.square-ui'] = [
-            'driver' => 'local',
-            'root' => storage_path('app/public/square-ui-uploads'),
-            'url' => config('app.url').'/storage/square-ui-uploads',
-            'visibility' => 'public',
-            'throw' => false,
-        ];
-    }
-
-    public function addRoutes(): void
-    {
-        Route::group([
-            'prefix' => 'square-ui',
-            'as' => 'square-ui.'
-        ], function () {
-            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
-        });
-
-    }
 }
