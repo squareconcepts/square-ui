@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -198,6 +199,8 @@ class DataTable extends Component
             } else {
                 $this->redirect($this->routePrefix . '/' . $row['id']);
             }
+        } else {
+            $this->dispatch($event, $row);
         }
     }
 
@@ -245,6 +248,7 @@ class DataTable extends Component
         $this->applyFilters();
     }
 
+    #[On('refreshDataTable')]
     public function refreshData($data, $routePrefix = null)
     {
         $col = collect($data);

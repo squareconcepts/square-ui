@@ -207,12 +207,12 @@
                                 <td class="whitespace-nowrap px-3 py-2 md:px-6 md:py-4 leading-5 text-gray-900 w-0">
                                     @foreach($customButtons as $button)
                                         @if(!empty($button['label']))
-                                            <flux:button icon="{{$button['icon']}}" wire:click="{{$button['method']}}({{$row->id}})" outline :variant="$button['color']">
+                                            <flux:button icon="{{$button['icon']}}" wire:click="handleAction('{{$button['method']}}', {{json_encode($result)}})" outline :variant="$button['color']">
                                                 {{$button['label']}}
                                             </flux:button>
 
                                         @else
-                                            <flux:button icon="{{$button['icon']}}" wire:click="{{$button['method']}}({{$row->id}})" outline :variant="$button['color']" />
+                                            <flux:button icon="{{$button['icon']}}" wire:click="handleAction('{{$button['method']}}', {{json_encode($result)}})" outline :variant="$button['color']" />
                                         @endif
                                     @endforeach
                                     @if(!$hideRead)
