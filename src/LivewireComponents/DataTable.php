@@ -9,11 +9,14 @@ use Illuminate\Support\Collection;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Squareconcepts\SquareUi\Traits\SquareUiActions;
 use Squareconcepts\SquareUi\Traits\SquareUiModals;
 
 class DataTable extends Component
 {
-    use SquareUiModals, WithPagination;
+    use SquareUiModals, SquareUiActions, WithPagination {
+        SquareUiActions::confirm insteadof SquareUiModals;
+    }
 
     public bool $hasPagination = true;
     public bool $hideActions = false;
@@ -200,7 +203,7 @@ class DataTable extends Component
 
     public function deleteRow($row, $routePrefix = null): void
     {
-        $this->dialog()->confirm([
+        $this->confirm([
             'title'       => __('square-ui::square-ui.are_you_sure_title'),
             'description' => __('square-ui::square-ui.are_you_sure_description'),
             'acceptLabel' => __('square-ui::square-ui.yes'),

@@ -221,7 +221,6 @@
                                     @if(!$hideEdit)
                                             <flux:button icon="pencil" wire:click="handleAction('editRow', {{json_encode($result)}})" outline variant="warning" />
                                     @endif
-                                    @endif
                                     @if(!$hideDelete)
                                             <flux:button icon="trash" wire:click="handleAction('deleteRow', {{json_encode($result)}})" outline variant="danger" />
                                     @endif
