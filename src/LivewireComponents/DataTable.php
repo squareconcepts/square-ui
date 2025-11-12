@@ -204,7 +204,7 @@ class DataTable extends Component
     public function deleteRow($row, $routePrefix = null): void
     {
         $this->confirm([
-            'title'       => __('square-ui::square-ui.are_you_sure_title'),
+            'title'       => __('square-ui::square-ui.are_you_sure'),
             'description' => __('square-ui::square-ui.are_you_sure_description'),
             'acceptLabel' => __('square-ui::square-ui.yes'),
             'rejectLabel' => __('square-ui::square-ui.cancel'),
