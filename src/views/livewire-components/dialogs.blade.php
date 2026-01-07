@@ -31,8 +31,8 @@
             </div>
         </flux:modal>
     </div>
-    <div  x-data="{ isOpen: false }" x-on:show-error-dialog.window="isOpen = true; $wire.showErrorDialog($event.detail);" >
-        <flux:modal name="error-dialog" class="min-w-[22rem]" :dismissible="false" @close=" isOpen = false;">
+    <div  x-data x-on:show-error-dialog.window="$wire.showErrorDialog($event.detail);" >
+        <flux:modal name="error-dialog" class="min-w-[22rem]" :dismissible="false" >
             <div class="space-y-6">
                 <div>
                     <div class="py-2 flex items-center justify-center">
@@ -48,7 +48,7 @@
                 <div class="flex gap-2">
                     <flux:spacer />
                     <flux:modal.close>
-                        <flux:button type="submit"  x-on:keyup.enter.window="if(isOpen) { $wire.closeErrorDialog(); }" wire:click="closeErrorDialog" variant="danger">{{ __('buttons.close') }}</flux:button>
+                        <flux:button type="submit" wire:click="closeErrorDialog" variant="danger">{{ __('buttons.close') }}</flux:button>
                     </flux:modal.close>
 
                 </div>
