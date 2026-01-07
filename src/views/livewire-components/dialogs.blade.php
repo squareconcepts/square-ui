@@ -1,6 +1,6 @@
 <div>
-    <div x-data x-on:show-confirm-dialog.window="$wire.showConfirmModal($event.detail)">
-        <flux:modal name="confirm-dialog" class="min-w-[22rem]" :dismissible="false" @close="rejectClick">
+    <div x-data="{ isOpen: false }" x-on:show-confirm-dialog.window="isOpen = true; $wire.showConfirmModal($event.detail)">
+        <flux:modal name="confirm-dialog" class="min-w-[22rem]" :dismissible="false" @close="isOpen = false; rejectClick">
             <div class="space-y-6">
                 <div>
                     <div class="py-2 flex items-center justify-center">
@@ -24,13 +24,15 @@
                 <div class="flex gap-2">
                     <flux:spacer />
                     <flux:button type="submit" wire:click="rejectClick" variant="danger">{{$rejectLabel}}</flux:button>
-                    <flux:button type="submit" wire:click="confirmClick" x-on:keyup.enter.window="$wire.confirmClick()" variant="positive">{{$acceptLabel}}</flux:button>
+                    <flux:button type="submit" wire:click="confirmClick" x-on:keyup.enter.window="if(isOpen) { $wire.confirmClick(); }" variant="positive">
+                        {{$acceptLabel}}
+                    </flux:button>
                 </div>
             </div>
         </flux:modal>
     </div>
-    <div x-data x-on:show-error-dialog.window="$wire.showErrorDialog($event.detail)">
-        <flux:modal name="error-dialog" class="min-w-[22rem]" :dismissible="false">
+    <div  x-data="{ isOpen: false }" x-on:show-error-dialog.window="isOpen = true; $wire.showErrorDialog($event.detail);" >
+        <flux:modal name="error-dialog" class="min-w-[22rem]" :dismissible="false" @close=" isOpen = false;">
             <div class="space-y-6">
                 <div>
                     <div class="py-2 flex items-center justify-center">
@@ -45,7 +47,10 @@
                 </div>
                 <div class="flex gap-2">
                     <flux:spacer />
-                    <flux:button type="submit" wire:click="closeErrorDialog" variant="danger">{{ __('buttons.close') }}</flux:button>
+                    <flux:modal.close>
+                        <flux:button type="submit"  x-on:keyup.enter.window="if(isOpen) { $wire.closeErrorDialog(); }" wire:click="closeErrorDialog" variant="danger">{{ __('buttons.close') }}</flux:button>
+                    </flux:modal.close>
+
                 </div>
             </div>
         </flux:modal>
@@ -71,5 +76,4 @@
             </div>
         </flux:modal>
     </div>
-
 </div>
