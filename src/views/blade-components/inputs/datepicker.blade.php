@@ -266,14 +266,14 @@
                         <flux:separator :text="__('Time')"  class="my-3"/>
                         <div class="flex gap-4 justify-evenly px-4">
                             @if($asDropdown)
-                                <flux:select variant="listbox"   x-model="hours"  placeholder="Choose hours...">
+                                <flux:select variant="listbox"   x-model="hours"  placeholder="Kies uren...">
                                     @foreach(range(0,23) as $hour)
-                                        <flux:select.option>{{$hour}}</flux:select.option>
+                                        <flux:select.option.variants.custom>{{$hour}}</flux:select.option.variants.custom>
                                     @endforeach
                                 </flux:select>
-                                <flux:select variant="listbox"   x-model="minutes"  placeholder="Choose minutes...">
+                                <flux:select variant="listbox"   x-model="minutes"  placeholder="Kies minuten...">
                                     @foreach(range(0,59) as $minute)
-                                        <flux:select.option>{{$minute}}</flux:select.option>
+                                        <flux:select.option.variants.custom>{{$minute}}</flux:select.option.variants.custom>
                                     @endforeach
                                 </flux:select>
                             @else
