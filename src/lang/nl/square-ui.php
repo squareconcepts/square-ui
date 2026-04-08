@@ -32,6 +32,9 @@
             'warning' => 'Pas op!',
             'question' => 'Vraag?',
         ],
+        'buttons' => [
+            'close' => 'Sluiten'
+        ],
         'generate' => 'Genereren',
         'translatable_field' => 'Vertaalbaar veld (:lang)',
         'translation' => 'Vertaling (:lang)'
