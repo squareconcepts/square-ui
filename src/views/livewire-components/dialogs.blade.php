@@ -1,6 +1,6 @@
 <div>
     <div x-data="{ isOpen: false }" x-on:show-confirm-dialog.window="isOpen = true; $wire.showConfirmModal($event.detail)">
-        <flux:modal name="confirm-dialog" class="min-w-[22rem]" :dismissible="false" @close="isOpen = false; rejectClick">
+        <flux:modal name="confirm-dialog" class="min-w-[22rem]" :dismissible="false" @close="isOpen = false;">
             <div class="space-y-6">
                 <div>
                     <div class="py-2 flex items-center justify-center">
