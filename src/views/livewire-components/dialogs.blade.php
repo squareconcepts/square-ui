@@ -27,6 +27,11 @@
                     <flux:button type="submit" wire:click="confirmClick" x-on:keyup.enter.window="if(isOpen) { $wire.confirmClick(); }" variant="positive">
                         {{$acceptLabel}}
                     </flux:button>
+                    @foreach($extraButtons as $i => $extraButton)
+                        <flux:button type="submit" wire:click="extraButtonClick('{{$i}}')" variant="{{$extraButton['variant']}}">
+                            {{$extraButton['label']}}
+                        </flux:button>
+                    @endforeach
                 </div>
             </div>
         </flux:modal>
