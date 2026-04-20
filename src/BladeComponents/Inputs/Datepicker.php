@@ -15,20 +15,13 @@ class Datepicker extends Component
         public ?string $label = '',
         public bool $asDropdown = true,
         public bool $showPeriods = false,
-        public array $periodOption = ['today', 'tomorrow' , 'week' , 'next_week', 'month', 'next_month']
+        public array $periodOption = ['today', 'tomorrow', 'week', 'next_week', 'month', 'next_month']
     ) {
         $this->id = Str::uuid();
-
     }
 
     public function render(): View
     {
         return view('square-ui::blade-components.inputs.datepicker');
     }
-
-    public function getCarbonDate(  )
-    {
-        dd($this->attributes->wire('model'));
-    }
 }
-

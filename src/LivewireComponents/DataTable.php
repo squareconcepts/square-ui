@@ -11,15 +11,11 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Squareconcepts\SquareUi\Traits\SquareUiActions;
-use Squareconcepts\SquareUi\Traits\SquareUiModals;
 
 class DataTable extends Component
 {
-    use SquareUiModals, SquareUiActions, WithPagination {
-        SquareUiActions::confirm insteadof SquareUiModals;
-    }
+    use SquareUiActions, WithPagination;
 
-    public bool $hasPagination = true;
     public bool $hideActions = false;
     public bool $hideRead = false;
     public bool $hideEdit = false;
@@ -27,7 +23,6 @@ class DataTable extends Component
     public bool $hideToolbar = false;
     public int $perPage = 10;
     public int $currentPage = 1;
-    public int $lastPage = 1;
     public array $customButtons = [];
     public array $perPageOptions = [10, 25, 50];
     public array $columns = [];
@@ -39,117 +34,74 @@ class DataTable extends Component
     public bool $withPagination = true;
     public string $sortBy = '';
     public string $sortDirection = 'desc';
+
     #[Url]
     public string $searchString = '';
+
     public $model;
     public $customViewAction;
-
     public string $routePrefix = '';
 
-    protected $listeners = [
-        'deleteRecordBy',
-        'refreshData'
-    ];
-
-    public function sortColumns($field)
+    public function sortColumns(string $field): void
     {
-        if(in_array($field, $this->sortables)) {
-            $this->sortDirection = $this->sortBy === $field
-                ? $this->reverseSort()
-                : 'desc';
-
-            $this->sortBy = $field;
-            $this->refreshData($this->filteredResults);
+        if (!in_array($field, $this->sortables)) {
+            return;
         }
+
+        $this->sortDirection = $this->sortBy === $field ? $this->reverseSort() : 'desc';
+        $this->sortBy = $field;
+        $this->refreshData($this->filteredResults);
     }
 
     public function reverseSort(): string
     {
-        return $this->sortDirection === 'asc'
-            ? 'desc'
-            : 'asc';
+        return $this->sortDirection === 'asc' ? 'desc' : 'asc';
     }
 
-    public function mount()
+    public function mount(): void
     {
-        if(!empty($_GET['page']) && $this->currentPage != $_GET['page']) {
-            $this->currentPage = $_GET['page'];
-        }
         $this->loadData();
-
         $this->filteredResults = $this->results;
     }
 
-    protected function rules()
+    public function updated(): void
     {
-        return [
-            'sortBy' => 'string',
-            'sortDirection' => 'string',
-            'searchString' => 'string'
-        ];
-    }
-
-    public function dehydrate()
-    {
-        if(!empty($_GET['page'])) {
-            if($this->currentPage != $_GET['page']) {
-                $this->currentPage = $_GET['page'];
-            }
-        } else if($this->currentPage != 1) {
-            $this->currentPage = 1;
-        }
-    }
-
-    public function updated()
-    {
-        $this->validate();
         $this->applyFilters();
     }
 
     private function applyFilters(): void
     {
-        $this->filteredResults = collect($this->results->filter(function($result) {
+        $this->filteredResults = collect($this->results->filter(function ($result) {
             if (empty($this->searchString)) {
                 return true;
             }
 
-            $matches = false;
-
-            foreach($this->selectedColumns as $fieldName) {
+            foreach ($this->selectedColumns as $fieldName) {
                 if (is_array($result)) {
                     if (is_array($result[$fieldName])) {
                         foreach ($result[$fieldName] as $string) {
                             if (str($string)->lower()->contains(strtolower($this->searchString))) {
-                                $matches = true;
-                                break 2;
+                                return true;
                             }
                         }
-                    } else {
-                        if (str($result[$fieldName])->lower()->contains(strtolower($this->searchString))) {
-                            $matches = true;
-                            break;
-                        }
+                    } elseif (str($result[$fieldName])->lower()->contains(strtolower($this->searchString))) {
+                        return true;
                     }
-                } else if ($result instanceof Model) {
-                    if (str($result->$fieldName)->lower()->contains(strtolower($this->searchString))) {
-                        $matches = true;
-                        break;
-                    }
+                } elseif ($result instanceof Model && str($result->$fieldName)->lower()->contains(strtolower($this->searchString))) {
+                    return true;
                 }
             }
 
-            return $matches;
-        }))->map(function ($item) {
-            return (object) $item;
-        });
+            return false;
+        }))->map(fn($item) => (object) $item);
     }
 
     public function getItemsProperty()
     {
-        if(!$this->withPagination) {
+        if (!$this->withPagination) {
             $col = collect($this->filteredResults);
-            if($this->sortBy != '') {
-                $col = $col->sortBy($this->sortBy, SORT_REGULAR, $this->sortDirection == 'desc');
+            if ($this->sortBy !== '') {
+                $col = $col->sortBy($this->sortBy, SORT_REGULAR, $this->sortDirection === 'desc');
             }
             return $col;
         }
@@ -157,7 +109,7 @@ class DataTable extends Component
         return $this->paginate($this->filteredResults, $this->perPage, $this->currentPage);
     }
 
-    public function paginate($items, $perPage = 10, $page = null, $options = []): LengthAwarePaginator
+    public function paginate($items, int $perPage = 10, ?int $page = null, array $options = []): LengthAwarePaginator
     {
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
         $items = $items instanceof Collection ? $items : Collection::make($items);
@@ -187,74 +139,66 @@ class DataTable extends Component
         $this->currentPage = $page;
     }
 
-    public function handleAction($event, $row): void
+    public function handleAction(string $event, $row): void
     {
-        if ($event == 'editRow') {
-            $this->redirect( $this->routePrefix . '/edit/' . $row['id']);
-        } else if ($event == 'deleteRow') {
-            $this->deleteRow($row);
-        } else if ($event == 'viewRow') {
-            if (!empty($this->customViewAction)) {
-                $this->dispatch($this->customViewAction, $row);
-            } else {
-                $this->redirect($this->routePrefix . '/' . $row['id']);
-            }
-        } else {
-            $this->dispatch($event, $row);
-        }
+        match ($event) {
+            'editRow' => $this->redirect($this->routePrefix . '/edit/' . $row['id']),
+            'deleteRow' => $this->deleteRow($row),
+            'viewRow' => !empty($this->customViewAction)
+                ? $this->dispatch($this->customViewAction, $row)
+                : $this->redirect($this->routePrefix . '/' . $row['id']),
+            default => $this->dispatch($event, $row),
+        };
     }
 
-    public function deleteRow($row, $routePrefix = null): void
+    public function deleteRow($row): void
     {
         $this->confirm([
-            'title'       => __('square-ui::square-ui.are_you_sure'),
+            'title' => __('square-ui::square-ui.are_you_sure'),
             'description' => __('square-ui::square-ui.are_you_sure_description'),
             'acceptLabel' => __('square-ui::square-ui.yes'),
             'rejectLabel' => __('square-ui::square-ui.cancel'),
-            'method'      => 'deleteRowCallback',
-            'params'      => $row
+            'method' => 'deleteRowCallback',
+            'params' => $row,
         ]);
     }
 
     public function deleteRowCallback($row): void
     {
-        $model = new $this->model;
-        $model = $model->findOrFail($row['id']);
+        $model = (new $this->model)->findOrFail($row['id']);
 
         try {
-            if(!$model->delete()) {
-                $this->error(__('square-ui::square-ui.error'), __('square-ui::square-ui.delete_failed'));
+            if (!$model->delete()) {
+                $this->errorNotification(__('square-ui::square-ui.delete_failed'));
                 return;
             }
         } catch (\Exception) {
-            $this->error(__('square-ui::square-ui.error'), __('square-ui::square-ui.delete_failed'));
+            $this->errorNotification(__('square-ui::square-ui.delete_failed'));
             return;
         }
 
-        $this->success(__('square-ui::square-ui.delete_success'));
+        $this->successNotification(__('square-ui::square-ui.delete_success'));
         $this->loadData();
         $this->filteredResults = $this->results;
     }
 
-    public function deleteRecordBy($data)
+    #[On('deleteRecordBy')]
+    public function deleteRecordBy(array $data): void
     {
         $field = $data['field'];
         $value = $data['value'];
 
-        $this->results = collect($this->results->filter(function($result) use ($field, $value){
-            return $result[$field] != $value;
-        }));
-
+        $this->results = collect($this->results->filter(fn($result) => $result[$field] !== $value));
         $this->applyFilters();
     }
 
     #[On('refreshDataTable')]
-    public function refreshData($data, $routePrefix = null)
+    public function refreshData($data, $routePrefix = null): void
     {
         $col = collect($data);
 
-        if($this->sortBy != '') {
-            $col = $col->sortBy($this->sortBy, SORT_REGULAR, $this->sortDirection == 'desc');
+        if ($this->sortBy !== '') {
+            $col = $col->sortBy($this->sortBy, SORT_REGULAR, $this->sortDirection === 'desc');
             $col = collect($col->values()->all());
         }
 
@@ -268,21 +212,22 @@ class DataTable extends Component
         $this->selectedColumns = array_keys($this->columns);
     }
 
-    public function selectColumn($value)
+    public function selectColumn(string $value): void
     {
-        if (in_array($value, $this->selectedColumns)) {
-            array_splice($this->selectedColumns, array_search($value, $this->selectedColumns) , 1);
+        $key = array_search($value, $this->selectedColumns);
+        if ($key !== false) {
+            array_splice($this->selectedColumns, $key, 1);
         } else {
             $this->selectedColumns[] = $value;
         }
     }
 
-    public function selectAllColumns()
+    public function selectAllColumns(): void
     {
         $this->selectedColumns = $this->searchColumns;
     }
 
-    public function deselectAllColumns()
+    public function deselectAllColumns(): void
     {
         $this->selectedColumns = [];
     }

@@ -10,8 +10,6 @@ class TimePicker extends Component
 {
     public string $id;
 
-
-
     public function __construct(
         public ?string $label = '',
         public bool $asDropdown = false,
@@ -24,7 +22,4 @@ class TimePicker extends Component
     {
         return view('square-ui::blade-components.inputs.timepicker');
     }
-
-
 }
-

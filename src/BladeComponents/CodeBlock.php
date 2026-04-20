@@ -6,11 +6,8 @@ use Illuminate\View\Component;
 
 class CodeBlock extends Component
 {
-
     public function __construct(
-    )
-    {
-    }
+    ) {}
 
     public function render()
     {

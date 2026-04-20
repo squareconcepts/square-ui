@@ -14,7 +14,6 @@
     }"
     class="code-block-container"
 >
-
     <div class="code-block-header">
         @if ($language)
             <span class="code-block-language">{{ $language }}</span>
@@ -29,7 +28,6 @@
 </div>
 @push('styles')
     <style>
-        /* Container voor het hele codeblok */
         .code-block-container {
             position: relative;
             background-color: #2d3748;
@@ -39,40 +37,30 @@
             margin-bottom: 1.5rem;
             font-family: 'Courier New', Courier, monospace;
         }
-
-        /* Header voor taal en knop */
         .code-block-header {
             position: absolute;
             top: 0.5rem;
             right: 0.5rem;
             display: flex;
             align-items: center;
-            gap: 1rem; /* Ruimte tussen taal en knop */
+            gap: 1rem;
         }
-
-        /* Weergave van de taal */
         .code-block-language {
             font-size: 0.8rem;
             color: #a0aec0;
             text-transform: uppercase;
             font-weight: bold;
-            user-select: none; /* Maakt de tekst niet selecteerbaar */
+            user-select: none;
         }
-
-        /* De <pre> tag die de opmaak behoudt */
         .code-block-container pre {
             padding: 1.5rem;
-            padding-top: 2.5rem; /* Extra padding bovenin om ruimte te maken voor de header */
+            padding-top: 2.5rem;
             overflow-x: auto;
             white-space: pre;
         }
-
-        /* De <code> tag zelf */
         .code-block-container code {
             font-size: 0.875rem;
         }
-
-        /* De kopieer-knop */
         .code-block-copy-button {
             display: inline-flex;
             align-items: center;
@@ -87,8 +75,6 @@
             opacity: 0.7;
             transition: opacity 0.2s ease-in-out;
         }
-
-        /* Stijl voor als je over de knop hovert */
         .code-block-container:hover .code-block-copy-button {
             opacity: 1;
         }

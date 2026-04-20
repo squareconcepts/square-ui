@@ -1,4 +1,5 @@
 <?php
+
 return [
     'search_icon' => 'Search an icon',
     'select_family' => 'Select a font family',
@@ -14,6 +15,10 @@ return [
     'no_results' => 'No results',
     'no_results_found' => 'No results found',
     'no_results_for_selected_filters' => 'No results found for the selected filters',
+    'app' => [
+        'yes' => 'Yes',
+        'no' => 'No',
+    ],
     'tables' => [
         'search_for' => 'Search for',
         'columns' => 'Columns',
@@ -32,4 +37,6 @@ return [
         'question' => 'Question?',
     ],
     'generate' => 'Generate',
+    'translatable_field' => 'Translatable field (:lang)',
+    'translation' => 'Translation (:lang)',
 ];

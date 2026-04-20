@@ -19,33 +19,30 @@
                     date.setMinutes(timeValues[1]);
                     date.setSeconds(timeValues[2] ?? '0');
                     return date;
-
                };
                 if(dateValues[0].length == 4 ){
-                    //us date format
                     let date = new Date();
                     date.setYear(dateValues[0]);
                     date.setMonth(dateValues[1] - 1);
                     date.setDate(dateValues[2].substring(0,2));
                     if(this.enableTime) {
-                        let timeDate = getTime(dateValues[2])
+                        let timeDate = getTime(dateValues[2]);
                         date.setHours(timeDate.getHours());
                         date.setMinutes(timeDate.getMinutes());
                         date.setSeconds(timeDate.getSeconds());
                     }
-                     this.model = date.toISOString();
+                    this.model = date.toISOString();
                 } else {
-                     let date = new Date();
+                    let date = new Date();
                     date.setDate(dateValues[0]);
                     date.setMonth(dateValues[1] - 1);
                     date.setYear(dateValues[2].substring(0,4));
-                     if(this.enableTime) {
-                        let timeDate = getTime(dateValues[2])
+                    if(this.enableTime) {
+                        let timeDate = getTime(dateValues[2]);
                         date.setHours(timeDate.getHours());
                         date.setMinutes(timeDate.getMinutes());
                         date.setSeconds(timeDate.getSeconds());
                     }
-
                     this.model = date.toISOString();
                 }
             }
@@ -58,7 +55,6 @@
             if (value > 23) {
                 this.$nextTick(() => { this.hours = 23 });
             }
-
             let date = this.model ? new Date(this.model) : null;
             date.setHours(this.hours);
             date.setMinutes(this.minutes);
@@ -72,7 +68,6 @@
             if (value > 59) {
                 this.$nextTick(() => { this.minutes = 59 });
             }
-
             let date = this.model ? new Date(this.model) : null;
             date.setMinutes(this.minutes);
             date.setHours(this.hours);
@@ -81,7 +76,6 @@
 
         let date = this.model ? new Date(this.model) : null;
         if(date !== null) {
-
             this.date = date.toISOString();
             this.hours = date.getHours();
             this.minutes = date.getMinutes();
@@ -89,7 +83,7 @@
 
             this.$watch('model', (value) => {
                if(!this.enableTime){
-                   this.$nextTick(() => { this.open = false;});
+                   this.$nextTick(() => { this.open = false; });
                }
             });
         } else {
@@ -97,20 +91,18 @@
             this.minutes = new Date().getMinutes();
         }
     },
-     setDate(date) {
+    setDate(date) {
         this.model = date;
         this.setModelString();
     },
     setModelString() {
        if (this.date instanceof Date) {
             const pad = (num) => String(num).padStart(2, '0');
-
             const dag = pad(this.date.getDate());
             const maand = pad(this.date.getMonth() + 1);
             const jaar = this.date.getFullYear();
             const uur = pad(this.hours);
             const minuten = pad(this.minutes);
-
             this.dateString = `${dag} - ${maand} - ${jaar} ${uur}:${minuten}`;
             this.model = this.dateString;
         } else {
@@ -127,7 +119,6 @@
             } else {
                 this.dateString = `${dag}-${maand}-${jaar}`;
             }
-
             this.model = this.dateString;
         }
     },
@@ -160,14 +151,12 @@
                 break;
             case 'month':
                 newDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
                 while (newDate.getDay() === 6 || newDate.getDay() === 0) {
                     newDate.setDate(newDate.getDate() - 1);
                 }
                 break;
             case 'next_month':
                 newDate = new Date(now.getFullYear(), now.getMonth() + 2, 0);
-
                 while (newDate.getDay() === 6 || newDate.getDay() === 0) {
                     newDate.setDate(newDate.getDate() - 1);
                 }
@@ -193,16 +182,10 @@
     }"
     @keydown.escape.window="open = false"
 >
-    @php
-        $wireModelAttributes = collect($attributes->getAttributes())
-            ->filter(fn($v, $k) => str_starts_with($k, 'wire:model'))
-            ->keys()->toArray();
-    @endphp
-
     <div class="relative">
         <flux:field>
             @if($label)
-                <flux:label>{{$label}}</flux:label>
+                <flux:label>{{ $label }}</flux:label>
             @endif
 
             <flux:input
@@ -212,15 +195,10 @@
                 @click="open = true"
                 clearable
             >
-
                 <div x-text="dateString"></div>
-
             </flux:input>
-
         </flux:field>
 
-
-        {{-- De dialog --}}
         <dialog
             x-ref="dialog"
             x-show="open"
@@ -232,11 +210,10 @@
         >
             <div class="p-4 flex">
                 @if($showPeriods)
-                    <div class="flex flex-col gap-2  items-start ">
-                        @foreach($periodOption as  $period)
-                            <flux:button size="xs" variant="ghost"  x-on:click="changePeriod('{{$period}}')">@lang('report.period.'.$period)</flux:button>
+                    <div class="flex flex-col gap-2 items-start">
+                        @foreach($periodOption as $period)
+                            <flux:button size="xs" variant="ghost" x-on:click="changePeriod('{{ $period }}')">@lang('report.period.'.$period)</flux:button>
                         @endforeach
-
                     </div>
                     <flux:separator vertical class="mx-3" />
                 @endif
@@ -244,47 +221,45 @@
                     <flux:calendar
                         x-model="date"
                         @change="(newDate) => {
-                       if (newDate?.target?.value) {
-                           let parts = newDate.target.value.split('-');
-                           if (parts.length === 3) {
-                               let year = parseInt(parts[0], 10);
-                               let month = parseInt(parts[1], 10) - 1; // Month is 0-based
-                               let day = parseInt(parts[2], 10);
-
-                               let selectedDate = new Date()
-                               selectedDate.setYear(year);
-                               selectedDate.setMonth(month);
-                               selectedDate.setDate(day);
-                               selectedDate.setHours(hours);
-                               selectedDate.setMinutes(minutes);
-                               setDate(selectedDate);
+                           if (newDate?.target?.value) {
+                               let parts = newDate.target.value.split('-');
+                               if (parts.length === 3) {
+                                   let year = parseInt(parts[0], 10);
+                                   let month = parseInt(parts[1], 10) - 1;
+                                   let day = parseInt(parts[2], 10);
+                                   let selectedDate = new Date();
+                                   selectedDate.setYear(year);
+                                   selectedDate.setMonth(month);
+                                   selectedDate.setDate(day);
+                                   selectedDate.setHours(hours);
+                                   selectedDate.setMinutes(minutes);
+                                   setDate(selectedDate);
+                               }
                            }
-                       }
-                   }"
+                        }"
                     ></flux:calendar>
                     @if($enableTime)
-                        <flux:separator :text="__('Time')"  class="my-3"/>
+                        <flux:separator :text="__('Time')" class="my-3" />
                         <div class="flex gap-4 justify-evenly px-4">
                             @if($asDropdown)
-                                <flux:select variant="listbox"   x-model="hours"  placeholder="Kies uren...">
+                                <flux:select variant="listbox" x-model="hours" placeholder="Kies uren...">
                                     @foreach(range(0,23) as $hour)
-                                        <flux:select.option.variants.custom>{{$hour}}</flux:select.option.variants.custom>
+                                        <flux:select.option.variants.custom>{{ $hour }}</flux:select.option.variants.custom>
                                     @endforeach
                                 </flux:select>
-                                <flux:select variant="listbox"   x-model="minutes"  placeholder="Kies minuten...">
+                                <flux:select variant="listbox" x-model="minutes" placeholder="Kies minuten...">
                                     @foreach(range(0,59) as $minute)
-                                        <flux:select.option.variants.custom>{{$minute}}</flux:select.option.variants.custom>
+                                        <flux:select.option.variants.custom>{{ $minute }}</flux:select.option.variants.custom>
                                     @endforeach
                                 </flux:select>
                             @else
-                                <flux:input mask="99"  x-model="hours" min="0" max="23" type="number"/>
-                                <flux:input mask="99"  x-model="minutes" min="0" max="59" type="number"/>
+                                <flux:input mask="99" x-model="hours" min="0" max="23" type="number" />
+                                <flux:input mask="99" x-model="minutes" min="0" max="59" type="number" />
                             @endif
-
                         </div>
                     @endif
-                    <flux:separator  class="my-3"/>
-                    <flux:button variant="danger" @click="resetDate()" class="w-full" >Wissen</flux:button>
+                    <flux:separator class="my-3" />
+                    <flux:button variant="danger" @click="resetDate()" class="w-full">Wissen</flux:button>
                 </div>
             </div>
         </dialog>

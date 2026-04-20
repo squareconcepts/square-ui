@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la /Users/arthurdoorgeest/Development/Laravel/sc-starter-kit/packages/squareconcepts/square-ui/src/*.php)",
+      "Bash(find /Users/arthurdoorgeest/Development/Laravel/sc-starter-kit/packages/squareconcepts/square-ui/src/LivewireComponents -name \"*.php\" -exec wc -l {} \\\\;)",
+      "Read(//Users/arthurdoorgeest/Development/Laravel/sc-starter-kit/**)",
+      "Bash(composer show:*)",
+      "Bash(xargs -n1 php -l)",
+      "Bash(composer validate *)",
+      "Bash(php -l src/Commands/UpgradeCheck.php)",
+      "Bash(composer dump-autoload *)",
+      "Bash(php artisan *)",
+      "Bash(mkdir -p /tmp/sq3/app /tmp/sq3/views)",
+      "Bash(grep -A 3 \"^\\\\`\\\\`\\\\`\" /tmp/sq3/r.md)"
+    ]
+  }
+}

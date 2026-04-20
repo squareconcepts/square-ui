@@ -4,7 +4,6 @@ namespace Squareconcepts\SquareUi\BladeComponents;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
-use Ramsey\Collection\Collection;
 
 class StatisticTile extends Component
 {
@@ -15,8 +14,7 @@ class StatisticTile extends Component
         public string $iconColor = 'text-primary-500',
         public ?string $shoutOut = null
 
-    ) {
-    }
+    ) {}
 
     public function render(): View
     {

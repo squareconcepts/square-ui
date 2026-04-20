@@ -4,7 +4,6 @@ namespace Squareconcepts\SquareUi\BladeComponents;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
-use Ramsey\Collection\Collection;
 
 class SignaturePad extends Component
 {
@@ -13,8 +12,7 @@ class SignaturePad extends Component
         public bool $autoSave = true,
         public string $saveButtonText = 'Save',
         public string $clearText = 'Clear',
-    ) {
-    }
+    ) {}
 
     public function render(): View
     {

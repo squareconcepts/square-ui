@@ -5,7 +5,7 @@
     timeString: null,
     hours: null,
     minutes: null,
-    dialogPosition: 'bottom', // Standaard positie
+    dialogPosition: 'bottom',
     init() {
         if(this.model == null){
             this.model = @js(\Illuminate\Support\Carbon::now()->format('h:i'))
@@ -25,7 +25,7 @@
             if (value > 59) {
                 this.$nextTick(() => { this.minutes = 59 });
             }
-             this.setModelString();
+            this.setModelString();
         });
     },
     setModelString() {
@@ -60,16 +60,10 @@
 }"
     @keydown.escape.window="open = false"
 >
-    @php
-        $wireModelAttributes = collect($attributes->getAttributes())
-            ->filter(fn($v, $k) => str_starts_with($k, 'wire:model'))
-            ->keys()->toArray();
-    @endphp
-
     <div class="relative">
         <flux:field>
             @if($label)
-                <flux:label>{{$label}}</flux:label>
+                <flux:label>{{ $label }}</flux:label>
             @endif
             <flux:input
                 class="cursor-pointer"
@@ -81,8 +75,6 @@
             </flux:input>
         </flux:field>
 
-
-        {{-- De dialog --}}
         <dialog
             x-ref="dialog"
             x-show="open"
@@ -97,25 +89,23 @@
            }"
         >
             <div class="p-4">
-
-                <flux:separator :text="__('Time')"  class="my-3"/>
+                <flux:separator :text="__('Time')" class="my-3" />
                 <div class="flex gap-4 justify-evenly px-4">
                     @if($asDropdown)
-                        <flux:select variant="listbox"   x-model="hours"  placeholder="Choose hours...">
+                        <flux:select variant="listbox" x-model="hours" placeholder="Choose hours...">
                             @foreach(range(0,23) as $hour)
-                                <flux:select.option>{{$hour}}</flux:select.option>
+                                <flux:select.option>{{ $hour }}</flux:select.option>
                             @endforeach
                         </flux:select>
-                        <flux:select variant="listbox"   x-model="minutes"  placeholder="Choose minutes...">
+                        <flux:select variant="listbox" x-model="minutes" placeholder="Choose minutes...">
                             @foreach(range(0,59) as $minute)
-                                <flux:select.option>{{$minute}}</flux:select.option>
+                                <flux:select.option>{{ $minute }}</flux:select.option>
                             @endforeach
                         </flux:select>
                     @else
-                        <flux:input mask="99"  x-model="hours" min="0" max="23" type="number"/>
-                        <flux:input mask="99"  x-model="minutes" min="0" max="59" type="number"/>
+                        <flux:input mask="99" x-model="hours" min="0" max="23" type="number" />
+                        <flux:input mask="99" x-model="minutes" min="0" max="59" type="number" />
                     @endif
-
                 </div>
             </div>
         </dialog>

@@ -6,59 +6,47 @@ use Flux\Flux;
 
 trait SquareUiActions
 {
-    public function notification($heading, $text = null, $duration = 5000, $variant = null, $position = "top right")
+    public function notification(string $heading, ?string $text = null, int $duration = 5000, ?string $variant = null, string $position = 'top right'): void
     {
-        if (!empty($text)) {
-            Flux::toast($text, $heading, $duration, $variant, $position);
-        } else {
-            Flux::toast($heading, null, $duration, $variant, $position);
-        }
+        Flux::toast($text ?? $heading, $text ? $heading : null, $duration, $variant, $position);
     }
 
-    public function successNotification($heading, $text = null, $duration = 5000, $variant = "success", $position = "top right")
+    public function successNotification(string $heading, ?string $text = null, int $duration = 5000, string $position = 'top right'): void
     {
-        if (!empty($text)) {
-            Flux::toast($text, $heading, $duration, $variant, $position);
-        } else {
-            Flux::toast($heading, null, $duration, $variant, $position);
-        }
+        Flux::toast($text ?? $heading, $text ? $heading : null, $duration, 'success', $position);
     }
 
-    public function errorNotification($heading, $text = null, $duration = 5000, $variant = "danger", $position = "top right")
+    public function errorNotification(string $heading, ?string $text = null, int $duration = 5000, string $position = 'top right'): void
     {
-        if (!empty($text)) {
-            Flux::toast($text, $heading, $duration, $variant, $position);
-        } else {
-            Flux::toast($heading, null, $duration, $variant, $position);
-        }
+        Flux::toast($text ?? $heading, $text ? $heading : null, $duration, 'danger', $position);
     }
 
-    public function dialog($name)
+    public function dialog(string $name): void
     {
         Flux::modal($name)->show();
     }
 
-    public function closeDialog($name)
+    public function closeDialog(string $name): void
     {
         Flux::modal($name)->close();
     }
 
-    public function confirm(array $options = [])
+    public function confirm(array $options = []): void
     {
         $this->dispatch('show-confirm-dialog', options: $options);
     }
 
-    public function closeConfirm()
+    public function closeConfirm(): void
     {
         Flux::modal('confirm-dialog')->close();
     }
 
-    public function errorDialog($title, $message)
+    public function errorDialog(string $title, string $message): void
     {
         $this->dispatch('show-error-dialog', options: ['title' => $title, 'description' => $message]);
     }
 
-    public function successDialog($title, $message)
+    public function successDialog(string $title, string $message): void
     {
         $this->dispatch('show-success-dialog', options: ['title' => $title, 'description' => $message]);
     }
