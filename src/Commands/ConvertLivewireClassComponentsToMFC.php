@@ -84,6 +84,6 @@ class ConvertLivewireClassComponentsToMFC extends Command
         }
 
         info("Succes! MFC aangemaakt in: {$targetSubDir}");
-        $this->line('Gebruik in Blade: <livewire:square-ui::' . str_replace('/', '.', $targetSubDir) . ' />');
+        $this->line('Gebruik in Blade: <livewire:square-ui.' . str_replace('/', '.', $targetSubDir) . ' />');
     }
 }

@@ -64,10 +64,18 @@ class SquareUiServiceProvider extends ServiceProvider
 
     private function loadLivewireComponents(): void
     {
-        Livewire::component('square-ui::data-table', DataTable::class);
-        Livewire::component('square-ui::icon-picker', IconPicker::class);
-        Livewire::component('square-ui::localized-string', LocalizedStringComponent::class);
-        Livewire::component('square-ui::dialogs', Dialogs::class);
+
+        Livewire::addNamespace(
+            namespace: 'square-ui',
+            classNamespace: 'Squareconcepts\SquareUi\LivewireComponents',
+            classPath: __DIR__ . '/../LivewireComponents',
+            classViewPath: __DIR__ . '/../views/livewire-components',
+        );
+        $this->loadViewsFrom(__DIR__ . '/../views/livewire-components', 'square-core');
+//        Livewire::component('square-ui.data-table', DataTable::class);
+//        Livewire::component('square-ui.icon-picker', IconPicker::class);
+//        Livewire::component('square-ui.localized-string', LocalizedStringComponent::class);
+//        Livewire::component('square-ui.dialogs', Dialogs::class);
     }
 
     private function loadArtisanCommands(): void

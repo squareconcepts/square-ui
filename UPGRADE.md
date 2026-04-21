@@ -185,10 +185,10 @@ class UserForm extends Component
 
 > ⚠️ **Let op:** parameter volgorde is omgedraaid. In Flux is `heading` eerst, `text` tweede. In SweetAlert was `message` eerst, `title` tweede.
 
-Voor `confirm()` heb je ook de `<livewire:square-ui::dialogs />` component nodig ergens in je layout (meestal in de root `<body>`):
+Voor `confirm()` heb je ook de `<livewire:square-ui.dialogs />` component nodig ergens in je layout (meestal in de root `<body>`):
 
 ```blade
-<livewire:square-ui::dialogs />
+<livewire:square-ui.dialogs />
 ```
 
 ---

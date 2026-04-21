@@ -338,7 +338,7 @@ class UpgradeCheck extends Command
                     'Vervang `$this->error($msg, $title)` → `$this->errorNotification($title, $msg)` (**parameters gewisseld!**).',
                     'Vervang `$this->info/warning/question(...)` → `$this->notification($heading, $text)`.',
                     'Vervang `$this->confirm($msg, $title, confirmButtonCallback: "foo")` → `$this->confirm(["title" => $title, "description" => $msg, "method" => "foo"])`.',
-                    'Zorg dat `<livewire:square-ui::dialogs />` ergens in je layout staat (meestal in `<body>`).',
+                    'Zorg dat `<livewire:square-ui.dialogs />` ergens in je layout staat (meestal in `<body>`).',
                 ],
             ],
             [
