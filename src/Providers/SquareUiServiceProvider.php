@@ -8,10 +8,6 @@ use Illuminate\View\ComponentAttributeBag;
 use Livewire\Livewire;
 use Squareconcepts\SquareUi\Commands\ConvertLivewireClassComponentsToMFC;
 use Squareconcepts\SquareUi\Commands\UpgradeCheck;
-use Squareconcepts\SquareUi\LivewireComponents\DataTable;
-use Squareconcepts\SquareUi\LivewireComponents\Dialogs;
-use Squareconcepts\SquareUi\LivewireComponents\IconPicker;
-use Squareconcepts\SquareUi\LivewireComponents\LocalizedStringComponent;
 
 class SquareUiServiceProvider extends ServiceProvider
 {

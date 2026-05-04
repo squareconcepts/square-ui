@@ -5,7 +5,7 @@ namespace Squareconcepts\SquareUi\LivewireComponents;
 use Livewire\Attributes\Modelable;
 use Livewire\Component;
 
-class LocalizedStringComponent extends Component
+class LocalizedString extends Component
 {
     #[Modelable]
     public array $value = [];
@@ -15,6 +15,6 @@ class LocalizedStringComponent extends Component
 
     public function render()
     {
-        return view('square-ui::livewire-components.localized-string-component');
+        return view('square-ui::livewire-components.localized-string');
     }
 }
