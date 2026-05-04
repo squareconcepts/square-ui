@@ -16,6 +16,7 @@ class Dialogs extends Component
     public string $icon = '';
     public mixed $params = [];
     public mixed $rejectParams = [];
+    public array $extraButtons = [];
 
     public function render()
     {
@@ -39,6 +40,7 @@ class Dialogs extends Component
         $this->icon = $options['icon'] ?? '';
         $this->rejectMethod = $options['reject']['method'] ?? '';
         $this->rejectParams = $options['reject']['params'] ?? [];
+        $this->extraButtons = $options['extraButtons'] ?? [];
 
         Flux::modal('confirm-dialog')->show();
     }
@@ -68,6 +70,27 @@ class Dialogs extends Component
         Flux::modal('confirm-dialog')->close();
         $this->reset();
     }
+
+    public function extraButtonClick($i): void
+    {
+        if (!empty($this->extraButtons) && !empty($this->extraButtons[intval($i)])) {
+            $button = $this->extraButtons[intval($i)];
+
+            if (isset($button['params'])) {
+                if (is_array($button['params'])) {
+                    $this->dispatch($button['method'], ...array_values($button['params']));
+                } else {
+                    $this->dispatch($button['method'], $button['params']);
+                }
+            } else {
+                $this->dispatch($button['method']);
+            }
+        }
+
+        Flux::modal('confirm-dialog')->close();
+        $this->reset();
+    }
+
 
     public function showErrorDialog(array $data = []): void
     {
