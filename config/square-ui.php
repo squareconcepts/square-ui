@@ -8,6 +8,8 @@ return [
         'strong' => 80,
         'very_strong' => 90,
     ],
+    // Valuta voor 'currency'-kolommen in de DataTable (per kolom te overschrijven met 'currency' => 'USD').
+    'currency' => env('SQUARE_UI_CURRENCY', 'EUR'),
     'languages' => [
         'nl' => 'nl',
         'en' => 'gb',

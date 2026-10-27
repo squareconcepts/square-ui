@@ -1,8 +1,74 @@
-<div class="flex flex-col mb-4 {{ $attributes->has('disabled') ? 'opacity-60' : '' }}"
+@php
+    $wireModel = $attributes->whereStartsWith('wire:model')->first();
+@endphp
+{{-- Elke instantie heeft zijn eigen state (inline x-data). wire:model/x-model komt via x-modelable binnen,
+     zodat er geen globale Alpine.data / @script nodig is en het ook buiten een Livewire-component werkt. --}}
+<div {{ $attributes->only('class')->class(['flex flex-col mb-4', 'opacity-60' => $attributes->has('disabled')]) }}
+     {{ $attributes->whereStartsWith(['wire:model', 'x-model']) }}
+     x-modelable="value"
      @keydown.escape.window="open = false"
-     x-data="ScPasswordInput">
+     x-data="{
+        open: false,
+        value: '',
+        toggle() {
+            this.open = !this.open;
+        },
+        generatePassword() {
+            const specials = '!@#$%^&*()_+{}[]:;<>,.?~';
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numbers = '0123456789';
+            const getRandom = (chars) => chars[Math.floor(Math.random() * chars.length)];
+
+            let password = [
+                getRandom(lowercase),
+                getRandom(uppercase),
+                getRandom(specials),
+                getRandom(numbers),
+            ];
+
+            const all = lowercase + uppercase + specials + numbers;
+            while (password.length < 12) {
+                password.push(getRandom(all));
+            }
+
+            this.value = password.sort(() => Math.random() - 0.5).join('');
+        },
+        get strength() {
+            return this.rulesMet().length;
+        },
+        rulesMet() {
+            const value = this.value ?? '';
+
+            return [
+                value.length >= 8,
+                /[a-z]/.test(value),
+                /[A-Z]/.test(value),
+                /[^A-Za-z0-9]/.test(value),
+            ].filter(Boolean);
+        },
+        get ruleClasses() {
+            const value = this.value ?? '';
+            const state = (passes) => passes ? 'text-green-600' : 'text-gray-400';
+
+            return {
+                hasMinLength: state(value.length >= 8),
+                hasLowercase: state(/[a-z]/.test(value)),
+                hasUppercase: state(/[A-Z]/.test(value)),
+                hasSpecial: state(/[^A-Za-z0-9]/.test(value)),
+            };
+        },
+     }">
     <div class="relative">
-        <flux:input type="password" x-model="value" label="{{ $label }}" placeholder="{{ $attributes->has('placeholder') ? $attributes->get('placeholder') : $label }}" viewable="true" @click="toggle()">
+        {{-- name zorgt dat flux:input de validatiefout van het wire:model-veld toont. --}}
+        <flux:input type="password"
+                    x-model="value"
+                    :label="$label"
+                    :name="$attributes->get('name') ?? $wireModel"
+                    :placeholder="$attributes->get('placeholder') ?? $label"
+                    viewable
+                    x-on:click="toggle()"
+                    {{ $attributes->whereDoesntStartWith(['wire:model', 'x-model', 'class', 'name', 'placeholder']) }}>
             <x-slot name="icon">
                 <template x-if="strength < 4">
                     <flux:icon.check-circle />
@@ -47,58 +113,3 @@
         @endif
     </div>
 </div>
-
-@script
-<script>
-    Alpine.data('ScPasswordInput', () => ({
-        open: false,
-        value: $wire.entangle(@js($attributes['wire:model'])).live,
-        showPasswordStrength: @js($showPasswordStrength),
-        toggle() {
-            this.open = !this.open;
-        },
-        generatePassword() {
-            const specials = '!@#$%^&*()_+{}[]:;<>,.?~';
-            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
-            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            const numbers = '0123456789';
-
-            const getRandom = (chars) => chars[Math.floor(Math.random() * chars.length)];
-
-            let password = [
-                getRandom(lowercase),
-                getRandom(uppercase),
-                getRandom(specials),
-                getRandom(numbers),
-            ];
-
-            const all = lowercase + uppercase + specials + numbers;
-            while (password.length < 12) {
-                password.push(getRandom(all));
-            }
-
-            this.value = password.sort(() => Math.random() - 0.5).join('');
-        },
-        init() {},
-        get strength() {
-            return this.rulesMet()?.length ?? 0;
-        },
-        rulesMet() {
-            return [
-                this.value?.length >= 8,
-                /[a-z]/.test(this.value),
-                /[A-Z]/.test(this.value),
-                /[^A-Za-z0-9]/.test(this.value),
-            ].filter(Boolean);
-        },
-        get ruleClasses() {
-            return {
-                hasMinLength: this.value.length >= 8 ? 'text-green-600' : 'text-gray-400',
-                hasLowercase: /[a-z]/.test(this.value) ? 'text-green-600' : 'text-gray-400',
-                hasUppercase: /[A-Z]/.test(this.value) ? 'text-green-600' : 'text-gray-400',
-                hasSpecial: /[^A-Za-z0-9]/.test(this.value) ? 'text-green-600' : 'text-gray-400',
-            };
-        },
-    }))
-</script>
-@endscript

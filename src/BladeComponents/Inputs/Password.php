@@ -7,11 +7,9 @@ use Illuminate\View\Component;
 
 class Password extends Component
 {
+    // withConfirmation/confirmationField worden (nog) niet gebruikt; ze blijven optioneel voor BC.
     public function __construct(public ?string $label = null, public bool $showPasswordStrength = true, public bool $withConfirmation = false, public ?string $confirmationField = null)
     {
-        if ($this->withConfirmation && empty($this->confirmationField)) {
-            throw new \Exception('You must provide a confirmation field');
-        }
     }
 
     public function render(): View

@@ -8,118 +8,106 @@
     hours: null,
     minutes: null,
     init() {
-        if(this.model !== null){
-            if(this.model.indexOf('T') == -1){
-               let dateValues = this.model.split('-');
-               const getTime  = (string) => {
-                    let splitString = string.split('+');
-                    let timeValues = splitString[0].split(':');
-                    let date = new Date();
-                    date.setHours(timeValues[0].slice(-2));
-                    date.setMinutes(timeValues[1]);
-                    date.setSeconds(timeValues[2] ?? '0');
-                    return date;
-               };
-                if(dateValues[0].length == 4 ){
-                    let date = new Date();
-                    date.setYear(dateValues[0]);
-                    date.setMonth(dateValues[1] - 1);
-                    date.setDate(dateValues[2].substring(0,2));
-                    if(this.enableTime) {
-                        let timeDate = getTime(dateValues[2]);
-                        date.setHours(timeDate.getHours());
-                        date.setMinutes(timeDate.getMinutes());
-                        date.setSeconds(timeDate.getSeconds());
-                    }
-                    this.model = date.toISOString();
-                } else {
-                    let date = new Date();
-                    date.setDate(dateValues[0]);
-                    date.setMonth(dateValues[1] - 1);
-                    date.setYear(dateValues[2].substring(0,4));
-                    if(this.enableTime) {
-                        let timeDate = getTime(dateValues[2]);
-                        date.setHours(timeDate.getHours());
-                        date.setMinutes(timeDate.getMinutes());
-                        date.setSeconds(timeDate.getSeconds());
-                    }
-                    this.model = date.toISOString();
-                }
+        // Alleen de weergave vullen; het (.live) model wordt bij het laden niet herschreven.
+        this.syncFromModel(this.model);
+
+        this.$watch('model', (value) => {
+            this.syncFromModel(value);
+            if (!this.enableTime) {
+                this.$nextTick(() => { this.open = false; });
             }
-        }
+        });
 
         this.$watch('hours', (value) => {
-            if (this.model == null) {
-                return;
-            }
             if (value > 23) {
                 this.$nextTick(() => { this.hours = 23 });
             }
-            let date = this.model ? new Date(this.model) : null;
-            date.setHours(this.hours);
-            date.setMinutes(this.minutes);
-            this.setDate(date);
+            this.updateTime();
         });
 
         this.$watch('minutes', (value) => {
-            if (this.model == null) {
-                return;
-            }
             if (value > 59) {
                 this.$nextTick(() => { this.minutes = 59 });
             }
-            let date = this.model ? new Date(this.model) : null;
-            date.setMinutes(this.minutes);
-            date.setHours(this.hours);
-            this.setDate(date);
+            this.updateTime();
         });
-
-        let date = this.model ? new Date(this.model) : null;
-        if(date !== null) {
-            this.date = date.toISOString();
+    },
+    pad(num) {
+        return String(num).padStart(2, '0');
+    },
+    // Parse Y-m-d[ H:i[:s]], d-m-Y[ H:i[:s]] of een ISO-string naar een lokale Date (of null).
+    parseModel(value) {
+        if (value === null || value === undefined || value === '') {
+            return null;
+        }
+        if (value instanceof Date) {
+            return isNaN(value) ? null : value;
+        }
+        value = String(value);
+        if (value.indexOf('T') !== -1) {
+            const iso = new Date(value);
+            return isNaN(iso) ? null : iso;
+        }
+        const match = value.match(/^\s*(\d{1,4})\s*-\s*(\d{1,2})\s*-\s*(\d{1,4})(?:[ ]+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+        if (!match) {
+            return null;
+        }
+        const [year, day] = match[1].length === 4 ? [match[1], match[3]] : [match[3], match[1]];
+        // new Date(j, m, d) i.p.v. setYear/setMonth/setDate: voorkomt overflow op de 29e-31e.
+        const date = new Date(Number(year), Number(match[2]) - 1, Number(day), Number(match[4] ?? 0), Number(match[5] ?? 0), Number(match[6] ?? 0));
+        return isNaN(date) ? null : date;
+    },
+    toYmd(date) {
+        return `${date.getFullYear()}-${this.pad(date.getMonth() + 1)}-${this.pad(date.getDate())}`;
+    },
+    format(date) {
+        const dateString = `${this.pad(date.getDate())}-${this.pad(date.getMonth() + 1)}-${date.getFullYear()}`;
+        return this.enableTime ? `${dateString} ${this.pad(date.getHours())}:${this.pad(date.getMinutes())}:00` : dateString;
+    },
+    syncFromModel(value) {
+        const date = this.parseModel(value);
+        if (date === null) {
+            this.date = null;
+            this.dateString = null;
+            if (this.hours === null) {
+                this.hours = new Date().getHours();
+                this.minutes = new Date().getMinutes();
+            }
+            return;
+        }
+        this.date = this.toYmd(date);
+        this.dateString = this.format(date);
+        if (Number(this.hours) !== date.getHours()) {
             this.hours = date.getHours();
+        }
+        if (Number(this.minutes) !== date.getMinutes()) {
             this.minutes = date.getMinutes();
-            this.setModelString();
-
-            this.$watch('model', (value) => {
-               if(!this.enableTime){
-                   this.$nextTick(() => { this.open = false; });
-               }
-            });
-        } else {
-            this.hours = new Date().getHours();
-            this.minutes = new Date().getMinutes();
+        }
+    },
+    // Bouwt een lokale Date uit de gekozen dag (Y-m-d) en de uren/minuten.
+    selectedDate() {
+        if (!this.date) {
+            return null;
+        }
+        const [year, month, day] = String(this.date).substring(0, 10).split('-').map(Number);
+        const date = new Date(year, month - 1, day, Number(this.hours ?? 0) || 0, Number(this.minutes ?? 0) || 0, 0);
+        return isNaN(date) ? null : date;
+    },
+    updateTime() {
+        if (this.model === null || this.model === undefined || this.model === '') {
+            return;
+        }
+        const date = this.selectedDate();
+        if (date !== null) {
+            this.setDate(date);
         }
     },
     setDate(date) {
-        this.model = date;
-        this.setModelString();
-    },
-    setModelString() {
-       if (this.date instanceof Date) {
-            const pad = (num) => String(num).padStart(2, '0');
-            const dag = pad(this.date.getDate());
-            const maand = pad(this.date.getMonth() + 1);
-            const jaar = this.date.getFullYear();
-            const uur = pad(this.hours);
-            const minuten = pad(this.minutes);
-            this.dateString = `${dag} - ${maand} - ${jaar} ${uur}:${minuten}`;
-            this.model = this.dateString;
-        } else {
-            const pad = (num) => String(num).padStart(2, '0');
-            const date = new Date(this.date);
-            const dag = pad(date.getDate());
-            const maand = pad(date.getMonth() + 1);
-            const jaar = date.getFullYear();
-            const uur = pad(this.hours);
-            const minuten = pad(this.minutes);
-
-            if(this.enableTime) {
-                this.dateString = `${dag}-${maand}-${jaar} ${uur}:${minuten}:00`;
-            } else {
-                this.dateString = `${dag}-${maand}-${jaar}`;
-            }
-            this.model = this.dateString;
+        this.date = this.toYmd(date);
+        this.dateString = this.format(date);
+        const value = this.format(date);
+        if (this.model !== value) {
+            this.model = value;
         }
     },
     changePeriod(period) {
@@ -169,7 +157,6 @@
         newDate.setMinutes(0);
         newDate.setSeconds(0);
 
-        this.date = newDate.toISOString();
         this.hours = newDate.getHours();
         this.minutes = newDate.getMinutes();
         this.setDate(newDate);
@@ -224,15 +211,14 @@
                            if (newDate?.target?.value) {
                                let parts = newDate.target.value.split('-');
                                if (parts.length === 3) {
-                                   let year = parseInt(parts[0], 10);
-                                   let month = parseInt(parts[1], 10) - 1;
-                                   let day = parseInt(parts[2], 10);
-                                   let selectedDate = new Date();
-                                   selectedDate.setYear(year);
-                                   selectedDate.setMonth(month);
-                                   selectedDate.setDate(day);
-                                   selectedDate.setHours(hours);
-                                   selectedDate.setMinutes(minutes);
+                                   {{-- new Date(j, m, d): setYear/setMonth/setDate op 'vandaag' liep over op de 29e-31e. --}}
+                                   let selectedDate = new Date(
+                                       parseInt(parts[0], 10),
+                                       parseInt(parts[1], 10) - 1,
+                                       parseInt(parts[2], 10),
+                                       Number(hours ?? 0) || 0,
+                                       Number(minutes ?? 0) || 0,
+                                   );
                                    setDate(selectedDate);
                                }
                            }

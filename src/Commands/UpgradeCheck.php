@@ -313,6 +313,17 @@ class UpgradeCheck extends Command
                 'notes' => [],
             ],
             [
+                'key' => 'livewire_dot_name',
+                'scope' => 'both',
+                'severity' => 'removed',
+                'label' => '<livewire:square-ui.*>',
+                'pattern' => '/(?:<livewire:|@livewire\(\s*[\'"])square-ui\.(?:dialogs|data-table|icon-picker|localized-string)/',
+                'replacement_title' => '<livewire:square-ui::*>',
+                'transform' => fn(string $line): string => preg_replace('/(<livewire:|@livewire\(\s*[\'"])square-ui\.(dialogs|data-table|icon-picker|localized-string)/', '$1square-ui::$2', $line),
+                'hint' => 'De Livewire-componenten zijn geregistreerd via Livewire::addNamespace(\'square-ui\'): alleen de `::`-notatie resolvet (bijv. <livewire:square-ui::dialogs />).',
+                'notes' => [],
+            ],
+            [
                 'key' => 'swal_fire',
                 'scope' => 'both',
                 'severity' => 'removed',
@@ -338,7 +349,7 @@ class UpgradeCheck extends Command
                     'Vervang `$this->error($msg, $title)` → `$this->errorNotification($title, $msg)` (**parameters gewisseld!**).',
                     'Vervang `$this->info/warning/question(...)` → `$this->notification($heading, $text)`.',
                     'Vervang `$this->confirm($msg, $title, confirmButtonCallback: "foo")` → `$this->confirm(["title" => $title, "description" => $msg, "method" => "foo"])`.',
-                    'Zorg dat `<livewire:square-ui.dialogs />` ergens in je layout staat (meestal in `<body>`).',
+                    'Zorg dat `<livewire:square-ui::dialogs />` ergens in je layout staat (meestal in `<body>`).',
                 ],
             ],
             [

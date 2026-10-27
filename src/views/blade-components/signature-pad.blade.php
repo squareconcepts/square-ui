@@ -7,7 +7,12 @@
     signature: '',
     @endif
     ratio: null,
+    width: 0,
     init() {
+        {{-- Alpine roept init() zelf één keer aan; geen x-init/x-intersect meer (dat gaf meerdere SignaturePads en dubbele endStroke-listeners). --}}
+        if (this.signaturePad) {
+            return;
+        }
         this.resizeCanvas();
         this.signaturePad = new SignaturePad(this.$refs.canvas);
         if (this.signature) {
@@ -33,12 +38,32 @@
         this.$dispatch('signatureCleared')
     },
     resizeCanvas() {
-        this.ratio = Math.max(window.devicePixelRatio || 1, 1);
-        this.$refs.canvas.width = this.$refs.canvas.offsetWidth * this.ratio;
-        this.$refs.canvas.height = this.$refs.canvas.offsetHeight * this.ratio;
-        this.$refs.canvas.getContext('2d').scale(this.ratio, this.ratio);
+        const canvas = this.$refs.canvas;
+        {{-- Onzichtbaar (bijv. in een gesloten modal/tab): niets doen, x-intersect probeert het opnieuw. --}}
+        if (canvas.offsetWidth === 0) {
+            return;
+        }
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        if (this.signaturePad && canvas.offsetWidth === this.width && ratio === this.ratio) {
+            return;
+        }
+        {{-- Canvas resizen wist de tekening: eerst bewaren, daarna opnieuw tekenen. --}}
+        const data = this.signaturePad ? this.signaturePad.toData() : [];
+        this.ratio = ratio;
+        this.width = canvas.offsetWidth;
+        canvas.width = canvas.offsetWidth * this.ratio;
+        canvas.height = canvas.offsetHeight * this.ratio;
+        canvas.getContext('2d').scale(this.ratio, this.ratio);
+        if (this.signaturePad) {
+            this.signaturePad.clear();
+            if (data.length > 0) {
+                this.signaturePad.fromData(data);
+            } else if (this.signature) {
+                this.signaturePad.fromDataURL(this.signature, { ratio: this.ratio });
+            }
+        }
     }
-}" @resize.window="resizeCanvas" x-init="init" x-intersect="init">
+}" @resize.window="resizeCanvas()" x-intersect="resizeCanvas()">
     <div class="flex justify-between items-end mb-1">
         <flux:subheading>
             {{ $label }}

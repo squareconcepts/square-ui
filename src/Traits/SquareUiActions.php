@@ -33,9 +33,16 @@ trait SquareUiActions
 
     /**
      * De description wordt ge-escaped, tenzij $options['html'] === true (alleen voor vertrouwde HTML).
+     *
+     * Met $options['self'] === true gaan de accept/reject-events alleen naar dit component,
+     * in plaats van naar elke listener op de pagina.
      */
     public function confirm(array $options = []): void
     {
+        if (method_exists($this, 'getId')) {
+            $options['sourceId'] ??= $this->getId();
+        }
+
         $this->dispatch('show-confirm-dialog', options: $options);
     }
 

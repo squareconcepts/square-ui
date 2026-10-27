@@ -185,11 +185,15 @@ class UserForm extends Component
 
 > ⚠️ **Let op:** parameter volgorde is omgedraaid. In Flux is `heading` eerst, `text` tweede. In SweetAlert was `message` eerst, `title` tweede.
 
-Voor `confirm()` heb je ook de `<livewire:square-ui.dialogs />` component nodig ergens in je layout (meestal in de root `<body>`):
+Voor `confirm()` heb je ook de `<livewire:square-ui::dialogs />` component nodig ergens in je layout (meestal in de root `<body>`):
 
 ```blade
-<livewire:square-ui.dialogs />
+<livewire:square-ui::dialogs />
 ```
+
+> Let op: gebruik `::` (namespace), niet `square-ui.dialogs` — die naam resolvet niet.
+>
+> `params` worden als losse argumenten aan de `method`-listener (`#[On('foo')]`) doorgegeven: `'params' => [$id]` geeft `foo($id)`. Met `'self' => true` gaat het event alleen naar het component dat `confirm()` aanriep, in plaats van naar elke listener op de pagina.
 
 ---
 

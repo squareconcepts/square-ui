@@ -7,13 +7,12 @@
     minutes: null,
     dialogPosition: 'bottom',
     init() {
-        if(this.model == null){
-            this.model = @js(\Illuminate\Support\Carbon::now()->format('h:i'))
-        }
-        const time = this.model.split(':');
-        this.hours = time[0];
-        this.minutes = time[1];
-        this.setModelString();
+        // Model niet schrijven bij het laden; alleen de weergave vullen. Is het model leeg, dan
+        // staan uren/minuten alvast op nu (24-uurs) en wordt die tijd pas gezet bij openen.
+        this.syncFromModel(this.model);
+
+        this.$watch('model', (value) => this.syncFromModel(value));
+
         this.$watch('hours', (value) => {
             if (value > 23) {
                 this.$nextTick(() => { this.hours = 23 });
@@ -28,16 +27,41 @@
             this.setModelString();
         });
     },
+    syncFromModel(value) {
+        const match = String(value ?? '').match(/(\d{1,2}):(\d{2})/);
+        if (!match) {
+            this.timeString = null;
+            if (this.hours === null) {
+                const now = @js(\Illuminate\Support\Carbon::now()->format('H:i')).split(':');
+                this.hours = Number(now[0]);
+                this.minutes = Number(now[1]);
+            }
+            return;
+        }
+        if (Number(this.hours) !== Number(match[1])) {
+            this.hours = Number(match[1]);
+        }
+        if (Number(this.minutes) !== Number(match[2])) {
+            this.minutes = Number(match[2]);
+        }
+        this.timeString = `${String(match[1]).padStart(2, '0')}:${match[2]}`;
+    },
     setModelString() {
-        const pad = (num) => String(num).padStart(2, '0');
+        const pad = (num) => String(num ?? 0).padStart(2, '0');
         const uur = pad(this.hours);
         const minuten = pad(this.minutes);
         this.timeString = `${uur}:${minuten}`;
-        this.model = `${uur}:${minuten}:00`;
+        const value = `${uur}:${minuten}:00`;
+        if (this.model !== value) {
+            this.model = value;
+        }
     },
     toggleDialog() {
         this.open = !this.open;
         if (this.open) {
+            if (this.model === null || this.model === undefined || this.model === '') {
+                this.setModelString();
+            }
             this.$nextTick(() => {
                 this.adjustDialogPosition();
             });

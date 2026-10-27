@@ -84,6 +84,7 @@ class ConvertLivewireClassComponentsToMFC extends Command
         }
 
         info("Succes! MFC aangemaakt in: {$targetSubDir}");
-        $this->line('Gebruik in Blade: <livewire:square-ui.' . str_replace('/', '.', $targetSubDir) . ' />');
+        // Namespaced Livewire-componenten resolven alleen met '::' (Livewire::addNamespace), niet met een punt.
+        $this->line('Gebruik in Blade: <livewire:square-ui::' . basename($targetSubDir) . ' /> (registreer de map met Livewire::addNamespace(\'square-ui\', viewPath: ...))');
     }
 }

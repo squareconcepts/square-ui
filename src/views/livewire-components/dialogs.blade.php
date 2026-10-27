@@ -1,6 +1,8 @@
 <div>
-    <div x-data="{ isOpen: false }" x-on:show-confirm-dialog.window="isOpen = true; $wire.showConfirmModal($event.detail)">
-        <flux:modal name="confirm-dialog" class="min-w-[22rem]" :dismissible="false" @close="isOpen = false; rejectClick">
+    {{-- confirmPending: true zolang er nog niet gekozen is. Sluiten via Escape of het kruisje telt dan als annuleren;
+         sluit de modal na een keuze (server-side close), dan gebeurt er niets meer. --}}
+    <div x-data="{ confirmPending: false }" x-on:show-confirm-dialog.window="confirmPending = true; $wire.showConfirmModal($event.detail)">
+        <flux:modal name="confirm-dialog" class="min-w-[22rem]" :dismissible="false" x-on:close="if (confirmPending) { confirmPending = false; $wire.rejectClick(); }">
             <div class="space-y-6">
                 <div>
                     <div class="py-2 flex items-center justify-center">
@@ -27,8 +29,9 @@
                 </div>
                 <div class="flex gap-2">
                     <flux:spacer />
-                    <flux:button type="submit" wire:click="rejectClick" variant="danger">{{$rejectLabel}}</flux:button>
-                    <flux:button type="submit" wire:click="confirmClick" x-on:keyup.enter.window="if(isOpen) { $wire.confirmClick(); }" variant="positive">
+                    <flux:button x-on:click="confirmPending = false; $wire.rejectClick()" variant="danger">{{$rejectLabel}}</flux:button>
+                    {{-- autofocus: Enter bevestigt (native button-gedrag), zonder window-brede Enter-listener. --}}
+                    <flux:button x-on:click="confirmPending = false; $wire.confirmClick()" autofocus variant="positive">
                         {{$acceptLabel}}
                     </flux:button>
                 </div>

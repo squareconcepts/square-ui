@@ -34,9 +34,14 @@ class DataTable extends Component
     public array $selectedColumns = [];
     public array $searchColumns = [];
     public array $sortables = [];
+    // Default collect() wordt in mount() gezet (property defaults mogen geen object zijn).
     #[Locked]
     public Collection $results;
     public Collection $filteredResults;
+    // Ids die de parent bij mount() heeft meegegeven: alleen die mogen via deleteRowCallback weg.
+    // refreshData() is een (vanuit de browser aan te roepen) listener en mag deze set dus niet uitbreiden.
+    #[Locked]
+    public array $deletableIds = [];
     public bool $withPagination = true;
     public string $sortBy = '';
     public string $sortDirection = 'desc';
@@ -60,7 +65,7 @@ class DataTable extends Component
 
         $this->sortDirection = $this->sortBy === $field ? $this->reverseSort() : 'desc';
         $this->sortBy = $field;
-        $this->refreshData($this->filteredResults);
+        $this->applyFilters();
     }
 
     public function reverseSort(): string
@@ -70,50 +75,76 @@ class DataTable extends Component
 
     public function mount(): void
     {
+        $this->results ??= collect();
+        $this->deletableIds = $this->idsOf($this->results);
         $this->loadData();
-        $this->filteredResults = $this->results;
+        $this->applyFilters();
     }
 
-    public function updated(): void
+    public function updated(string $property): void
     {
+        // Nieuwe zoekterm of paginagrootte: terug naar pagina 1, anders kan je op een lege pagina belanden.
+        if (in_array($property, ['searchString', 'perPage'])) {
+            $this->currentPage = 1;
+        }
+
         $this->applyFilters();
     }
 
     private function applyFilters(): void
     {
-        $this->filteredResults = collect($this->results->filter(function ($result) {
-            if (empty($this->searchString)) {
+        $search = mb_strtolower(trim($this->searchString));
+
+        $filtered = $this->results->filter(function ($result) use ($search) {
+            if ($search === '') {
                 return true;
             }
 
             foreach ($this->selectedColumns as $fieldName) {
-                if (is_array($result)) {
-                    if (is_array($result[$fieldName])) {
-                        foreach ($result[$fieldName] as $string) {
-                            if (str($string)->lower()->contains(strtolower($this->searchString))) {
-                                return true;
-                            }
-                        }
-                    } elseif (str($result[$fieldName])->lower()->contains(strtolower($this->searchString))) {
+                $value = data_get($result, $fieldName);
+
+                foreach (is_iterable($value) ? $value : [$value] as $string) {
+                    if ((is_scalar($string) || $string instanceof \Stringable)
+                        && str_contains(mb_strtolower((string) $string), $search)) {
                         return true;
                     }
-                } elseif ($result instanceof Model && str($result->$fieldName)->lower()->contains(strtolower($this->searchString))) {
-                    return true;
                 }
             }
 
             return false;
-        }))->map(fn($item) => (object) $item);
+        });
+
+        $this->filteredResults = $this->sortCollection($filtered)->map(fn($item) => (object) $item);
+
+        // Na verwijderen/filteren niet op een pagina blijven staan die niet meer bestaat.
+        $lastPage = max(1, (int) ceil($this->filteredResults->count() / max(1, $this->perPage)));
+        $this->currentPage = min(max(1, $this->currentPage), $lastPage);
+    }
+
+    private function sortCollection(Collection $collection): Collection
+    {
+        if ($this->sortBy !== '') {
+            $collection = $collection->sortBy(fn ($item) => data_get($item, $this->sortBy), SORT_REGULAR, $this->sortDirection === 'desc');
+        }
+
+        return $collection->values();
+    }
+
+    private function idsOf(Collection $rows): array
+    {
+        return $rows
+            ->map(fn ($row) => data_get($row, 'id'))
+            ->filter(fn ($id) => is_scalar($id) && $id !== '')
+            ->map(fn ($id) => (string) $id)
+            ->values()
+            ->all();
     }
 
     public function getItemsProperty()
     {
         if (!$this->withPagination) {
-            $col = collect($this->filteredResults);
-            if ($this->sortBy !== '') {
-                $col = $col->sortBy($this->sortBy, SORT_REGULAR, $this->sortDirection === 'desc');
-            }
-            return $col;
+            // filteredResults is al gesorteerd in applyFilters().
+            return collect($this->filteredResults);
         }
 
         return $this->paginate($this->filteredResults, $this->perPage, $this->currentPage);
@@ -163,27 +194,40 @@ class DataTable extends Component
 
     public function deleteRow($row): void
     {
+        $id = is_array($row) ? ($row['id'] ?? null) : null;
+
+        if ($this->hideDelete || !is_scalar($id)) {
+            return;
+        }
+
         $this->confirm([
             'title' => __('square-ui::square-ui.are_you_sure'),
             'description' => __('square-ui::square-ui.are_you_sure_description'),
             'acceptLabel' => __('square-ui::square-ui.yes'),
             'rejectLabel' => __('square-ui::square-ui.cancel'),
             'method' => 'deleteRowCallback',
-            'params' => $row,
+            // Params worden door Dialogs als losse argumenten doorgegeven, dus de id in een lijst.
+            'params' => [$id],
+            // Alleen deze tabel krijgt het antwoord, niet elke DataTable op de pagina.
+            'self' => true,
         ]);
     }
 
+    #[On('deleteRowCallback')]
     public function deleteRowCallback($row): void
     {
         // Public, so callable from the browser: only rows this table was given, of a real
         // model, and only when the model's policy (if any) allows it.
-        $id = is_array($row) ? ($row['id'] ?? null) : null;
+        // Accepteert de id (nieuw) of de hele rij als array (oude aanroepen).
+        $id = is_array($row) ? ($row['id'] ?? null) : $row;
 
         abort_if(
             $this->hideDelete
-            || $id === null
+            || ! is_scalar($id)
+            || $id === ''
             || ! is_string($this->model)
             || ! is_subclass_of($this->model, Model::class)
+            || ! in_array((string) $id, $this->deletableIds, true)
             || ! $this->results->contains(fn ($result) => (string) data_get($result, 'id') === (string) $id),
             403,
         );
@@ -205,8 +249,14 @@ class DataTable extends Component
         }
 
         $this->successNotification(__('square-ui::square-ui.delete_success'));
-        $this->loadData();
-        $this->filteredResults = $this->results;
+        $this->removeRows(fn ($result) => (string) data_get($result, 'id') === (string) $id);
+    }
+
+    private function removeRows(callable $matches): void
+    {
+        $this->results = $this->results->reject($matches)->values();
+        $this->deletableIds = array_values(array_intersect($this->deletableIds, $this->idsOf($this->results)));
+        $this->applyFilters();
     }
 
     #[On('deleteRecordBy')]
@@ -215,21 +265,17 @@ class DataTable extends Component
         $field = $data['field'];
         $value = $data['value'];
 
-        $this->results = collect($this->results->filter(fn($result) => $result[$field] !== $value));
-        $this->applyFilters();
+        $this->removeRows(fn ($result) => data_get($result, $field) === $value);
     }
 
     #[On('refreshDataTable')]
     public function refreshData($data, $routePrefix = null): void
     {
-        $col = collect($data);
-
-        if ($this->sortBy !== '') {
-            $col = $col->sortBy($this->sortBy, SORT_REGULAR, $this->sortDirection === 'desc');
-            $col = collect($col->values()->all());
-        }
-
-        $this->filteredResults = $col;
+        // $results bijwerken zodat een volgende zoekactie niet terugvalt op oude data. deletableIds
+        // wordt bewust niet uitgebreid: deze listener is vanuit de browser aan te roepen.
+        $this->results = collect($data)->values();
+        $this->deletableIds = array_values(array_intersect($this->deletableIds, $this->idsOf($this->results)));
+        $this->applyFilters();
     }
 
     public function loadData(): void
@@ -247,15 +293,19 @@ class DataTable extends Component
         } else {
             $this->selectedColumns[] = $value;
         }
+
+        $this->applyFilters();
     }
 
     public function selectAllColumns(): void
     {
         $this->selectedColumns = $this->searchColumns;
+        $this->applyFilters();
     }
 
     public function deselectAllColumns(): void
     {
         $this->selectedColumns = [];
+        $this->applyFilters();
     }
 }

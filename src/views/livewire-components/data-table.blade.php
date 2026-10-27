@@ -74,31 +74,35 @@
                                 @if(in_array($key, $selectedColumns))
                                     <td class="whitespace-nowrap leading-5 text-gray-900 md:table-cell">
                                         <div class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700">
-                                            @if(!empty($result->$key))
-                                                @if($column['type'] == 'currency')
-                                                    @currency((float) $result->$key)
-                                                @elseif($column['type'] == 'datetime')
-                                                    {{ Carbon\Carbon::parse($result->$key)->format('d-m-Y H:i:s') }}
-                                                @elseif($column['type'] == 'date')
-                                                    {{ Carbon\Carbon::parse($result->$key)->format('d-m-Y') }}
-                                                @elseif($column['type'] == 'text' || $column['type'] == 'number')
-                                                    {{ $result->$key }}
-                                                @elseif($column['type'] == 'textarea')
-                                                    {{ substr($result->$key, 0, 100) }}
-                                                @elseif($column['type'] == 'email')
-                                                    @email($result->$key)
-                                                @elseif($column['type'] == 'phone_number')
-                                                    @phone($result->$key)
-                                                @elseif($column['type'] == 'url')
-                                                    @url($result->$key)
-                                                @elseif($column['type'] == 'boolean')
-                                                    {{ __('square-ui::square-ui.app.yes') }}
-                                                @elseif($column['type'] == 'dropdown_list' || $column['type'] == 'relation' || $column['type'] == 'array')
-                                                    {{ implode(', ', $result->$key) }}
-                                                @endif
-                                            @else
-                                                @if($column['type'] == 'boolean')
-                                                    {{ __('square-ui::square-ui.app.no') }}
+                                            @php
+                                                $value = data_get($result, $key);
+                                                $type = $column['type'] ?? 'text';
+                                            @endphp
+                                            @if($type == 'boolean')
+                                                {{ $value ? __('square-ui::square-ui.app.yes') : __('square-ui::square-ui.app.no') }}
+                                            @elseif(!blank($value))
+                                                @if($type == 'currency')
+                                                    {{ \Illuminate\Support\Number::currency((float) $value, in: $column['currency'] ?? config('square-ui.currency', 'EUR'), locale: app()->getLocale()) }}
+                                                @elseif($type == 'datetime')
+                                                    {{ Carbon\Carbon::parse($value)->format('d-m-Y H:i:s') }}
+                                                @elseif($type == 'date')
+                                                    {{ Carbon\Carbon::parse($value)->format('d-m-Y') }}
+                                                @elseif($type == 'text' || $type == 'number')
+                                                    {{ $value }}
+                                                @elseif($type == 'textarea')
+                                                    {{ mb_substr((string) $value, 0, 100) }}
+                                                @elseif($type == 'email')
+                                                    <a href="mailto:{{ $value }}" class="underline">{{ $value }}</a>
+                                                @elseif($type == 'phone_number')
+                                                    <a href="tel:{{ preg_replace('/[^0-9+]/', '', (string) $value) }}" class="underline">{{ $value }}</a>
+                                                @elseif($type == 'url')
+                                                    @if(\Illuminate\Support\Str::startsWith(strtolower((string) $value), ['http://', 'https://']))
+                                                        <a href="{{ $value }}" target="_blank" rel="noopener noreferrer" class="underline">{{ $value }}</a>
+                                                    @else
+                                                        {{ $value }}
+                                                    @endif
+                                                @elseif($type == 'dropdown_list' || $type == 'relation' || $type == 'array')
+                                                    {{ collect($value)->implode(', ') }}
                                                 @endif
                                             @endif
                                         </div>
