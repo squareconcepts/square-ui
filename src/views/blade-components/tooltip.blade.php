@@ -2,6 +2,7 @@
     'toggle',
     'content',
 ])
+{{-- @deprecated 4.x, removed in 5.0: use <flux:dropdown> + <flux:popover> (Flux Pro) or <flux:tooltip>. See UPGRADE.md. --}}
 <div
     {{$attributes}}
     x-data="{open: false}"

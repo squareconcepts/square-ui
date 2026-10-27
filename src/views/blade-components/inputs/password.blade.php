@@ -1,3 +1,4 @@
+{{-- @deprecated 4.x, removed in 5.0: use <flux:input type="password" viewable>. See UPGRADE.md. --}}
 @php
     $wireModel = $attributes->whereStartsWith('wire:model')->first();
 @endphp
@@ -103,12 +104,12 @@
                     </template>
                 </div>
                 <ul class="text-sm space-y-1 mt-2">
-                    <li :class="ruleClasses.hasMinLength" class="flex gap-1 items-center"><flux:icon.check variant="micro" /> Minimaal 8 tekens</li>
-                    <li :class="ruleClasses.hasLowercase" class="flex gap-1 items-center"><flux:icon.check variant="micro" /> Minimaal 1 kleine letter</li>
-                    <li :class="ruleClasses.hasUppercase" class="flex gap-1 items-center"><flux:icon.check variant="micro" /> Minimaal 1 hoofdletter</li>
-                    <li :class="ruleClasses.hasSpecial" class="flex gap-1 items-center"><flux:icon.check variant="micro" /> Minimaal 1 speciaal teken</li>
+                    <li :class="ruleClasses.hasMinLength" class="flex gap-1 items-center"><flux:icon.check variant="micro" /> {{ __('square-ui::square-ui.password.min_length') }}</li>
+                    <li :class="ruleClasses.hasLowercase" class="flex gap-1 items-center"><flux:icon.check variant="micro" /> {{ __('square-ui::square-ui.password.lowercase') }}</li>
+                    <li :class="ruleClasses.hasUppercase" class="flex gap-1 items-center"><flux:icon.check variant="micro" /> {{ __('square-ui::square-ui.password.uppercase') }}</li>
+                    <li :class="ruleClasses.hasSpecial" class="flex gap-1 items-center"><flux:icon.check variant="micro" /> {{ __('square-ui::square-ui.password.special') }}</li>
                 </ul>
-                <flux:button variant="primary" class="w-full mt-3" @click="generatePassword()">Wachtwoord genereren</flux:button>
+                <flux:button variant="primary" class="w-full mt-3" @click="generatePassword()">{{ __('square-ui::square-ui.password.generate') }}</flux:button>
             </dialog>
         @endif
     </div>

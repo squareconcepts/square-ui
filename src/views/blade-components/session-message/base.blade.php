@@ -3,12 +3,13 @@
     'title'=> null,
     'timeoutInSeconds' => null
 ])
+{{-- @deprecated 4.x, removed in 5.0: use Flux::toast() or <flux:callout>. See UPGRADE.md. --}}
 @php
     if (!is_null($timeoutInSeconds) && !is_int($timeoutInSeconds) ) {
         throw new \InvalidArgumentException('The "timeoutInSeconds" prop must be an integer or null.');
     }
 
-    $title ??= __('forms.success');
+    $title ??= __('square-ui::square-ui.session.success');
 @endphp
 @session($name)
 <div x-data="{

@@ -44,8 +44,10 @@ class SquareUiServiceProvider extends ServiceProvider
         $this->loadLivewireComponents();
         $this->loadBladeComponents();
 
-        ComponentAttributeBag::macro('addClass', function (string $class) {
-            $this->class($class);
+        // class() geeft een nieuwe bag terug; zonder return deed deze macro niets.
+        ComponentAttributeBag::macro('addClass', function (string|array $class): ComponentAttributeBag {
+            /** @var ComponentAttributeBag $this */
+            return $this->class($class);
         });
     }
 
@@ -68,7 +70,6 @@ class SquareUiServiceProvider extends ServiceProvider
             classPath: __DIR__ . '/../LivewireComponents',
             classViewPath: __DIR__ . '/../views/livewire-components',
         );
-        $this->loadViewsFrom(__DIR__ . '/../views/livewire-components', 'square-core');
 
         // Componenten heten via addNamespace 'square-ui::<naam>' (bijv. <livewire:square-ui::dialogs />).
         // BC: vóór Livewire 4 was LocalizedStringComponent expliciet geregistreerd als

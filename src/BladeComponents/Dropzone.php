@@ -4,12 +4,19 @@ namespace Squareconcepts\SquareUi\BladeComponents;
 
 use Illuminate\View\Component;
 
+/**
+ * <x-square-ui::dropzone>
+ *
+ * @deprecated 4.x Wordt verwijderd in 5.0. Gebruik (Flux Pro) <flux:file-upload> met <flux:file-upload.dropzone>.
+ *             Zie UPGRADE.md, "Deprecated in 4.x".
+ */
 class Dropzone extends Component
 {
     public function __construct(
         public string $identifier,
         public string $model,
-        public string $dropzoneText = 'Sleep bestanden hier naartoe of klik om te bladeren',
+        // null = vertaalde standaardtekst (enkelvoud of meervoud, afhankelijk van $multiple).
+        public ?string $dropzoneText = null,
         public bool $multiple = false,
         public bool $showPreview = true,
     ) {}

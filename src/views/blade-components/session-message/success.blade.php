@@ -3,11 +3,12 @@
     'title'=> null,
     'timeoutInSeconds' => null
 ])
+{{-- @deprecated 4.x, removed in 5.0: use Flux::toast(variant: 'success') or <flux:callout variant="success">. See UPGRADE.md. --}}
 @php
     if (!is_null($timeoutInSeconds) && !is_int($timeoutInSeconds) ) {
         throw new \InvalidArgumentException('The "timeoutInSeconds" prop must be an integer or null.');
     }
-      $title ??= __('forms.success');
+      $title ??= __('square-ui::square-ui.session.success');
 @endphp
 <x-square-ui.session::base name="{{$name}}" :timeout-in-seconds="$timeoutInSeconds">
     <flux:callout icon="check" variant="success" class="relative overflow-hidden">

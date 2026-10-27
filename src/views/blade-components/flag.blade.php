@@ -3,14 +3,14 @@
 @else
     @production
         <flux:callout variant="danger" inline>
-            <flux:callout.heading>{{ $country }}.svg niet gevonden op de server.</flux:callout.heading>
+            <flux:callout.heading>{{ __('square-ui::square-ui.flag_not_found', ['file' => $country . '.svg']) }}</flux:callout.heading>
         </flux:callout>
     @endproduction
     @if(!$app->isProduction())
         <x-square-ui.tooltip>
             <x-slot:toggle>
                 <flux:callout variant="danger" inline>
-                    <flux:callout.heading>{{ $country }}.svg niet gevonden op de server.</flux:callout.heading>
+                    <flux:callout.heading>{{ __('square-ui::square-ui.flag_not_found', ['file' => $country . '.svg']) }}</flux:callout.heading>
                 </flux:callout>
             </x-slot:toggle>
             <x-slot:content class="grid grid-cols-12">

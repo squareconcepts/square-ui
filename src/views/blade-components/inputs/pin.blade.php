@@ -2,6 +2,7 @@
     'length' => 4,
     'size' => 'default'
 ])
+{{-- @deprecated 4.x, removed in 5.0: use <flux:otp>. See UPGRADE.md. --}}
 @php
     $sizeClasses = match ($size){
          'sm' => 'size-9.5',

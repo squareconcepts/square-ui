@@ -14,6 +14,12 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Squareconcepts\SquareUi\Traits\SquareUiActions;
 
+/**
+ * <livewire:square-ui::data-table>
+ *
+ * @deprecated 4.x Wordt verwijderd in 5.0. Gebruik <flux:table> (met paginatie/sortering in je eigen component) of de LivewireTable uit squareconcepts/laravel-square-core.
+ *             Zie UPGRADE.md, "Deprecated in 4.x".
+ */
 class DataTable extends Component
 {
     use SquareUiActions, WithPagination;

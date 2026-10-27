@@ -2,13 +2,15 @@
 
 <div
     x-data="{
+        copiedLabel: @js(__('square-ui::square-ui.copied')),
+        copyLabel: @js(__('square-ui::square-ui.copy')),
         copyToClipboard() {
             navigator.clipboard.writeText(this.$refs.code.innerText);
-            this.$refs.button.innerText = 'Gekopieerd!';
+            this.$refs.button.innerText = this.copiedLabel;
             setTimeout(() => {
                 this.$refs.button.innerHTML = `
                     <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' viewBox='0 0 16 16'><path d='M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z'/><path d='M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zM9 2H7v.5h2V2z'/></svg>
-                    <span>Kopieer</span>`;
+                    <span>${this.copyLabel}</span>`;
             }, 2000);
         }
     }"
@@ -20,13 +22,14 @@
         @endif
         <button x-ref="button" @click="copyToClipboard()" class="code-block-copy-button">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zM9 2H7v.5h2V2z"/></svg>
-            <span>Kopieer</span>
+            <span>{{ __('square-ui::square-ui.copy') }}</span>
         </button>
     </div>
 
     <pre><code x-ref="code" class="code-block-content">{{ $slot }}</code></pre>
 </div>
-@push('styles')
+{{-- pushOnce: de styles één keer per pagina, niet per code-block. --}}
+@pushOnce('styles')
     <style>
         .code-block-container {
             position: relative;
@@ -79,4 +82,4 @@
             opacity: 1;
         }
     </style>
-@endpush
+@endPushOnce

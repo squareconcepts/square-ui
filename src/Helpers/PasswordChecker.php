@@ -5,6 +5,13 @@ namespace Squareconcepts\SquareUi\Helpers;
 use Illuminate\Support\Facades\Http;
 use Livewire\Wireable;
 
+/**
+ * @deprecated 4.x Wordt verwijderd in 5.0. Gebruik Laravel's validatieregel
+ *             `Illuminate\Validation\Rules\Password::min(8)->mixedCase()->numbers()->symbols()->uncompromised()`
+ *             (en <flux:input type="password" viewable> voor de UI).
+ *
+ * Let op: een mislukte aanroep naar de Pwned Passwords API telt hier als "niet gelekt".
+ */
 class PasswordChecker implements Wireable
 {
     public int $passwordStrength = 0;
@@ -15,7 +22,17 @@ class PasswordChecker implements Wireable
     public bool $hasSpecial = false;
     public bool $length = false;
     public bool $isUncompromised = false;
-    public string $password;
+    // Wordt niet meer in de Livewire-snapshot gezet (zie toLivewire()); na hydratie is dit dus leeg.
+    public string $password = '';
+
+    public function __construct()
+    {
+        trigger_error(
+            'Squareconcepts\\SquareUi\\Helpers\\PasswordChecker is deprecated and will be removed in square-ui 5.0. '
+            . 'Use Illuminate\\Validation\\Rules\\Password::min(8)->uncompromised() instead.',
+            E_USER_DEPRECATED,
+        );
+    }
 
     public static function checkPassword(string $password): PasswordChecker
     {
@@ -147,22 +164,21 @@ class PasswordChecker implements Wireable
             'hasSmallLetter' => $this->hasSmallLetter,
             'hasCapitalLetter' => $this->hasCapitalLetter,
             'isUncompromised' => $this->isUncompromised,
-            'password' => $this->password,
+            // Bewust geen 'password': het plaintext wachtwoord hoort niet in de (client-side) Livewire-snapshot.
         ];
     }
 
     public static function fromLivewire($value): static
     {
         $instance = new static();
-        $instance->password = $value['password'];
-        $instance->passwordStrength = $value['passwordStrength'];
-        $instance->passwordStrengthString = $value['passwordStrengthString'];
-        $instance->length = $value['length'];
-        $instance->hasNumbers = $value['hasNumbers'];
-        $instance->hasSpecial = $value['hasSpecial'];
-        $instance->hasSmallLetter = $value['hasSmallLetter'];
-        $instance->hasCapitalLetter = $value['hasCapitalLetter'];
-        $instance->isUncompromised = $value['isUncompromised'];
+        $instance->passwordStrength = (int) ($value['passwordStrength'] ?? 0);
+        $instance->passwordStrengthString = (string) ($value['passwordStrengthString'] ?? 'weak');
+        $instance->length = (bool) ($value['length'] ?? false);
+        $instance->hasNumbers = (bool) ($value['hasNumbers'] ?? false);
+        $instance->hasSpecial = (bool) ($value['hasSpecial'] ?? false);
+        $instance->hasSmallLetter = (bool) ($value['hasSmallLetter'] ?? false);
+        $instance->hasCapitalLetter = (bool) ($value['hasCapitalLetter'] ?? false);
+        $instance->isUncompromised = (bool) ($value['isUncompromised'] ?? false);
 
         return $instance;
     }

@@ -3,11 +3,12 @@
     'title'=> null,
     'timeoutInSeconds' => null
 ])
+{{-- @deprecated 4.x, removed in 5.0: use Flux::toast(variant: 'danger') or <flux:callout variant="danger">. See UPGRADE.md. --}}
 @php
     if (!is_null($timeoutInSeconds) && !is_int($timeoutInSeconds) ) {
         throw new \InvalidArgumentException('The "timeoutInSeconds" prop must be an integer or null.');
     }
-      $title ??= __('forms.error');
+      $title ??= __('square-ui::square-ui.session.error');
 @endphp
 <x-square-ui.session::base name="{{$name}}" :timeout-in-seconds="$timeoutInSeconds">
     <flux:callout icon="x-mark" variant="danger" class="relative overflow-hidden">

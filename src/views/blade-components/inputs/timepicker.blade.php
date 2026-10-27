@@ -1,3 +1,4 @@
+{{-- @deprecated 4.x, removed in 5.0: use (Flux Pro) <flux:time-picker>. See UPGRADE.md. --}}
 <div
     x-data="{
     open: false,
@@ -113,15 +114,15 @@
            }"
         >
             <div class="p-4">
-                <flux:separator :text="__('Time')" class="my-3" />
+                <flux:separator :text="__('square-ui::square-ui.time')" class="my-3" />
                 <div class="flex gap-4 justify-evenly px-4">
                     @if($asDropdown)
-                        <flux:select variant="listbox" x-model="hours" placeholder="Choose hours...">
+                        <flux:select variant="listbox" x-model="hours" :placeholder="__('square-ui::square-ui.choose_hours')">
                             @foreach(range(0,23) as $hour)
                                 <flux:select.option>{{ $hour }}</flux:select.option>
                             @endforeach
                         </flux:select>
-                        <flux:select variant="listbox" x-model="minutes" placeholder="Choose minutes...">
+                        <flux:select variant="listbox" x-model="minutes" :placeholder="__('square-ui::square-ui.choose_minutes')">
                             @foreach(range(0,59) as $minute)
                                 <flux:select.option>{{ $minute }}</flux:select.option>
                             @endforeach

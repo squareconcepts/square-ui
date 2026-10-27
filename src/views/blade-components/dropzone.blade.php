@@ -1,3 +1,4 @@
+{{-- @deprecated 4.x, removed in 5.0: use (Flux Pro) <flux:file-upload>. See UPGRADE.md. --}}
 {{-- Inline x-data: elke dropzone heeft eigen state (geen globale Alpine.data met ingebakken model/identifier). --}}
 <div x-data="{
         model: @js($model),
@@ -107,12 +108,12 @@
 >
 
     <label :class="{ 'bg-white': isDragging }" class="py-8 w-full bg-white flex items-center justify-center border-2 border-zinc-100 border-dashed cursor-pointer hover:bg-zinc-100/50 text-zinc-500  rounded-xl" for="{{$identifier}}">
-        {{$multiple ? $dropzoneText : 'Sleep bestand hier of klik om te bladeren'}}
+        {{ $dropzoneText ?? ($multiple ? __('square-ui::square-ui.upload.drop_files') : __('square-ui::square-ui.upload.drop_file')) }}
     </label>
    <template x-if="progress > 0">
        <div  class="my-2">
            <div class="flex justify-between mb-1" >
-               <span class="text-base font-medium text-zinc-500">Upload voortgang</span>
+               <span class="text-base font-medium text-zinc-500">{{ __('square-ui::square-ui.upload.progress') }}</span>
                <span class="text-sm font-medium text-zinc-500" x-text="progress + '%'">0&</span>
            </div>
            <div class="w-full bg-slate-100 rounded-full h-2.5">
@@ -123,7 +124,7 @@
     <input id="{{$identifier}}" type="file" style="display: none" @change="handleDroppedFiles($event.target.files)" @if($multiple) multiple @endif {{$attributes['wire:model']}}>
     <div class="flex flex-col w-full leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-xl mt-4" x-show="files.length > 0" x-cloak>
         <div class="flex items-center space-x-2 rtl:space-x-reverse mb-2">
-            <span class="text-sm font-semibold text-gray-900 dark:text-white">Bestanden (<span x-text="files.length"></span>)</span>
+            <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ __('square-ui::square-ui.upload.files') }} (<span x-text="files.length"></span>)</span>
         </div>
         @if($showPreview)
             <div class="grid gap-4 grid-cols-2 md:grid-cols-6 my-2.5">
@@ -148,7 +149,7 @@
        @if($multiple || !$showPreview)
             <div class="flex gap-2 items-center">
                 <button class="text-sm text-red-500 font-medium inline-flex items-center hover:underline gap-2" @click="removeImage(-1)">
-                    <i class="fa fa-trash"></i> Alle verwijderen
+                    <i class="fa fa-trash"></i> {{ __('square-ui::square-ui.upload.remove_all') }}
                 </button>
             </div>
         @endif

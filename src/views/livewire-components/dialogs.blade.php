@@ -59,7 +59,7 @@
                 <div class="flex gap-2">
                     <flux:spacer />
                     <flux:modal.close>
-                        <flux:button type="submit" wire:click="closeErrorDialog" variant="danger">{{ __('buttons.close') }}</flux:button>
+                        <flux:button type="submit" wire:click="closeErrorDialog" variant="danger">{{ __('square-ui::square-ui.close') }}</flux:button>
                     </flux:modal.close>
 
                 </div>
@@ -86,7 +86,7 @@
                 </div>
                 <div class="flex gap-2">
                     <flux:spacer />
-                    <flux:button type="submit" wire:click="closeSuccessDialog" variant="primary">{{ __('buttons.close') }}</flux:button>
+                    <flux:button type="submit" wire:click="closeSuccessDialog" variant="primary">{{ __('square-ui::square-ui.close') }}</flux:button>
                 </div>
             </div>
         </flux:modal>

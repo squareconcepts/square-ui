@@ -1,3 +1,4 @@
+{{-- @deprecated 4.x, removed in 5.0: use <flux:table> or the LivewireTable from squareconcepts/laravel-square-core. See UPGRADE.md. --}}
 <div>
     <div class="space-y-4">
         @if(!$hideToolbar)

@@ -1,3 +1,4 @@
+{{-- @deprecated 4.x, removed in 5.0: use (Flux Pro) <flux:date-picker> + <flux:time-picker>. See UPGRADE.md. --}}
 <div
     x-data="{
         open: false,
@@ -142,7 +143,7 @@
         <flux:calendar x-model="calDate" />
 
         @if($withTime)
-            <flux:separator :text="__('Tijd')" />
+            <flux:separator :text="__('square-ui::square-ui.time')" />
 
             <div class="flex items-center justify-center gap-1.5 py-1">
                 <input
@@ -211,7 +212,7 @@
 
         <flux:separator />
         <flux:button variant="danger" size="sm" @click="clear()" class="w-full">
-            {{ __('Wissen') }}
+            {{ __('square-ui::square-ui.clear') }}
         </flux:button>
     </dialog>
 </div>

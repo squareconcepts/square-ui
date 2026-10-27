@@ -1,5 +1,9 @@
 /vendor/
 composer.lock
+.phpunit.result.cache
+/.phpunit.cache/
 src/.DS_Store
+.DS_Store
 node_modules/
+.claude/
 !public/

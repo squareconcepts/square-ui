@@ -1,3 +1,4 @@
+{{-- @deprecated 4.x, removed in 5.0: use (Flux Pro) <flux:select variant="combobox">, <flux:autocomplete> or <flux:pillbox>. See UPGRADE.md. --}}
 <div class="relative {{$classes}}" x-data="{
         open: false,
         search: '',
@@ -16,7 +17,7 @@
         optionValue: @js($optionValue),
         optionDescription: @js($optionDescription),
         label: @js($attributes['label'] ?? ''),
-        placeholder: @js($attributes['placeholder'] ?? $attributes['label'] ?? 'Selecteer een optie'),
+        placeholder: @js($attributes['placeholder'] ?? $attributes['label'] ?? __('square-ui::square-ui.select_option')),
         async getResults(id = null, size = 10) {
             if(this.route == null || this.route === '' || this.route === undefined) {
                 this.results = @js($items);
@@ -156,7 +157,7 @@
     <div class="absolute left-0 right-0 mt-1 bg-white shadow rounded py-2 z-50" x-show="open" x-cloak
          @click.outside="open = false">
         <div class="bg-white p-2">
-            <input right-icon="search" x-model="search" class="input-style placeholder-secondary-400 dark:bg-secondary-800 dark:text-secondary-400 dark:placeholder-secondary-500 border border-secondary-300 focus:ring-primary-500 focus:border-primary-500 dark:border-secondary-600 form-input block w-full sm:text-sm rounded-md transition ease-in-out duration-100 focus:outline-none shadow-sm" placeholder="Zoeken..."/>
+            <input right-icon="search" x-model="search" class="input-style placeholder-secondary-400 dark:bg-secondary-800 dark:text-secondary-400 dark:placeholder-secondary-500 border border-secondary-300 focus:ring-primary-500 focus:border-primary-500 dark:border-secondary-600 form-input block w-full sm:text-sm rounded-md transition ease-in-out duration-100 focus:outline-none shadow-sm" placeholder="{{ __('square-ui::square-ui.search') }}"/>
         </div>
         <div class="max-h-48 overflow-auto" x-show="results.length > 0" x-cloak>
             <template x-for="(result, index, collection) in results" :key="index">
@@ -199,7 +200,7 @@
             </template>
         </div>
         <div x-show="results.length <= 0" x-cloak>
-            <p x-text="'No results for ' + search"></p>
+            <p x-text="{{ \Illuminate\Support\Js::from(__('square-ui::square-ui.no_results_for') . ' ') }} + search"></p>
         </div>
     </div>
 </div>

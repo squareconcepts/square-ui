@@ -6,6 +6,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
 
+/**
+ * <x-square-ui::inputs.time-picker> / <x-square-ui.inputs::time-picker>
+ *
+ * @deprecated 4.x Wordt verwijderd in 5.0. Gebruik (Flux Pro) <flux:time-picker>.
+ *             Zie UPGRADE.md, "Deprecated in 4.x".
+ */
 class TimePicker extends Component
 {
     public string $id;

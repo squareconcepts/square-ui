@@ -104,19 +104,6 @@ class ScFontAwesome implements Wireable
         return ['success' => false, 'message' => 'Something went wrong while trying to search for icons'];
     }
 
-    public static function getStyles(): array
-    {
-        return [
-            ['name' => 'Solid', 'value' => 'fa-solid'],
-            ['name' => 'Brands', 'value' => 'fa-brands'],
-            ['name' => 'Regular', 'value' => 'fa-regular'],
-            ['name' => 'Light', 'value' => 'fa-light'],
-            ['name' => 'Thin', 'value' => 'fa-thin'],
-            ['name' => 'Duotone', 'value' => 'fa-duotone'],
-            ['name' => 'Sharp Solid', 'value' => 'fa-sharp fa-solid'],
-        ];
-    }
-
     // Het access token mag nooit in de Livewire snapshot belanden; na hydratie wordt het opnieuw uit de cache gehaald.
     public static function fromLivewire($value): static
     {

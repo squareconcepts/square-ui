@@ -296,9 +296,9 @@ class UpgradeCheck extends Command
                 'severity' => 'removed',
                 'label' => '<x-square-ui.color-picker>',
                 'pattern' => '/<x-square-ui\.color-picker\b[^>]*>/',
-                'replacement_title' => '<input type="color"> of <x-square-ui.pickr>',
+                'replacement_title' => '<input type="color"> of <x-square-ui::pickr>',
                 'template' => "<flux:field>\n    <flux:label>Kleur</flux:label>\n    <input type=\"color\" wire:model=\"color\" class=\"h-10 w-20 rounded border\">\n</flux:field>",
-                'hint' => 'Voor swatches / opacity / HEX-input: gebruik de bestaande <x-square-ui.pickr> component.',
+                'hint' => 'Voor swatches / opacity / HEX-input: gebruik de bestaande <x-square-ui::pickr> component.',
                 'notes' => [],
             ],
             [
@@ -394,6 +394,91 @@ class UpgradeCheck extends Command
                     'Verwijder daarna de hele `protected $listeners` array.',
                 ],
             ],
+            ...$this->deprecatedComponentRules(),
+        ];
+    }
+
+    /**
+     * Componenten die in 4.x deprecated zijn en in 5.0 verdwijnen. Alleen rapporteren (severity
+     * 'deprecated' laat de exit code op 0), niets automatisch omzetten: de Flux-props verschillen.
+     * Tags matchen in alle spellingen die resolven: x-square-ui::naam, x-square-ui::inputs.naam en
+     * x-square-ui.inputs::naam (plus de oude punt-notatie, voor het geval die ergens nog staat).
+     */
+    private function deprecatedComponentRules(): array
+    {
+        $tag = fn (string $name, bool $input = false): string => $input
+            ? '/<x-square-ui(?:::inputs\\.|\\.inputs::|\\.inputs\\.)' . preg_quote($name, '/') . '(?![\\w-])/'
+            : '/<x-square-ui(?:::|\\.)' . preg_quote($name, '/') . '(?![\\w-])/';
+
+        $rule = fn (string $key, string $label, string $pattern, string $replacement, string $template, string $hint, string $scope = 'blade'): array => [
+            'key' => 'deprecated_' . $key,
+            'scope' => $scope,
+            'severity' => 'deprecated',
+            'label' => $label,
+            'pattern' => $pattern,
+            'replacement_title' => $replacement,
+            'template' => $template,
+            'hint' => $hint . ' Deprecated in 4.x, verwijderd in 5.0 (zie UPGRADE.md, "Deprecated in 4.x").',
+            'notes' => [],
+        ];
+
+        return [
+            $rule('tooltip', '<x-square-ui.tooltip>', '/<x-square-ui\\.tooltip(?![\\w-])/',
+                '<flux:dropdown> + <flux:popover> (Flux Pro) of <flux:tooltip>',
+                "<flux:dropdown>\n    <flux:button>Trigger</flux:button>\n    <flux:popover>…inhoud…</flux:popover>\n</flux:dropdown>",
+                'Slot `toggle` wordt het eerste kind van <flux:dropdown>, slot `content` gaat in <flux:popover>. Alleen een korte hint? Gebruik <flux:tooltip content="…">.'),
+            $rule('pin', '<x-square-ui.inputs.pin>', '/<x-square-ui\\.inputs\\.pin(?![\\w-])/',
+                '<flux:otp>',
+                '<flux:otp wire:model="pin" length="4" label="Pin" />',
+                '`length` blijft `length`; `label` wordt een gewone Flux-label.'),
+            $rule('datepicker', '<x-square-ui::inputs.datepicker>', $tag('datepicker', true),
+                '<flux:date-picker> (Flux Pro)',
+                '<flux:date-picker wire:model="date" label="Datum" with-presets />',
+                'Flux bindt Y-m-d (geen d-m-Y H:i:s). Met tijd: combineer met <flux:time-picker>. `show-periods` → `with-presets`.'),
+            $rule('datetime_picker', '<x-square-ui::inputs.datetime-picker>', $tag('datetime-picker', true),
+                '<flux:date-picker> + <flux:time-picker> (Flux Pro)',
+                "<flux:date-picker wire:model=\"date\" label=\"Datum\" />\n<flux:time-picker wire:model=\"time\" label=\"Tijd\" />",
+                'Splits datum en tijd in twee properties en combineer ze server-side (bijv. Carbon::parse("$date $time")).'),
+            $rule('time_picker', '<x-square-ui::inputs.time-picker>', $tag('time-picker', true),
+                '<flux:time-picker> (Flux Pro)',
+                '<flux:time-picker wire:model="time" label="Tijd" />',
+                'Flux bindt H:i.'),
+            $rule('select_dropdown', '<x-square-ui::select-dropdown>', $tag('select-dropdown'),
+                '<flux:select variant="combobox"> / <flux:autocomplete> / <flux:pillbox> (Flux Pro)',
+                "<flux:select variant=\"combobox\" wire:model=\"userId\" label=\"Gebruiker\">\n    @foreach (\$users as \$user)\n        <flux:select.option :value=\"\$user->id\">{{ \$user->name }}</flux:select.option>\n    @endforeach\n</flux:select>",
+                '`multiple` → <flux:pillbox>. `async-route` → laat het Livewire-component filteren (`:filter="false"` + wire:model.live op <flux:select.input>).'),
+            $rule('dropzone', '<x-square-ui::dropzone>', $tag('dropzone'),
+                '<flux:file-upload> (Flux Pro)',
+                "<flux:file-upload wire:model=\"files\" multiple>\n    <flux:file-upload.dropzone heading=\"Sleep bestanden hierheen\" />\n</flux:file-upload>",
+                'Gebruik Livewire\'s WithFileUploads; de `dropzone-reset`-event is niet meer nodig (reset de property).'),
+            $rule('file_upload', '<x-square-ui::file-upload>', $tag('file-upload'),
+                '<flux:input type="file"> of <flux:file-upload> (Flux Pro)',
+                '<flux:input type="file" wire:model="file" label="Bestand" />',
+                ''),
+            $rule('password', '<x-square-ui::inputs.password>', $tag('password', true),
+                '<flux:input type="password" viewable>',
+                '<flux:input type="password" wire:model="password" label="Wachtwoord" viewable />',
+                'Sterkte-eisen horen in de validatie: Password::min(8)->mixedCase()->symbols()->uncompromised().'),
+            $rule('session_message', '<x-square-ui.session::*>', '/<x-square-ui\\.session::(?:base|success|error|info|warning)(?![\\w-])/',
+                'Flux::toast() of <flux:callout>',
+                "@session('success')\n    <flux:callout variant=\"success\" icon=\"check-circle\" :heading=\"\$value\" />\n@endsession",
+                'Of redirect met een toast: Flux::toast(variant: \'success\', text: …) vóór de redirect.'),
+            $rule('card', '<x-square-ui::card>', $tag('card'),
+                '<flux:card>',
+                "<flux:card>\n    <flux:heading size=\"lg\">Titel</flux:heading>\n    …\n</flux:card>",
+                ''),
+            $rule('data_table', '<livewire:square-ui::data-table>', '/(?:<livewire:|@livewire\\(\\s*[\'"])square-ui::data-table(?![\\w-])/',
+                '<flux:table> of LivewireTable (laravel-square-core)',
+                "<flux:table :paginate=\"\$this->rows\">\n    <flux:table.columns>…</flux:table.columns>\n    <flux:table.rows>…</flux:table.rows>\n</flux:table>",
+                'Voor CRUD-lijsten: extend Squareconcepts\\SquareCore\\Helpers\\LivewireTable.', 'both'),
+            $rule('password_checker', 'PasswordChecker', '/\\bPasswordChecker(?![\\w-])/',
+                'Password::min(8)->uncompromised()',
+                "use Illuminate\\Validation\\Rules\\Password;\n\n'password' => ['required', Password::min(8)->mixedCase()->numbers()->symbols()->uncompromised()],",
+                'PasswordChecker geeft nu een E_USER_DEPRECATED bij gebruik.', 'php'),
+            $rule('tailwind_helper', 'TailwindHelper::tailwindToHex()', '/\\bTailwindHelper(?![\\w-])/',
+                'CSS-variabele (var(--color-…))',
+                "var(--color-primary-500)",
+                'Tailwind 4 heeft geen tailwind.config.js; de helper vond niets en geeft nu een E_USER_DEPRECATED.', 'php'),
         ];
     }
 }

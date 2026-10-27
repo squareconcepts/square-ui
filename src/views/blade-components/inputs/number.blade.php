@@ -2,7 +2,8 @@
     $wireModel = $attributes->wire('model')->value();
 
     if ($wireModel) {
-        $value = $this->{$attributes->wire('model')->value()};
+        // data_get: werkt ook voor geneste paden en form objects (wire:model="form.amount").
+        $value = $this instanceof \Livewire\Component ? data_get($this, $wireModel) : null;
         if (isset($value) && !is_numeric($value)) {
             throw new InvalidArgumentException('SquareUI input Exception: [Number input] wire:model has to be an integer');
         }
@@ -10,8 +11,8 @@
         throw new InvalidArgumentException('SquareUI input Exception: [Number input] wire:model is required');
     }
 
-    $min = $attributes->has('min') ? $attributes->get('min') : null;
-    $max = $attributes->has('max') ? $attributes->get('max') : null;
+    $min = is_numeric($attributes->get('min')) ? $attributes->get('min') + 0 : null;
+    $max = is_numeric($attributes->get('max')) ? $attributes->get('max') + 0 : null;
 @endphp
 <div x-data="{
     value: $wire.entangle(@js($attributes->wire('model')?->value())).live ?? 0,
@@ -35,7 +36,8 @@
         this.value = this.validateValue();
     },
     min() {
-        this.value = Math.max(0, (this.value - 1));
+        // Zonder min-attribuut blijft 0 de ondergrens (oud gedrag); een (negatieve) min wordt gerespecteerd.
+        this.value = Math.max(this.minValue ?? 0, (this.value - 1));
         this.value = this.validateValue();
     }
 }"

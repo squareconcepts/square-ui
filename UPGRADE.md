@@ -23,9 +23,11 @@ De scan-command geeft je per bestand + regelnummer welke onderdelen gemigreerd m
 
 ```json
 "require": {
-    "laravel/framework": "^13.0",
+    "php": "^8.3",
+    "laravel/framework": "^12.0|^13.0",
     "livewire/livewire": "^4.0",
     "livewire/flux": "^2.0",
+    "livewire/flux-pro": "^2.0",
     "squareconcepts/square-ui": "^X.Y"
 }
 ```
@@ -33,6 +35,13 @@ De scan-command geeft je per bestand + regelnummer welke onderdelen gemigreerd m
 ```bash
 composer update
 ```
+
+> **Flux Pro** staat als `suggest`, niet als harde dependency. Nodig voor de datum/tijd-pickers van
+> square-ui (`flux:calendar`, `flux:select variant="listbox"`) en voor de Flux-vervangers in sectie 5
+> (`flux:date-picker`, `flux:time-picker`, `flux:file-upload`, `flux:autocomplete`, `flux:pillbox`, `flux:popover`).
+>
+> De `scripts` (`post-install-cmd` etc.) zijn uit de `composer.json` van de package gehaald: Composer
+> voert scripts van een dependency nooit uit. Publiceer de vlaggen zelf: `php artisan vendor:publish --tag=square-ui-images`.
 
 ---
 
@@ -125,7 +134,7 @@ Exit code `0` = clean. Exit code `1` = er staan nog verwijderde onderdelen in de
 </flux:field>
 ```
 
-**Na (gevorderd met swatches/opacity):** gebruik de bestaande `<x-square-ui.pickr>` component.
+**Na (gevorderd met swatches/opacity):** gebruik de bestaande `<x-square-ui::pickr>` component.
 
 ---
 
@@ -267,7 +276,200 @@ class UserList extends Component
 
 ---
 
-## 5. Verificatie
+## 5. Deprecated in 4.x, removed in 5.0
+
+Deze onderdelen werken in 4.x nog gewoon, maar hebben een Flux-equivalent en verdwijnen in **5.0**.
+Er komen geen runtime-meldingen (te veel ruis); `php artisan square-ui:upgrade-check` rapporteert ze als
+🟡 *deprecated* (exit code blijft `0`).
+
+> **Component-namen.** De class-componenten resolven alleen met `::`: `<x-square-ui::card>`,
+> `<x-square-ui::inputs.datepicker>` of `<x-square-ui.inputs::datepicker>`. De punt-notatie
+> (`<x-square-ui.card>`) bestaat alleen voor `tooltip`, `inputs.pin` en `session::*`.
+
+| Deprecated (square-ui) | Vervanger (Flux) | Flux Pro? |
+|---|---|---|
+| `<x-square-ui.tooltip>` | `<flux:dropdown>` + `<flux:popover>`, of `<flux:tooltip>` voor een korte hint | popover: ja |
+| `<x-square-ui.inputs.pin>` | `<flux:otp>` | nee |
+| `<x-square-ui::inputs.datepicker>` | `<flux:date-picker>` (`with-presets` voor de periode-knoppen) | ja |
+| `<x-square-ui::inputs.datetime-picker>` | `<flux:date-picker>` + `<flux:time-picker>` | ja |
+| `<x-square-ui::inputs.time-picker>` | `<flux:time-picker>` | ja |
+| `<x-square-ui::select-dropdown>` | `<flux:select variant="combobox">`, `<flux:autocomplete>`, `<flux:pillbox>` (meerdere waarden) | ja |
+| `<x-square-ui::dropzone>` | `<flux:file-upload>` + `<flux:file-upload.dropzone>` | ja |
+| `<x-square-ui::file-upload>` | `<flux:input type="file">` of `<flux:file-upload>` | file-upload: ja |
+| `<x-square-ui::inputs.password>` | `<flux:input type="password" viewable>` + `Password::defaults()` | nee |
+| `<x-square-ui.session::success\|error\|info\|warning>` | `Flux::toast()` of `<flux:callout>` | nee |
+| `<x-square-ui::card>` | `<flux:card>` | nee |
+| `<livewire:square-ui::data-table>` | `<flux:table>` of `LivewireTable` (squareconcepts/laravel-square-core) | nee |
+| `PasswordChecker` (helper) | `Password::min(8)->uncompromised()` | n.v.t. |
+| `TailwindHelper::tailwindToHex()` | CSS-variabele, bijv. `var(--color-primary-500)` | n.v.t. |
+
+`PasswordChecker` en `TailwindHelper::tailwindToHex()` geven wél een `E_USER_DEPRECATED` (het zijn helpers,
+geen componenten).
+
+### 5.1 Tooltip → dropdown + popover
+
+```blade
+{{-- Voor --}}
+<x-square-ui.tooltip>
+    <x-slot:toggle><flux:button>Info</flux:button></x-slot:toggle>
+    <x-slot:content>Uitgebreide uitleg…</x-slot:content>
+</x-square-ui.tooltip>
+
+{{-- Na --}}
+<flux:dropdown>
+    <flux:button>Info</flux:button>
+    <flux:popover>Uitgebreide uitleg…</flux:popover>
+</flux:dropdown>
+
+{{-- Alleen een korte hint --}}
+<flux:tooltip content="Uitgebreide uitleg">
+    <flux:button icon="information-circle" />
+</flux:tooltip>
+```
+
+### 5.2 Pin → OTP
+
+```blade
+<x-square-ui.inputs.pin wire:model="pin" length="6" label="Code" />
+{{-- wordt --}}
+<flux:otp wire:model="pin" length="6" label="Code" />
+```
+
+### 5.3 Datum- en tijdpickers
+
+```blade
+<x-square-ui::inputs.datepicker wire:model="deadline" label="Deadline" :enable-time="false" show-periods />
+{{-- wordt --}}
+<flux:date-picker wire:model="deadline" label="Deadline" with-presets />
+
+<x-square-ui::inputs.datetime-picker wire:model="startsAt" label="Start" />
+{{-- wordt --}}
+<div class="flex gap-2">
+    <flux:date-picker wire:model="startDate" label="Start" />
+    <flux:time-picker wire:model="startTime" label="Tijd" />
+</div>
+```
+
+> Flux bindt `Y-m-d` (datum) en `H:i` (tijd); de square-ui pickers bonden `d-m-Y H:i:s`. Combineer
+> server-side, bijv. `Carbon::parse("{$this->startDate} {$this->startTime}")`.
+
+### 5.4 Select-dropdown → combobox / autocomplete / pillbox
+
+```blade
+<x-square-ui::select-dropdown wire:model="userId" :items="$users" option-label="name" label="Gebruiker" />
+{{-- wordt --}}
+<flux:select variant="combobox" wire:model="userId" label="Gebruiker">
+    @foreach ($users as $user)
+        <flux:select.option :value="$user->id">{{ $user->name }}</flux:select.option>
+    @endforeach
+</flux:select>
+
+{{-- multiple --}}
+<flux:pillbox wire:model="userIds" label="Gebruikers">
+    @foreach ($users as $user)
+        <flux:pillbox.option :value="$user->id">{{ $user->name }}</flux:pillbox.option>
+    @endforeach
+</flux:pillbox>
+```
+
+`async-route` heeft geen 1-op-1 vervanger: laat het Livewire-component zelf filteren
+(`<flux:select variant="combobox" :filter="false">` met `<flux:select.input wire:model.live="search" />`).
+
+### 5.5 Dropzone / file-upload → Flux file-upload
+
+```blade
+<x-square-ui::dropzone identifier="docs" model="files" wire:model="files" multiple />
+{{-- wordt (component gebruikt Livewire\WithFileUploads) --}}
+<flux:file-upload wire:model="files" multiple label="Documenten">
+    <flux:file-upload.dropzone heading="Sleep bestanden hierheen of klik om te bladeren" />
+</flux:file-upload>
+```
+
+### 5.6 Password
+
+```blade
+<x-square-ui::inputs.password wire:model="password" label="Wachtwoord" />
+{{-- wordt --}}
+<flux:input type="password" wire:model="password" label="Wachtwoord" viewable />
+```
+
+```php
+use Illuminate\Validation\Rules\Password;
+
+'password' => ['required', Password::min(8)->mixedCase()->numbers()->symbols()->uncompromised()],
+```
+
+### 5.7 Session-messages → toast of callout
+
+```php
+// Voor: redirect()->with('success', 'Opgeslagen') + <x-square-ui.session::success name="success" />
+Flux::toast(variant: 'success', text: 'Opgeslagen');
+return redirect()->route('users.index');
+```
+
+```blade
+@session('success')
+    <flux:callout variant="success" icon="check-circle" :heading="$value" />
+@endsession
+```
+
+| Oud | Flux |
+|---|---|
+| `session::success` | `variant="success"` |
+| `session::error` | `variant="danger"` |
+| `session::warning` | `variant="warning"` |
+| `session::info` | `color="sky"` |
+
+### 5.8 Card
+
+```blade
+<x-square-ui::card title="Klant">…</x-square-ui::card>
+{{-- wordt --}}
+<flux:card class="space-y-3">
+    <flux:heading size="xl">Klant</flux:heading>
+    <flux:separator />
+    …
+</flux:card>
+```
+
+### 5.9 DataTable
+
+Voor CRUD-overzichten: maak een tabel op basis van `Squareconcepts\SquareCore\Helpers\LivewireTable`
+(zie de README van laravel-square-core). Voor een eenvoudige lijst: `<flux:table>` in je eigen component:
+
+```blade
+<flux:table :paginate="$this->users">
+    <flux:table.columns>
+        <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">Naam</flux:table.column>
+    </flux:table.columns>
+    <flux:table.rows>
+        @foreach ($this->users as $user)
+            <flux:table.row :key="$user->id">
+                <flux:table.cell>{{ $user->name }}</flux:table.cell>
+            </flux:table.row>
+        @endforeach
+    </flux:table.rows>
+</flux:table>
+```
+
+### 5.10 Overige wijzigingen in 4.x
+
+- **Vertalingen:** square-ui gebruikt geen app-keys meer (`buttons.close`, `forms.success`, `forms.error`,
+  `report.period.*`) maar eigen keys onder `square-ui::square-ui.*` (nl + en). Eigen teksten? Publiceer met
+  `php artisan vendor:publish --tag=square-ui-lang` en pas `lang/vendor/square-ui/{nl,en}/square-ui.php` aan.
+- **View-namespace:** de views van square-ui werden ook onder `square-core::` geregistreerd. Dat is weg;
+  gebruik `square-ui::`.
+- **Config:** `upload_disk` en `ck_editor_license` zijn verwijderd (werden nergens gebruikt).
+- **`ScFontAwesome::getStyles()`** is verwijderd (ongebruikt).
+- **`PasswordChecker`** zet het wachtwoord niet meer in de Livewire-snapshot; na een request is `$password` leeg.
+- **`ComponentAttributeBag::addClass()`** geeft nu daadwerkelijk de bag met de class terug (deed eerder niets).
+- **Props die nu werken:** `<x-square-ui::file-upload label="…">` (+ `id`), `<x-square-ui::statistic-tile text-color="…">`,
+  `<x-square-ui::card>` zonder `title` als je een `header_slot` meegeeft, `<x-square-ui::inputs.number>` met
+  `wire:model="form.amount"` en een negatieve `min`.
+
+---
+
+## 6. Verificatie
 
 1. Re-run de scan:
    ```bash
@@ -296,7 +498,7 @@ class UserList extends Component
 
 ---
 
-## 6. Edge cases
+## 7. Edge cases
 
 - **Custom views die de verwijderde alerts hergebruiken:** de scanner detecteert `<x-square-ui.alerts::*>` in `resources/views/` en `app/`. Custom paden voeg je toe met `--path=...`.
 - **JavaScript met `Swal.fire(...)`:** de scanner vindt deze in Blade-files. Ruwe `.js` bestanden worden niet gescand — check die handmatig.
@@ -304,7 +506,7 @@ class UserList extends Component
 
 ---
 
-## 7. Support
+## 8. Support
 
 Problemen? Draai de scanner met de exacte output:
 

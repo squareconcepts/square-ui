@@ -1,21 +1,21 @@
 <div wire:init="init" wire:ignore>
     @if($apiTokenIsEmpty)
         <flux:callout icon="exclamation-triangle" variant="warning">
-            <flux:callout.heading>Font Awesome Api key Leeg</flux:callout.heading>
-            <flux:callout.text>Om font awesome te gebruiken hebben we een API Key nodig. Ga naar <flux:link variant="ghost" href="https://fontawesome.com/account/general" class="text-amber-700">FontAwesome -> Account -> General</flux:link> Onder API Tokens staat de key die we nodig hebben. Zet die in <code>.env</code> als <code>SQUARE_UI_FONTAWESOME_API_TOKEN</code>.</flux:callout.text>
+            <flux:callout.heading>{{ __('square-ui::square-ui.icon_picker.missing_token_heading') }}</flux:callout.heading>
+            <flux:callout.text>{{ __('square-ui::square-ui.icon_picker.missing_token_text') }} <flux:link variant="ghost" href="https://fontawesome.com/account/general" class="text-amber-700">FontAwesome → Account → General</flux:link> {{ __('square-ui::square-ui.icon_picker.missing_token_env', ['env' => 'SQUARE_UI_FONTAWESOME_API_TOKEN']) }}</flux:callout.text>
         </flux:callout>
     @else
         <div x-data="scFontAwesome" wire:ignore>
             <x-square-ui.tooltip>
                 <x-slot:toggle>
                     <flux:field>
-                        <flux:input.group label="FontAwesome icoon">
+                        <flux:input.group :label="__('square-ui::square-ui.icon_picker.label')">
                             <flux:input.group.prefix>
                                 <template x-if="icon != null">
                                     <i :class="icon"></i>
                                 </template>
                             </flux:input.group.prefix>
-                            <flux:input as="button" label="FontAwesome icoon" x-model="icon" class="rounded-s-none" icon-trailing="magnifying-glass">
+                            <flux:input as="button" :label="__('square-ui::square-ui.icon_picker.label')" x-model="icon" class="rounded-s-none" icon-trailing="magnifying-glass">
                                 <flux:text x-text="icon"></flux:text>
                             </flux:input>
                         </flux:input.group>
@@ -23,8 +23,8 @@
                 </x-slot:toggle>
                 <x-slot:content class="w-full">
                     <div class="w-full" x-intersect="focusInput()">
-                        <flux:input icon-trailing="magnifying-glass" x-model="searchValue" @input.debounce.500ms="fetchResults" placeholder="Zoeken op Icoon" x-ref="searchBar" />
-                        <flux:separator class="my-3" text="Zoekresultaten" x-ref="resultsCount" />
+                        <flux:input icon-trailing="magnifying-glass" x-model="searchValue" @input.debounce.500ms="fetchResults" :placeholder="__('square-ui::square-ui.icon_picker.search')" x-ref="searchBar" />
+                        <flux:separator class="my-3" :text="__('square-ui::square-ui.icon_picker.results')" x-ref="resultsCount" />
                         <template x-if="hasResults">
                             <div class="flex flex-wrap gap-1 mt-2 max-h-96 overflow-scroll">
                                 <template x-for="result in results">
@@ -40,7 +40,7 @@
                         </template>
                         <template x-if="!hasResults">
                             <div class="rounded-xl flex items-center justify-center p-4 bg-gray-100 mt-2">
-                                <flux:text>Geen resultaten</flux:text>
+                                <flux:text>{{ __('square-ui::square-ui.no_results') }}</flux:text>
                             </div>
                         </template>
                     </div>
@@ -68,7 +68,7 @@
                 this.$nextTick(() => {
                     const span = this.$refs.resultsCount.previousElementSibling;
                     if (span) {
-                        span.textContent = `${this.results.length} resultaten gevonden`;
+                        span.textContent = @js(__('square-ui::square-ui.icon_picker.results_found')).replace(':count', this.results.length);
                     }
                 });
             },

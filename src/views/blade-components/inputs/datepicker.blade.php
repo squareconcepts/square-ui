@@ -1,3 +1,4 @@
+{{-- @deprecated 4.x, removed in 5.0: use (Flux Pro) <flux:date-picker>. See UPGRADE.md. --}}
 <div
     x-data="{
     open: false,
@@ -199,7 +200,7 @@
                 @if($showPeriods)
                     <div class="flex flex-col gap-2 items-start">
                         @foreach($periodOption as $period)
-                            <flux:button size="xs" variant="ghost" x-on:click="changePeriod({{ \Illuminate\Support\Js::from($period) }})">@lang('report.period.'.$period)</flux:button>
+                            <flux:button size="xs" variant="ghost" x-on:click="changePeriod({{ \Illuminate\Support\Js::from($period) }})">{{ __('square-ui::square-ui.periods.' . $period) }}</flux:button>
                         @endforeach
                     </div>
                     <flux:separator vertical class="mx-3" />
@@ -225,15 +226,15 @@
                         }"
                     ></flux:calendar>
                     @if($enableTime)
-                        <flux:separator :text="__('Time')" class="my-3" />
+                        <flux:separator :text="__('square-ui::square-ui.time')" class="my-3" />
                         <div class="flex gap-4 justify-evenly px-4">
                             @if($asDropdown)
-                                <flux:select variant="listbox" x-model="hours" placeholder="Kies uren...">
+                                <flux:select variant="listbox" x-model="hours" :placeholder="__('square-ui::square-ui.choose_hours')">
                                     @foreach(range(0,23) as $hour)
                                         <flux:select.option.variants.custom>{{ $hour }}</flux:select.option.variants.custom>
                                     @endforeach
                                 </flux:select>
-                                <flux:select variant="listbox" x-model="minutes" placeholder="Kies minuten...">
+                                <flux:select variant="listbox" x-model="minutes" :placeholder="__('square-ui::square-ui.choose_minutes')">
                                     @foreach(range(0,59) as $minute)
                                         <flux:select.option.variants.custom>{{ $minute }}</flux:select.option.variants.custom>
                                     @endforeach
@@ -245,7 +246,7 @@
                         </div>
                     @endif
                     <flux:separator class="my-3" />
-                    <flux:button variant="danger" @click="resetDate()" class="w-full">Wissen</flux:button>
+                    <flux:button variant="danger" @click="resetDate()" class="w-full">{{ __('square-ui::square-ui.clear') }}</flux:button>
                 </div>
             </div>
         </dialog>
