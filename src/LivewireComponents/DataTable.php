@@ -12,6 +12,7 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Squareconcepts\SquareUi\Helpers\ButtonStyle;
 use Squareconcepts\SquareUi\Traits\SquareUiActions;
 
 /**
@@ -207,15 +208,7 @@ class DataTable extends Component
      */
     public function buttonStyle(?string $color): array
     {
-        return match ($color) {
-            null, '', 'primary' => ['variant' => 'primary', 'color' => null],
-            'danger', 'negative' => ['variant' => 'danger', 'color' => null],
-            'outline', 'ghost', 'subtle', 'filled' => ['variant' => $color, 'color' => null],
-            'positive', 'success' => ['variant' => 'primary', 'color' => 'green'],
-            'warning' => ['variant' => 'primary', 'color' => 'amber'],
-            'info', 'secondary' => ['variant' => 'primary', 'color' => 'blue'],
-            default => ['variant' => 'primary', 'color' => $color],
-        };
+        return ButtonStyle::from($color);
     }
 
     public function deleteRow($row): void

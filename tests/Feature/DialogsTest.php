@@ -121,4 +121,35 @@ class DialogsTest extends TestCase
             ->assertSee(__('square-ui::square-ui.close'))
             ->assertDontSee('buttons.close');
     }
+
+    public function test_extra_buttons_render_with_flux_2_styles_and_dispatch(): void
+    {
+        Livewire::test(Dialogs::class)
+            ->call('showConfirmModal', $this->confirmOptions(['extraButtons' => [
+                ['label' => 'Archiveren', 'method' => 'doArchive', 'params' => [7], 'variant' => 'warning'],
+            ]]))
+            ->assertSee('Archiveren')
+            ->assertSee('--color-amber-400', false)
+            ->call('extraButtonClick', 0)
+            ->assertDispatched('doArchive')
+            ->assertSet('pending', false);
+    }
+
+    public function test_extra_buttons_are_locked_and_only_work_while_pending(): void
+    {
+        $component = Livewire::test(Dialogs::class);
+
+        $component->call('extraButtonClick', 0)->assertNotDispatched('doArchive');
+
+        $this->expectException(CannotUpdateLockedPropertyException::class);
+        $component->set('extraButtons', [['label' => 'x', 'method' => 'evil']]);
+    }
+
+    public function test_localized_string_component_resolves(): void
+    {
+        $this->assertInstanceOf(
+            \Squareconcepts\SquareUi\LivewireComponents\LocalizedString::class,
+            app('livewire')->new('square-ui::localized-string'),
+        );
+    }
 }

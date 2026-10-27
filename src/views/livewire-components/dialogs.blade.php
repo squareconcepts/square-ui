@@ -34,6 +34,13 @@
                     <flux:button x-on:click="confirmPending = false; $wire.confirmClick()" autofocus variant="primary" color="green">
                         {{$acceptLabel}}
                     </flux:button>
+                    @foreach($extraButtons as $i => $extraButton)
+                        @php $style = \Squareconcepts\SquareUi\Helpers\ButtonStyle::from($extraButton['variant'] ?? null); @endphp
+                        <flux:button x-on:click="confirmPending = false; $wire.extraButtonClick({{ (int) $i }})" :variant="$style['variant']" :color="$style['color']">
+                            {{ $extraButton['label'] ?? '' }}
+                        </flux:button>
+                    @endforeach
+
                 </div>
             </div>
         </flux:modal>

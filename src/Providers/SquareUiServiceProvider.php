@@ -8,7 +8,6 @@ use Illuminate\View\ComponentAttributeBag;
 use Livewire\Livewire;
 use Squareconcepts\SquareUi\Commands\ConvertLivewireClassComponentsToMFC;
 use Squareconcepts\SquareUi\Commands\UpgradeCheck;
-use Squareconcepts\SquareUi\LivewireComponents\LocalizedStringComponent;
 
 class SquareUiServiceProvider extends ServiceProvider
 {
@@ -71,13 +70,8 @@ class SquareUiServiceProvider extends ServiceProvider
             classViewPath: __DIR__ . '/../views/livewire-components',
         );
 
-        // Componenten heten via addNamespace 'square-ui::<naam>' (bijv. <livewire:square-ui::dialogs />).
-        // BC: vóór Livewire 4 was LocalizedStringComponent expliciet geregistreerd als
-        // 'square-ui::localized-string'. Livewire::component() werkt niet voor namen met '::'
-        // (de Finder kijkt dan alleen in de class-namespace), dus via de missing-component-resolver.
-        Livewire::resolveMissingComponent(function ($name) {
-            return $name === 'square-ui::localized-string' ? LocalizedStringComponent::class : null;
-        });
+        // Componenten heten via addNamespace 'square-ui::<naam>', bijv. <livewire:square-ui::dialogs />
+        // en <livewire:square-ui::localized-string /> (class LocalizedString).
     }
 
     private function loadArtisanCommands(): void

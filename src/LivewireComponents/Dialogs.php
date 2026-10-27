@@ -29,6 +29,9 @@ class Dialogs extends Component
     // Voorkomt dat accept/reject dubbel afgaan (bijv. knop + sluiten van de modal).
     #[Locked]
     public bool $pending = false;
+    // Extra knoppen naast accept/reject: [['label' => ..., 'method' => ..., 'params' => ..., 'variant' => ...]].
+    #[Locked]
+    public array $extraButtons = [];
 
     public function render()
     {
@@ -55,6 +58,7 @@ class Dialogs extends Component
         $this->rejectParams = $options['reject']['params'] ?? [];
         $this->sourceId = is_string($options['sourceId'] ?? null) ? $options['sourceId'] : null;
         $this->self = ($options['self'] ?? false) === true;
+        $this->extraButtons = array_values(array_filter($options['extraButtons'] ?? [], 'is_array'));
         $this->pending = true;
 
         Flux::modal('confirm-dialog')->show();
@@ -104,6 +108,23 @@ class Dialogs extends Component
         }
 
         $this->dispatch($method, ...$params);
+    }
+
+    public function extraButtonClick($i): void
+    {
+        if (!$this->pending) {
+            return;
+        }
+
+        $button = $this->extraButtons[(int) $i] ?? null;
+
+        if (is_array($button) && !empty($button['method'])) {
+            // Zelfde aflevering als accept/reject, dus ook 'self' => true geldt hier.
+            $this->dispatchCallback($button['method'], $button['params'] ?? []);
+        }
+
+        Flux::modal('confirm-dialog')->close();
+        $this->reset();
     }
 
     public function showErrorDialog(array $data = []): void
