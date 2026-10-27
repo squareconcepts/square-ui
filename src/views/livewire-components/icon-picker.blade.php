@@ -2,14 +2,7 @@
     @if($apiTokenIsEmpty)
         <flux:callout icon="exclamation-triangle" variant="warning">
             <flux:callout.heading>Font Awesome Api key Leeg</flux:callout.heading>
-            <flux:callout.text>Om font awesome te gebruiken hebben we een API Key nodig. Ga naar <flux:link variant="ghost" href="https://fontawesome.com/account/general" class="text-amber-700">FontAwesome -> Account -> General</flux:link> Onder API Tokens staat de key die we nodig hebben.</flux:callout.text>
-            <flux:separator />
-            <x-slot name="actions">
-                <flux:input.group>
-                    <flux:input wire:model="api_token" placeholder="Api Key" />
-                    <flux:button icon="check" variant="positive" wire:click="storeApiKey()">Opslaan</flux:button>
-                </flux:input.group>
-            </x-slot>
+            <flux:callout.text>Om font awesome te gebruiken hebben we een API Key nodig. Ga naar <flux:link variant="ghost" href="https://fontawesome.com/account/general" class="text-amber-700">FontAwesome -> Account -> General</flux:link> Onder API Tokens staat de key die we nodig hebben. Zet die in <code>.env</code> als <code>SQUARE_UI_FONTAWESOME_API_TOKEN</code>.</flux:callout.text>
         </flux:callout>
     @else
         <div x-data="scFontAwesome" wire:ignore>

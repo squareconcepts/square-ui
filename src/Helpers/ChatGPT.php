@@ -4,14 +4,12 @@ namespace Squareconcepts\SquareUi\Helpers;
 
 use Exception;
 use Illuminate\Support\Facades\Http;
-use Squareconcepts\SquareUi\SquareUi;
 
 class ChatGPT
 {
     public static function ask(string $question): mixed
     {
         if (empty(config('square-ui.chat_gpt_api_token')) || empty(config('square-ui.chat_gpt_base_url'))) {
-            SquareUi::addKeysForChatGpt();
             throw new Exception('Please provide ChatGPT api token and base url. Set CHAT_GPT_API_TOKEN and CHAT_GPT_API_URL in your .env file');
         }
 

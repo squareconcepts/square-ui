@@ -5,13 +5,11 @@ namespace Squareconcepts\SquareUi\LivewireComponents;
 use Livewire\Attributes\Modelable;
 use Livewire\Component;
 use Squareconcepts\SquareUi\Helpers\ScFontAwesome;
-use Squareconcepts\SquareUi\SquareUi;
 
 class IconPicker extends Component
 {
     public ScFontAwesome $service;
     public array $icons = [];
-    public string $api_token = '';
 
     #[Modelable]
     public mixed $value = null;
@@ -33,13 +31,6 @@ class IconPicker extends Component
         } else {
             $this->service = new ScFontAwesome();
         }
-    }
-
-    public function storeApiKey(): void
-    {
-        $this->validate(['api_token' => 'required']);
-        SquareUi::handleFontawesome($this->api_token);
-        $this->init();
     }
 
     public function fetchResults(string $searchValue): array

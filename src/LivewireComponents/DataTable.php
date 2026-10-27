@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Gate;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -17,8 +19,11 @@ class DataTable extends Component
     use SquareUiActions, WithPagination;
 
     public bool $hideActions = false;
+    #[Locked]
     public bool $hideRead = false;
+    #[Locked]
     public bool $hideEdit = false;
+    #[Locked]
     public bool $hideDelete = false;
     public bool $hideToolbar = false;
     public int $perPage = 10;
@@ -29,6 +34,7 @@ class DataTable extends Component
     public array $selectedColumns = [];
     public array $searchColumns = [];
     public array $sortables = [];
+    #[Locked]
     public Collection $results;
     public Collection $filteredResults;
     public bool $withPagination = true;
@@ -38,8 +44,12 @@ class DataTable extends Component
     #[Url]
     public string $searchString = '';
 
+    // Set by the parent; locked so the browser can't point the table at another model or URL.
+    #[Locked]
     public $model;
+    #[Locked]
     public $customViewAction;
+    #[Locked]
     public string $routePrefix = '';
 
     public function sortColumns(string $field): void
@@ -165,7 +175,24 @@ class DataTable extends Component
 
     public function deleteRowCallback($row): void
     {
-        $model = (new $this->model)->findOrFail($row['id']);
+        // Public, so callable from the browser: only rows this table was given, of a real
+        // model, and only when the model's policy (if any) allows it.
+        $id = is_array($row) ? ($row['id'] ?? null) : null;
+
+        abort_if(
+            $this->hideDelete
+            || $id === null
+            || ! is_string($this->model)
+            || ! is_subclass_of($this->model, Model::class)
+            || ! $this->results->contains(fn ($result) => (string) data_get($result, 'id') === (string) $id),
+            403,
+        );
+
+        $model = $this->model::query()->findOrFail($id);
+
+        if (Gate::getPolicyFor($model)) {
+            Gate::authorize('delete', $model);
+        }
 
         try {
             if (!$model->delete()) {
