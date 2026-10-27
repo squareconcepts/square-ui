@@ -1,4 +1,4 @@
-<div x-data="dropzone('{{$model}}')"
+<div x-data="dropzone(@js($model))"
      @dragover.prevent="isDragging = true"
      @dragleave="isDragging = false"
      @drop.prevent="isDragging = false; handleDroppedFiles($event.dataTransfer.files)"
@@ -36,7 +36,9 @@
                         <div class="flex w-full h-full items-center justify-center text-[40px]" x-show="isImage(file)" x-cloak>
                             <img  :src="URL.createObjectURL(file)" class="rounded-lg min-w-[50px] max-w-[250px] p-4" />
                         </div>
-                        <div class="flex flex-col justify-center gap-2 items-center text-[40px]" x-show="!isImage(file)" x-html="fileIcon(file)" x-cloak>
+                        <div class="flex flex-col justify-center gap-2 items-center text-[40px]" x-show="!isImage(file)" x-cloak>
+                            <i :class="fileIcon(file)"></i>
+                            <span class="text-2xs" x-text="file.name.toLowerCase()"></span>
                         </div>
                     </div>
                 </template>
@@ -88,35 +90,34 @@
             const fileName = file.name.toLowerCase();
             let val = '';
             if (fileType.includes('pdf')) {
-                val =  '<i class="fa-solid fa-file-pdf fa-3x"></i>';
+                val = 'fa-solid fa-file-pdf fa-3x';
             } else if (fileType.includes('word') || fileType.includes('wordprocessingml') || fileName.endsWith('.docx')) {
-                val =  '<i class="fa-solid fa-file-word fa-3x"></i>';
+                val = 'fa-solid fa-file-word fa-3x';
             } else if (fileType.includes('excel') || fileType.includes('spreadsheetml') || fileName.endsWith('.xlsx')) {
-                val =  '<i class="fa-solid fa-file-excel fa-3x"></i>';
+                val = 'fa-solid fa-file-excel fa-3x';
             } else if (fileType.includes('powerpoint') || fileType.includes('presentationml') || fileName.endsWith('.pptx')) {
-                val =  '<i class="fa-solid fa-file-powerpoint fa-3x"></i>';
+                val = 'fa-solid fa-file-powerpoint fa-3x';
             } else if (fileType.includes('image/')) {
-                val =  '<i class="fa-solid fa-file-image fa-3x"></i>';
+                val = 'fa-solid fa-file-image fa-3x';
             } else if (fileType.includes('audio/')) {
-                val =  '<i class="fa-solid fa-file-audio fa-3x"></i>';
+                val = 'fa-solid fa-file-audio fa-3x';
             } else if (fileType.includes('video/')) {
-                val =  '<i class="fa-solid fa-file-video fa-3x"></i>';
+                val = 'fa-solid fa-file-video fa-3x';
             } else if (fileType.includes('text/')) {
-                val =  '<i class="fa-solid fa-file-alt fa-3x"></i>';
+                val = 'fa-solid fa-file-alt fa-3x';
             } else if (fileName.endsWith('.zip') || fileName.endsWith('.rar')) {
-                val =  '<i class="fa-solid fa-file-archive fa-3x"></i>';
+                val = 'fa-solid fa-file-archive fa-3x';
             } else if (fileName.endsWith('.html')) {
-                val =  '<i class="fa-brands fa-html5 fa-3x"></i>';
+                val = 'fa-brands fa-html5 fa-3x';
             } else if (fileName.endsWith('.css')) {
-                val =  '<i class="fa-brands fa-css3 fa-3x"></i>';
+                val = 'fa-brands fa-css3 fa-3x';
             } else if (fileName.endsWith('.js')) {
-                val =  '<i class="fa-brands fa-js-square fa-3x"></i>';
+                val = 'fa-brands fa-js-square fa-3x';
             } else if (fileName.endsWith('.json')) {
-                val =  '<i class="fa-solid fa-file-code fa-3x"></i>';
+                val = 'fa-solid fa-file-code fa-3x';
             } else {
-                val =  '<i class="fa-solid fa-file fa-3x"></i>';
+                val = 'fa-solid fa-file fa-3x';
             }
-            val += '<span class="text-2xs">' + fileName + '</span>';
             return val;
         },
         uploadFiles() {
@@ -147,7 +148,7 @@
 
         },
         resetDropzone(event) {
-           if(event.identifier === '{{$identifier}}') {
+           if(event.identifier === @js($identifier)) {
                this.progress = 0;
                this.files = [];
            }

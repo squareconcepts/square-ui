@@ -212,7 +212,7 @@
                 @if($showPeriods)
                     <div class="flex flex-col gap-2 items-start">
                         @foreach($periodOption as $period)
-                            <flux:button size="xs" variant="ghost" x-on:click="changePeriod('{{ $period }}')">@lang('report.period.'.$period)</flux:button>
+                            <flux:button size="xs" variant="ghost" x-on:click="changePeriod({{ \Illuminate\Support\Js::from($period) }})">@lang('report.period.'.$period)</flux:button>
                         @endforeach
                     </div>
                     <flux:separator vertical class="mx-3" />

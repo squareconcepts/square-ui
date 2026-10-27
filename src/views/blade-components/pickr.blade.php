@@ -12,7 +12,7 @@
     </div>
     <div
 
-        x-data="pickr('{{ $identifier }}', '{{ $value}}', '{{ $attributes['wire:model'] }}', '{{ $componentId }}')" x-init="initPickr"
+        x-data="pickr(@js($identifier), @js($value), @js($attributes['wire:model']), @js($componentId))" x-init="initPickr"
         x-ref="pickr_{{$identifier}}"
     >
     </div>

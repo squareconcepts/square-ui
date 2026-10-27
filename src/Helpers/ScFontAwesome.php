@@ -2,6 +2,7 @@
 
 namespace Squareconcepts\SquareUi\Helpers;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -9,8 +10,10 @@ use Livewire\Wireable;
 
 class ScFontAwesome implements Wireable
 {
-    private ?string $accessToken;
-    private ?Carbon $expiresAt;
+    private const CACHE_KEY = 'square-ui-fontawesome-access-token';
+
+    private ?string $accessToken = null;
+    private ?Carbon $expiresAt = null;
 
     public function __construct()
     {
@@ -21,14 +24,22 @@ class ScFontAwesome implements Wireable
 
     private function authenticate(): bool
     {
-        if (Cache::has('square-ui-fontawesome-access-token')) {
-            $data = Cache::get('square-ui-fontawesome-access-token');
-            $this->accessToken = data_get($data, 'access_token');
-            $this->expiresAt = now()->addSeconds(data_get($data, 'expires_in'));
+        $cached = Cache::get(self::CACHE_KEY);
+
+        if (!empty($cached['access_token']) && !empty($cached['expires_at'])) {
+            $this->accessToken = $cached['access_token'];
+            $this->expiresAt = Carbon::createFromTimestamp($cached['expires_at']);
             return true;
         }
 
-        $response = Http::withToken(config('square-ui.fontawesome_api_token'))->post('https://api.fontawesome.com/token');
+        try {
+            $response = Http::withToken(config('square-ui.fontawesome_api_token'))
+                ->timeout(10)
+                ->connectTimeout(5)
+                ->post('https://api.fontawesome.com/token');
+        } catch (ConnectionException) {
+            return false;
+        }
 
         if ($response->failed()) {
             return false;
@@ -37,9 +48,15 @@ class ScFontAwesome implements Wireable
         $json = $response->json();
 
         if (!empty($json['access_token']) && !empty($json['expires_in'])) {
+            // Een minuut marge zodat we nooit een net verlopen token uit de cache gebruiken
+            $expiresAt = now()->addSeconds(max((int) $json['expires_in'] - 60, 60));
+
             $this->accessToken = $json['access_token'];
-            $this->expiresAt = now()->addSeconds($json['expires_in']);
-            Cache::put('square-ui-fontawesome-access-token', $json, now()->addSeconds($json['expires_in'])->diffInMinutes());
+            $this->expiresAt = $expiresAt;
+            Cache::put(self::CACHE_KEY, [
+                'access_token' => $json['access_token'],
+                'expires_at' => $expiresAt->getTimestamp(),
+            ], $expiresAt);
             return true;
         }
 
@@ -48,22 +65,29 @@ class ScFontAwesome implements Wireable
 
     public function searchIcon(string $search): array
     {
-        if (empty($this->expiresAt) || now()->isAfter($this->expiresAt)) {
+        if (empty($this->accessToken) || empty($this->expiresAt) || now()->isAfter($this->expiresAt)) {
             if (!$this->authenticate()) {
                 return ['success' => false, 'message' => 'Something went wrong while trying to authenticate'];
             }
         }
 
-        $response = Http::withToken($this->accessToken)
-            ->post('https://api.fontawesome.com', [
-                'query' => '{
-                    search(version: "6.0.0", query: "' . $search . '", first: 500) {
-                        id
-                        label
-                        styles
-                    }
-                }'
-            ]);
+        try {
+            $response = Http::withToken($this->accessToken)
+                ->timeout(10)
+                ->connectTimeout(5)
+                ->post('https://api.fontawesome.com', [
+                    'query' => 'query ($query: String!) {
+                        search(version: "6.0.0", query: $query, first: 500) {
+                            id
+                            label
+                            styles
+                        }
+                    }',
+                    'variables' => ['query' => $search],
+                ]);
+        } catch (ConnectionException) {
+            return ['success' => false, 'message' => 'Something went wrong while trying to search for icons'];
+        }
 
         $json = $response->json();
 
@@ -93,19 +117,14 @@ class ScFontAwesome implements Wireable
         ];
     }
 
+    // Het access token mag nooit in de Livewire snapshot belanden; na hydratie wordt het opnieuw uit de cache gehaald.
     public static function fromLivewire($value): static
     {
-        $service = new static();
-        $service->accessToken = $value['accessToken'] ?? null;
-        $service->expiresAt = !empty($value['expiresAt']) ? Carbon::parse($value['expiresAt']) : null;
-        return $service;
+        return new static();
     }
 
     public function toLivewire(): array
     {
-        return [
-            'accessToken' => $this->accessToken ?? null,
-            'expiresAt' => $this->expiresAt ?? null,
-        ];
+        return [];
     }
 }

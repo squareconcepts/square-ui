@@ -1,25 +1,25 @@
 <div class="relative {{$classes}}" x-data="{
         open: false,
         search: '',
-        results: {{ json_encode($items) }},
-        route: '{{$asyncRoute}}',
+        results: @js($items),
+        route: @js($asyncRoute ?? ''),
         multiple: {{$multiple ? 1 : 0}},
         selectedKey: '',
         @if($attributes['wire:model'])
-            selectedValue: $wire.entangle('{{ $attributes['wire:model'] }}').live,
-            initialValue: $wire.{{ $attributes['wire:model'] }},
+            selectedValue: $wire.entangle(@js($attributes['wire:model'])).live,
+            initialValue: $wire.get(@js($attributes['wire:model'])),
         @else
             selectedValue: '',
             initialValue: '',
         @endif
-        optionLabel: '{{ $optionLabel }}',
-        optionValue: '{{ $optionValue }}',
-        optionDescription: '{{ $optionDescription }}',
-        label: '{{ $attributes['label'] }}',
-        placeholder: '{{ $attributes['placeholder'] ?? $attributes['label'] ?? 'Selecteer een optie' }}',
+        optionLabel: @js($optionLabel),
+        optionValue: @js($optionValue),
+        optionDescription: @js($optionDescription),
+        label: @js($attributes['label'] ?? ''),
+        placeholder: @js($attributes['placeholder'] ?? $attributes['label'] ?? 'Selecteer een optie'),
         async getResults(id = null, size = 10) {
             if(this.route == null || this.route === '' || this.route === undefined) {
-                this.results = {{ json_encode($items) }};
+                this.results = @js($items);
                 if(this.results.length > 0 && this.search.length > 0){
                     this.results =  this.results.filter((element) => {
                         let item = element[this.optionLabel];
@@ -33,13 +33,13 @@
             }
             let url = this.route + '?size=' + size;
             if(this.search.length > 0 ) {
-                url = url + '&search=' + this.search;
+                url = url + '&search=' + encodeURIComponent(this.search);
                 if(id != null) {
-                    url = url + '&selected=' + id;
+                    url = url + '&selected=' + encodeURIComponent(id);
                 }
             } else {
                 if(id != null) {
-                    url = url + '&selected=' + id;
+                    url = url + '&selected=' + encodeURIComponent(id);
                 }
             }
             let results = await (await fetch(url)).json();
@@ -122,14 +122,14 @@
     }"
      x-init="$watch('search', value => getResults(null)), setInitialKey()"
 >
-    <label class="block text-sm font-medium text-gray-700 dark:text-gray-400" x-html="label">
+    <label class="block text-sm font-medium text-gray-700 dark:text-gray-400" x-text="label">
     </label>
     <div class="input-style placeholder-secondary-400 dark:bg-secondary-800 dark:text-secondary-400 dark:placeholder-secondary-500 border border-secondary-300 focus:ring-primary-500 focus:border-primary-500 dark:border-secondary-600 form-input block w-full sm:text-sm rounded-md transition ease-in-out duration-100 focus:outline-none shadow-sm cursor-pointer !flex items-center" x-on:click="open = !open">
         <div x-show="!multiple">
             <p x-text="selectedKey"
                x-show="(selectedValue != null && selectedValue == initialValue) || (selectedValue != '' && selectedValue != null) "
                x-cloak></p>
-            <p x-html="placeholder" x-show="!selectedValue" x-cloak class="text-sm text-gray-400"></p>
+            <p x-text="placeholder" x-show="!selectedValue" x-cloak class="text-sm text-gray-400"></p>
         </div>
         <div x-show="multiple" class="flex flex-wrap gap-1" x-cloak>
             <template x-for="(selected, index) in selectedKey " :key="index">
@@ -140,7 +140,7 @@
                           x-on:click="selectedKey.splice(index, 1); selectedValue.splice(index, 1); open = true;">x</span>
                 </div>
             </template>
-            <p x-html="placeholder" x-show="!selectedValue || selectedValue.length == 0" x-cloak class="text-sm text-gray-400"></p>
+            <p x-text="placeholder" x-show="!selectedValue || selectedValue.length == 0" x-cloak class="text-sm text-gray-400"></p>
         </div>
         <div class="ml-auto flex gap-2">
             <svg class="w-5 h-5 text-secondary-400" xmlns="http://www.w3.org/2000/svg" fill="none"

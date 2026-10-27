@@ -31,6 +31,9 @@ trait SquareUiActions
         Flux::modal($name)->close();
     }
 
+    /**
+     * De description wordt ge-escaped, tenzij $options['html'] === true (alleen voor vertrouwde HTML).
+     */
     public function confirm(array $options = []): void
     {
         $this->dispatch('show-confirm-dialog', options: $options);
@@ -41,13 +44,19 @@ trait SquareUiActions
         Flux::modal('confirm-dialog')->close();
     }
 
-    public function errorDialog(string $title, string $message): void
+    /**
+     * Zet $html alleen op true als $message vertrouwde HTML is (nooit gebruikersinvoer of exception-messages).
+     */
+    public function errorDialog(string $title, string $message, bool $html = false): void
     {
-        $this->dispatch('show-error-dialog', options: ['title' => $title, 'description' => $message]);
+        $this->dispatch('show-error-dialog', options: ['title' => $title, 'description' => $message, 'html' => $html]);
     }
 
-    public function successDialog(string $title, string $message): void
+    /**
+     * Zet $html alleen op true als $message vertrouwde HTML is (nooit gebruikersinvoer of exception-messages).
+     */
+    public function successDialog(string $title, string $message, bool $html = false): void
     {
-        $this->dispatch('show-success-dialog', options: ['title' => $title, 'description' => $message]);
+        $this->dispatch('show-success-dialog', options: ['title' => $title, 'description' => $message, 'html' => $html]);
     }
 }

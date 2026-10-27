@@ -120,7 +120,9 @@ class PasswordChecker implements Wireable
         $suffix = strtoupper(substr($hashedPassword, 5));
 
         try {
-            $response = Http::get("https://api.pwnedpasswords.com/range/{$prefix}");
+            $response = Http::timeout(5)
+                ->connectTimeout(3)
+                ->get("https://api.pwnedpasswords.com/range/{$prefix}");
             foreach (explode("\r\n", (string) $response->body()) as $line) {
                 $parts = explode(':', $line);
                 if ($parts[0] === $suffix) {

@@ -8,7 +8,6 @@ use Squareconcepts\SquareUi\Helpers\ScFontAwesome;
 
 class IconPicker extends Component
 {
-    public ScFontAwesome $service;
     public array $icons = [];
 
     #[Modelable]
@@ -24,22 +23,18 @@ class IconPicker extends Component
 
     public function init(): void
     {
-        $api_token = config('square-ui.fontawesome_api_token');
-
-        if (empty($api_token)) {
-            $this->apiTokenIsEmpty = true;
-        } else {
-            $this->service = new ScFontAwesome();
-        }
+        $this->apiTokenIsEmpty = empty(config('square-ui.fontawesome_api_token'));
     }
 
     public function fetchResults(string $searchValue): array
     {
-        if (empty($searchValue)) {
+        $service = $this->service();
+
+        if (empty($searchValue) || $service === null) {
             return [];
         }
 
-        $data = $this->service->searchIcon($searchValue);
+        $data = $service->searchIcon($searchValue);
 
         if (!empty($data) && $data['success'] === true) {
             $data['data'] = array_map(fn($item) => $item->toLivewire(), $data['data']);
@@ -47,5 +42,15 @@ class IconPicker extends Component
         }
 
         return [];
+    }
+
+    // Bewust geen public property: de service (en het access token) mag niet in de Livewire snapshot terechtkomen.
+    protected function service(): ?ScFontAwesome
+    {
+        if (empty(config('square-ui.fontawesome_api_token'))) {
+            return null;
+        }
+
+        return new ScFontAwesome();
     }
 }

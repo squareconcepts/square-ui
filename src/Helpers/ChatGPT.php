@@ -14,18 +14,26 @@ class ChatGPT
         }
 
         $response = Http::withToken(config('square-ui.chat_gpt_api_token'))
+            ->timeout(60)
+            ->connectTimeout(5)
             ->post(config('square-ui.chat_gpt_base_url') . 'chat/completions', [
                 'messages' => [
                     ['role' => 'system', 'content' => 'You are an SEO specialist'],
                     ['role' => 'user', 'content' => $question],
                 ],
-                'model' => 'gpt-3.5-turbo',
+                'model' => config('square-ui.chat_gpt_model', 'gpt-3.5-turbo'),
             ]);
 
         if ($response->failed()) {
-            return $response->reason();
+            throw new Exception('ChatGPT request failed: ' . $response->status() . ' ' . $response->reason());
         }
 
-        return $response->json()['choices'][0]['message']['content'];
+        $content = $response->json('choices.0.message.content');
+
+        if (!is_string($content)) {
+            throw new Exception('ChatGPT response did not contain any content');
+        }
+
+        return $content;
     }
 }

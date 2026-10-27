@@ -3,12 +3,16 @@
 namespace Squareconcepts\SquareUi\LivewireComponents;
 
 use Flux\Flux;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class Dialogs extends Component
 {
     public string $title = '';
     public string $description = '';
+    // Description wordt standaard ge-escaped; alleen bij expliciet 'html' => true wordt hij raw gerenderd.
+    #[Locked]
+    public bool $html = false;
     public string $rejectLabel = '';
     public string $acceptLabel = '';
     public string $method = '';
@@ -32,6 +36,7 @@ class Dialogs extends Component
 
         $this->title = $options['title'] ?? __('square-ui::square-ui.modal.confirm');
         $this->description = $options['description'] ?? '';
+        $this->html = ($options['html'] ?? false) === true;
         $this->acceptLabel = $options['accept']['label'] ?? $options['acceptLabel'] ?? __('square-ui::square-ui.yes');
         $this->rejectLabel = $options['reject']['label'] ?? $options['rejectLabel'] ?? __('square-ui::square-ui.cancel');
         $this->method = $options['accept']['method'] ?? $options['method'] ?? '';
@@ -79,6 +84,7 @@ class Dialogs extends Component
 
         $this->title = $options['title'];
         $this->description = $options['description'];
+        $this->html = ($options['html'] ?? false) === true;
         Flux::modal('error-dialog')->show();
     }
 
@@ -99,6 +105,7 @@ class Dialogs extends Component
 
         $this->title = $options['title'];
         $this->description = $options['description'];
+        $this->html = ($options['html'] ?? false) === true;
         Flux::modal('success-dialog')->show();
     }
 

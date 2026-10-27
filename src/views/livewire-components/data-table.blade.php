@@ -21,7 +21,7 @@
                                     <label class="flex items-center gap-2 px-2 py-1 cursor-pointer select-none" wire:key="data-table-columnSelect-{{ $loop->index }}" wire:loading.attr="disabled" wire:target="selectedColumns">
                                         <input type="checkbox"
                                             @if(in_array($fieldName, $selectedColumns)) checked @endif
-                                            wire:change="selectColumn('{{ $fieldName }}')"
+                                            wire:change="selectColumn(@js($fieldName))"
                                             wire:loading.attr="disabled" />
                                         <span class="text-sm">{{ $column['label'] }}</span>
                                     </label>
@@ -45,7 +45,7 @@
                         @if(in_array($key, $selectedColumns))
                             <th class="px-3 py-2 md:px-6 md:py-3 whitespace-nowrap text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:bg-gray-800 dark:text-gray-400">
                                 @if(in_array($key, $sortables))
-                                    <span class="flex items-center gap-1 tracking-wider text-left cursor-pointer" wire:click="sortColumns('{{ $key }}')">
+                                    <span class="flex items-center gap-1 tracking-wider text-left cursor-pointer" wire:click="sortColumns(@js($key))">
                                         {{ $column['label'] }}
                                         @if($sortBy == $key)
                                             <flux:icon :icon="$sortDirection === 'asc' ? 'chevron-down' : 'chevron-up'" variant="micro" />
@@ -109,11 +109,11 @@
                                 <td class="whitespace-nowrap px-3 py-2 md:px-6 md:py-4 leading-5 text-gray-900 w-0">
                                     @foreach($customButtons as $button)
                                         @if(!empty($button['label']))
-                                            <flux:button icon="{{ $button['icon'] }}" wire:click="handleAction('{{ $button['method'] }}', {{ json_encode($result) }})" outline :variant="$button['color']">
+                                            <flux:button icon="{{ $button['icon'] }}" wire:click="handleAction({{ \Illuminate\Support\Js::from($button['method']) }}, {{ json_encode($result) }})" outline :variant="$button['color']">
                                                 {{ $button['label'] }}
                                             </flux:button>
                                         @else
-                                            <flux:button icon="{{ $button['icon'] }}" wire:click="handleAction('{{ $button['method'] }}', {{ json_encode($result) }})" outline :variant="$button['color']" />
+                                            <flux:button icon="{{ $button['icon'] }}" wire:click="handleAction({{ \Illuminate\Support\Js::from($button['method']) }}, {{ json_encode($result) }})" outline :variant="$button['color']" />
                                         @endif
                                     @endforeach
                                     @if(!$hideRead)

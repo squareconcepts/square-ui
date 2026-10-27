@@ -52,7 +52,7 @@
 <script>
     Alpine.data('ScPasswordInput', () => ({
         open: false,
-        value: $wire.entangle('{{ $attributes['wire:model'] }}').live,
+        value: $wire.entangle(@js($attributes['wire:model'])).live,
         showPasswordStrength: @js($showPasswordStrength),
         toggle() {
             this.open = !this.open;

@@ -14,7 +14,7 @@
     $max = $attributes->has('max') ? $attributes->get('max') : null;
 @endphp
 <div x-data="{
-    value: $wire.entangle('{{ $attributes->wire('model')?->value() }}').live ?? 0,
+    value: $wire.entangle(@js($attributes->wire('model')?->value())).live ?? 0,
     minValue: @js($min),
     maxValue: @js($max),
     init() {

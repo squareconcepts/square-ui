@@ -36,7 +36,7 @@
 @script
 <script>
     Alpine.data('scPinInput', () => ({
-        pinModel:  $wire.entangle('{{ $attributes['wire:model'] }}').live,
+        pinModel:  $wire.entangle(@js($attributes['wire:model'])).live,
         length: @js($length),
         values: Array(@js($length)).fill(''),
         init() {
