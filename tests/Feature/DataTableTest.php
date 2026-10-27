@@ -123,4 +123,15 @@ class DataTableTest extends TestCase
 
         $this->assertNotNull(Widget::find(1));
     }
+
+    public function test_legacy_button_colours_map_to_flux_2_styles(): void
+    {
+        $table = new DataTable();
+
+        $this->assertSame(['variant' => 'primary', 'color' => 'green'], $table->buttonStyle('positive'));
+        $this->assertSame(['variant' => 'primary', 'color' => 'amber'], $table->buttonStyle('warning'));
+        $this->assertSame(['variant' => 'danger', 'color' => null], $table->buttonStyle('danger'));
+        $this->assertSame(['variant' => 'primary', 'color' => 'teal'], $table->buttonStyle('teal'));
+        $this->assertSame(['variant' => 'primary', 'color' => null], $table->buttonStyle(null));
+    }
 }

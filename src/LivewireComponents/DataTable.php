@@ -198,6 +198,26 @@ class DataTable extends Component
         };
     }
 
+    /**
+     * Flux 2 button style for a custom button's 'color'. Older tables passed a variant name
+     * ('positive', 'warning', 'info'); Flux 2 colours the primary variant instead
+     * (variant="primary" color="green").
+     *
+     * @return array{variant: string, color: ?string}
+     */
+    public function buttonStyle(?string $color): array
+    {
+        return match ($color) {
+            null, '', 'primary' => ['variant' => 'primary', 'color' => null],
+            'danger', 'negative' => ['variant' => 'danger', 'color' => null],
+            'outline', 'ghost', 'subtle', 'filled' => ['variant' => $color, 'color' => null],
+            'positive', 'success' => ['variant' => 'primary', 'color' => 'green'],
+            'warning' => ['variant' => 'primary', 'color' => 'amber'],
+            'info', 'secondary' => ['variant' => 'primary', 'color' => 'blue'],
+            default => ['variant' => 'primary', 'color' => $color],
+        };
+    }
+
     public function deleteRow($row): void
     {
         $id = is_array($row) ? ($row['id'] ?? null) : null;

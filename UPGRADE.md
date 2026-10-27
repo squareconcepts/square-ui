@@ -454,6 +454,20 @@ Voor CRUD-overzichten: maak een tabel op basis van `Squareconcepts\SquareCore\He
 
 ### 5.10 Overige wijzigingen in 4.x
 
+- **Knopvarianten `positive` en `warning` → Flux 2-kleuren.** square-ui gebruikt ze niet meer en ze zijn ook uit de square-core-override verdwenen. Flux 2 kleurt de primary-variant:
+
+  ```blade
+  {{-- Was --}}
+  <flux:button variant="positive">Opslaan</flux:button>
+  <flux:button variant="warning" icon="pencil" />
+
+  {{-- Wordt --}}
+  <flux:button variant="primary" color="green">Opslaan</flux:button>
+  <flux:button variant="primary" color="amber" icon="pencil" />
+  ```
+
+  `php artisan square-ui:upgrade-check` vindt ze en toont per regel de omgezette versie (voor knoppen waarvan `variant` op dezelfde regel staat als `<flux:button`). De `color` van eigen DataTable-knoppen mag een Flux-kleur zijn (`green`, `amber`, `teal`, …); de oude namen `positive`, `warning` en `info` worden nog vertaald. square-ui werkt daardoor ook met standaard Flux, zonder de square-core-override.
+
 - **Vertalingen:** square-ui gebruikt geen app-keys meer (`buttons.close`, `forms.success`, `forms.error`,
   `report.period.*`) maar eigen keys onder `square-ui::square-ui.*` (nl + en). Eigen teksten? Publiceer met
   `php artisan vendor:publish --tag=square-ui-lang` en pas `lang/vendor/square-ui/{nl,en}/square-ui.php` aan.

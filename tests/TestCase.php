@@ -6,7 +6,6 @@ use Flux\FluxServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Squareconcepts\SquareUi\Providers\SquareUiServiceProvider;
-use Squareconcepts\SquareUi\Tests\Fixtures\FluxButtonOverrideServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
@@ -14,7 +13,6 @@ abstract class TestCase extends Orchestra
     {
         // Alleen de gratis livewire/flux: de suite moet zonder Flux Pro-licentie draaien.
         return [
-            FluxButtonOverrideServiceProvider::class,
             LivewireServiceProvider::class,
             FluxServiceProvider::class,
             SquareUiServiceProvider::class,

@@ -31,7 +31,7 @@
                     <flux:spacer />
                     <flux:button x-on:click="confirmPending = false; $wire.rejectClick()" variant="danger">{{$rejectLabel}}</flux:button>
                     {{-- autofocus: Enter bevestigt (native button-gedrag), zonder window-brede Enter-listener. --}}
-                    <flux:button x-on:click="confirmPending = false; $wire.confirmClick()" autofocus variant="positive">
+                    <flux:button x-on:click="confirmPending = false; $wire.confirmClick()" autofocus variant="primary" color="green">
                         {{$acceptLabel}}
                     </flux:button>
                 </div>

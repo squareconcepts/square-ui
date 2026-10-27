@@ -53,7 +53,7 @@
                x-model="value" x-mask="9999999999" data-flux-control="" data-flux-group-target="">
 
         <div class="absolute top-0 bottom-0 flex items-center gap-x-1.5 pe-3 end-0 text-xs text-zinc-400">
-            <flux:button size="sm" variant="positive" icon="plus" class="-mr-2" @click="plus()" />
+            <flux:button size="sm" variant="primary" color="green" icon="plus" class="-mr-2" @click="plus()" />
         </div>
     </div>
 </div>

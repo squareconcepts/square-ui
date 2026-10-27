@@ -113,22 +113,23 @@
                             @if(!$hideActions)
                                 <td class="whitespace-nowrap px-3 py-2 md:px-6 md:py-4 leading-5 text-gray-900 w-0">
                                     @foreach($customButtons as $button)
+                                        @php $style = $this->buttonStyle($button['color'] ?? null); @endphp
                                         @if(!empty($button['label']))
-                                            <flux:button icon="{{ $button['icon'] }}" wire:click="handleAction({{ \Illuminate\Support\Js::from($button['method']) }}, {{ json_encode($result) }})" outline :variant="$button['color']">
+                                            <flux:button icon="{{ $button['icon'] }}" wire:click="handleAction({{ \Illuminate\Support\Js::from($button['method']) }}, {{ json_encode($result) }})" :variant="$style['variant']" :color="$style['color']">
                                                 {{ $button['label'] }}
                                             </flux:button>
                                         @else
-                                            <flux:button icon="{{ $button['icon'] }}" wire:click="handleAction({{ \Illuminate\Support\Js::from($button['method']) }}, {{ json_encode($result) }})" outline :variant="$button['color']" />
+                                            <flux:button icon="{{ $button['icon'] }}" wire:click="handleAction({{ \Illuminate\Support\Js::from($button['method']) }}, {{ json_encode($result) }})" :variant="$style['variant']" :color="$style['color']" />
                                         @endif
                                     @endforeach
                                     @if(!$hideRead)
-                                        <flux:button icon="eye" wire:click="handleAction('viewRow', {{ json_encode($result) }})" outline variant="primary" />
+                                        <flux:button icon="eye" wire:click="handleAction('viewRow', {{ json_encode($result) }})" variant="primary" />
                                     @endif
                                     @if(!$hideEdit)
-                                        <flux:button icon="pencil" wire:click="handleAction('editRow', {{ json_encode($result) }})" outline variant="warning" />
+                                        <flux:button icon="pencil" wire:click="handleAction('editRow', {{ json_encode($result) }})" variant="primary" color="amber" />
                                     @endif
                                     @if(!$hideDelete)
-                                        <flux:button icon="trash" wire:click="handleAction('deleteRow', {{ json_encode($result) }})" outline variant="danger" />
+                                        <flux:button icon="trash" wire:click="handleAction('deleteRow', {{ json_encode($result) }})" variant="danger" />
                                     @endif
                                 </td>
                             @endif

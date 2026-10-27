@@ -21,4 +21,21 @@ class UpgradeCheckTest extends TestCase
             ->doesntExpectOutputToContain('dropzone')
             ->assertExitCode(0);
     }
+
+    public function test_positive_and_warning_buttons_become_flux_2_colours(): void
+    {
+        $this->artisan('square-ui:upgrade-check', [
+            '--path' => [__DIR__ . '/../Fixtures/upgrade-check-buttons'],
+            '--no-report' => true,
+        ])
+            ->expectsOutputToContain('<flux:button variant="positive|warning"> (2×)')
+            ->assertExitCode(1);
+
+        $rule = collect((new \ReflectionMethod(\Squareconcepts\SquareUi\Commands\UpgradeCheck::class, 'buildRules'))->invoke(new \Squareconcepts\SquareUi\Commands\UpgradeCheck()))
+            ->firstWhere('key', 'button_positive_warning');
+
+        $this->assertSame('<flux:button variant="primary" color="green" icon="check">', ($rule['transform'])('<flux:button variant="positive" icon="check">'));
+        $this->assertSame('<flux:button size="sm" variant="primary" color="amber" />', ($rule['transform'])('<flux:button size="sm" variant="warning" />'));
+        $this->assertSame('<flux:callout variant="warning">', ($rule['transform'])('<flux:callout variant="warning">'));
+    }
 }

@@ -324,6 +324,21 @@ class UpgradeCheck extends Command
                 'notes' => [],
             ],
             [
+                'key' => 'button_positive_warning',
+                'scope' => 'both',
+                'severity' => 'removed',
+                'label' => '<flux:button variant="positive|warning">',
+                'pattern' => '/<flux:button\b[^>]*\bvariant="(?:positive|warning)"/',
+                'replacement_title' => '<flux:button variant="primary" color="green|amber">',
+                'transform' => fn(string $line): string => preg_replace_callback(
+                    '/(<flux:button\b[^>]*\b)variant="(positive|warning)"/',
+                    fn(array $m): string => $m[1] . 'variant="primary" color="' . ($m[2] === 'positive' ? 'green' : 'amber') . '"',
+                    $line,
+                ),
+                'hint' => 'De knopvarianten positive en warning bestaan niet in Flux 2 (en niet meer in de square-core-override). Flux 2 kleurt de primary-variant: variant="primary" color="green" of color="amber". Controleer knoppen waarvan de variant op een eigen regel staat zelf; callouts/toasts met variant="warning" zijn gewoon geldig.',
+                'notes' => [],
+            ],
+            [
                 'key' => 'swal_fire',
                 'scope' => 'both',
                 'severity' => 'removed',

@@ -91,7 +91,7 @@
             {{$clearText}}
         </flux:button>
         @if(!$autoSave)
-            <flux:button variant="positive" @click="save()">
+            <flux:button variant="primary" color="green" @click="save()">
                 {{$saveButtonText}}
             </flux:button>
         @endif
