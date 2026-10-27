@@ -8,6 +8,8 @@ class Flag extends Component
 {
     public array $options;
 
+    private static ?array $available = null;
+
     public function __construct(
         public string $country,
         public bool $hasError = false
@@ -17,7 +19,8 @@ class Flag extends Component
         }
 
         $path = base_path('public/vendor/squareconcepts/square-ui/flags/' . $this->country . '.svg');
-        $this->options = collect(glob(base_path('public/vendor/squareconcepts/square-ui/flags/*.svg')))->map(function ($path) {
+        // The flags directory doesn't change at runtime: glob it once per process, not per flag.
+        $this->options = self::$available ??= collect(glob(base_path('public/vendor/squareconcepts/square-ui/flags/*.svg')))->map(function ($path) {
             return basename($path, '.svg');
         })->toArray();
         $this->hasError = !file_exists($path);

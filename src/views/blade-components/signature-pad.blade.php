@@ -13,6 +13,20 @@
         if (this.signaturePad) {
             return;
         }
+        {{-- Eén keer per pagina laden, ook als de pad pas na een Livewire-update verschijnt (@pushonce werkte alleen met een scripts-stack in de layout en bij de eerste render). --}}
+        window.scSignaturePadLoader ??= new Promise((resolve, reject) => {
+            const js = document.createElement('script');
+            js.src = 'https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js';
+            js.onload = resolve;
+            js.onerror = reject;
+            document.head.append(js);
+        });
+        window.scSignaturePadLoader.then(() => this.setup());
+    },
+    setup() {
+        if (this.signaturePad) {
+            return;
+        }
         this.resizeCanvas();
         this.signaturePad = new SignaturePad(this.$refs.canvas);
         if (this.signature) {
@@ -85,7 +99,3 @@
 
 </div>
 
-
-@pushonce('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-@endpushonce
